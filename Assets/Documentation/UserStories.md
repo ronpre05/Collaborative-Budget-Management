@@ -6,12 +6,12 @@ They have been roughly split up into sections so that they are kept with like st
 
 |Links to stories|
 |---|
-|[Login](login)|
-|[Project Management](project-management)|
-|[Budget Management](budget-management)|
-|[View Management](view-management)|
-|[Non Functional](non-functional)|
-|[Security](security)|
+|[Login](#login)|
+|[Project Management](#project-management)|
+|[Budget Management](#budget-management)|
+|[View Management](#view-management)|
+|[Non Functional](#non-functional)|
+|[Security](#security)|
 
 ## Login
 | Number | Title | Priority | Story Points | Story | Crtieria |
@@ -21,7 +21,7 @@ They have been roughly split up into sections so that they are kept with like st
 |1.3|Password Reset | ? | ? |As a user, I want to reset my password in case I forget it, so I can regain access to my account securely. |**Given** I am on the login page, **When** I click "Forgot Password?" and enter my email, **Then** I receive an email with a password reset link. **Given** I have a valid reset link, **When** I create a new password, **Then** my password is updated, and I can log in with it. |
 |1.4|Update account details | ? | ? |As a user, I want to be able to update my account details such as name, so I can ensure that my details are up to date and correct to comply with regulations such as GDPR |**Given** I am on the accounts page, **When** I update my personal information, **Then** my account is updated, and information displayed about me may be updated if publicly displayed |
 |1.5|Delete account | ? | ? |As a user, I want to be able to delete my account when I no longer need it so that my details are not stored longer than needed |**Given** I am on the accounts page, **When** I delete my account, **Then** I am emailed to confirm, and delete my account from that page, and information is removed from the database. **Given** my account is deleted, **When** I try log in, **Then** I am no longer allowed (Need to safely deleted to not break a project) |
-|[To top](user-stories)|
+[To top](#user-stories)
 
 
 ## Project Management
@@ -43,7 +43,7 @@ They have been roughly split up into sections so that they are kept with like st
 |?2.14|Delete project | ? | ? |As a project coordinator I want to be able to delete a project so that it can no longer be viewed or edited by anyone |**Given** that I am running a project, **When** I delete the project, **Then** no one including myself can view or access it |
 |?2.15|Archive project | ? | ? |As a project coordinator I want to be able to archive a project so that only I can see it, and can no longer make changes |**Given** that I am running a project, **When** I archive the project, **Then** no one else can access it, and no one can edit it |
 |?2.16|Unarchive project | ? | ? |As a project coordinator I want to be able to unarchive a project so that it can be seen again by those involved |**Given** that I am running a project and I have archived it, **When** I unarchive the project, **Then** the involved institutions and members can view and edit the project as before (along with myself) |
-|[To top](user-stories)|
+[To top](#user-stories)
 
 
 ## Budget Management
@@ -60,7 +60,7 @@ They have been roughly split up into sections so that they are kept with like st
 |3.9|Calculation of indirect costs | ? | ? |As a project coordinator (or institution lead), I want to be able to see that any changes to the elements of the budget that are not subcontracting and internal invoices create a change in the indirect costs so that I can view the correct value of indirect cost |**Given** I am on the project dashboard, **When** I edit any of the budget information except subcontracting and internal invoices, **Then** I see the indirect costs value recalculated to reflect the new information |
 |3.10|Display of indirect costs rate | ? | ? |As a user, I want to be able to see the rate of indirect costs (if a % is available) so that I can see what rate the project is using |**Given** I am on the project dashboard, **When** I view the budget total, **Then** I see rate used to calculate the indirect costs displayed |
 |3.11|Display of indirect costs value | ? | ? |As a user, I want to be able to see the value if indirect costs (fixed or otherwise) so that I can see the amount of indirect costs in the project |**Given** I am on the project dashboard, **When** I view the budget total, **Then** I see the value of the indirect costs |
-|[To top](user-stories)|
+[To top](#user-stories)
 
 ## View Management
 | Number | Title | Priority | Story Points | Story | Crtieria |
@@ -69,7 +69,7 @@ They have been roughly split up into sections so that they are kept with like st
 |4.2|Institution lead RW Access | ? | ? |As an institution lead, I want read/write access to the budget table of my institution so that I can manage and adjust budget allocations for projects I am a lead in, for my institution |**Given** I am logged in as an institution lead, **When** I access the budget table for my projects, **Then** I can view all budget details and can only edit my institution's budget via an edit button for that row |
 |4.3|Collaborator View Permissions | ? | ? |As an Institution Collaborator, I want only to be able to view the budget spreadsheet and dashboard of projects I am a part of so that I can see how the project is made up, but not make any changes |**Given** I am logged in as a project coordinator, **When** I navigate to the budget table, **Then** I can view all budget details. |
 |4.4|Permissions for viewing projects | ? | ? |As a user, I want to only be able to see projects that I am a part of, so that my view is not cluttered with information that does not concern me |**Given** that I am logged into the software, **When** I view my list of projects, **Then** I should only be able to see projects that I am a part of |
-|[To top](user-stories)|
+[To top](#user-stories)
 
 
 ## Non Functional
@@ -79,10 +79,10 @@ They have been roughly split up into sections so that they are kept with like st
 |5.2|Clear display | ? | ? |As a user, I want the software to use high contrasts so that elements are clear |**Given** that I am using the software, **When** I am reading information on the screen, **Then** I should be able to clearly read this information |
 |5.3|Easy on eyes display | ? | ? |As a user, I want the software to not have sudden bright colours or flashes so that it is more comfortable to use on the eyes |**Given** that I am using the software, **When** I am using it for prolonged periods, **Then** it doesn't hurt my eyes any more than a screen would |
 |5.4|Display options and themes | ? | ? |As a user, I want the software to have options for some simple themes so that I can customise my view and have it be more comfortable or familiar to use, such as changing contrast |**Given** that I wish to change theme, **When** I select a different theme, **Then** the system will look different based on that theme |
-|[To top](user-stories)|
+[To top](#user-stories)
 
 ## Security
 | Number | Title | Priority | Story Points | Story | Crtieria |
 |--|-------|---|---|---------------------|----------------|
 |6.1| | ? | ? | | |
-|[To top](user-stories)|
+[To top](#user-stories)
