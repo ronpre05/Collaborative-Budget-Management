@@ -22,7 +22,7 @@ Budget-related actions involve reviewing and approving/rejecting costs. The syst
 - The **Add Additional Metadata** step offers adaptability by allowing new project details to be included at any stage, accommodating evolving requirements.
 
 
-![Project Workflow Diagram](Assets/sequencediagram.png)
+![Project Workflow Diagram](Assets/sequencediagram2.png)
 
 
 ---
