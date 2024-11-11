@@ -12,3 +12,4 @@
 ---
 
 - [Coding Conventions](./CodingConventions.md)
+- [Git Strategy](./GitStrategy.md)

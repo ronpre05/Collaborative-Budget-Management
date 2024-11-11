@@ -9,4 +9,4 @@
 7. Class names should be written in the following format: ClassName
 8. Function names should be written in camel case
 9. Avoid any deep nesting of code
-10. Code shouldn't be written
+10. Code shouldn't be repeated
