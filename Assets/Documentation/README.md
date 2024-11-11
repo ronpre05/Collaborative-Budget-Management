@@ -8,3 +8,7 @@
 - [User Stories](./UserStories.md)
 - [Activity Diagram (Person Months)](./ActivityDiagramPersonMonths.md)
 - [Prototype](./Prototype.md)
+
+---
+
+- [Coding Conventions](./CodingConventions.md)
