@@ -8,6 +8,7 @@
 - [User Stories](./UserStories.md)
 - [Activity Diagram (Person Months)](./ActivityDiagramPersonMonths.md)
 - [Prototype](./Prototype.md)
+- [Activity Diagram (Project Creation)](./ActivityDiagramProjectCreation.md)
 
 ---
 
