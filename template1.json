@@ -1,0 +1,122 @@
+{
+	"templateName" : "Horizon RIA",
+
+	"PC": 
+	{
+		"Name" : "Personnel",
+		"Currency" : "EUR",
+		"displayPM" : true,
+		"PMPrivate" : true,
+		"Fields" : 
+		{
+			"Amount" : "Int",
+			"startDate" : "String",
+			"endDate" : "String",
+			"Percentage" : "Int",
+			"personMonth" : "Float"
+		},
+		"Calculations" :
+		{
+			"Person Months" : "(endDate - startDate) * Percentage",
+			"Total" : "Amount"
+		}
+	},
+
+	"EC" : 
+	{
+		"Name" : "Equipment",
+		"Currency" : "EUR",
+		"Fields" : 
+		{
+			"What" : "String",
+			"Why" : "String",
+			"Amount" : "Int"
+		},
+		"Calculations" :
+		{
+			"Total" : "Amount"
+		}
+	},
+
+	"OGC" : 
+	{
+		"Name" : "Other Goods and Services",
+		"Currency" : "EUR",
+		"Fields" : 
+		{
+			"What" : "String",
+			"Why" : "String",
+			"Amount" : "Int"
+		},
+		"Calculations" :
+		{
+			"Total" : "Amount"
+		}
+	},
+
+	"TC" : 
+	{
+		"Name" : "Travel Costs",
+		"Currency" : "EUR",
+		"Fields" : 
+		{
+			"Days"  : "Int",
+			"Accomodation" : "Int",
+			"Sustinance" : "Int",
+			"Entry" : 
+			{
+				"What" : "String",
+				"Amount" : "Int"
+			}
+		},
+		"Calculations" :
+		{
+			"baseTotal" : "Days*Accomodation + Days*Sustinance",
+			"entryTotals" : "Entry.Amount",
+			"Total" : "baseTotal + entryTotals"
+		}
+		
+	},
+
+	"SC" : 
+	{
+		"Name" : "Subcontracting",
+		"Currency" : "EUR",
+		"Fields" : 
+		{
+			"What" : "String",
+			"Why" : "String",
+			"Amount" : "Int"
+		},
+		"Calculations" :
+		{
+			"Total" : "Amount"
+		}
+	},
+
+	"IIC" : 
+	{
+		"Name" : "Internally Invoiced Services",
+		"Currency" : "EUR",
+		"Fields" : 
+		{
+			"What" : "String",
+			"Why" : "String",
+			"Amount" : "Int"
+		},
+		"Calculations" :
+		{
+			"Total" : "Amount"
+		}
+	},
+
+	"IC" : 
+	{
+		"Name" : "Indirect Costs",
+		"Currency" : "EUR",
+		"Calculations" : 
+		{
+			"Total" : "0.25 * (PC.Total + EC.Total + OGC.Total + TC.Total)"
+		}
+	}
+}
