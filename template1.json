@@ -7,12 +7,13 @@
 		"Currency" : "EUR",
 		"displayPM" : true,
 		"PMPrivate" : true,
+		"displayInt" : true,
 		"Fields" : 
 		{
-			"Amount" : "Int",
+			"Amount" : "Float",
 			"startDate" : "String",
 			"endDate" : "String",
-			"Percentage" : "Int",
+			"Percentage" : "Float",
 			"personMonth" : "Float"
 		},
 		"Calculations" :
@@ -26,11 +27,12 @@
 	{
 		"Name" : "Equipment",
 		"Currency" : "EUR",
+		"displayInt" : true,
 		"Fields" : 
 		{
 			"What" : "String",
 			"Why" : "String",
-			"Amount" : "Int"
+			"Amount" : "Float"
 		},
 		"Calculations" :
 		{
@@ -42,11 +44,12 @@
 	{
 		"Name" : "Other Goods and Services",
 		"Currency" : "EUR",
+		"displayInt" : true,
 		"Fields" : 
 		{
 			"What" : "String",
 			"Why" : "String",
-			"Amount" : "Int"
+			"Amount" : "Float"
 		},
 		"Calculations" :
 		{
@@ -58,15 +61,16 @@
 	{
 		"Name" : "Travel Costs",
 		"Currency" : "EUR",
+		"displayInt" : true,
 		"Fields" : 
 		{
 			"Days"  : "Int",
-			"Accomodation" : "Int",
-			"Sustinance" : "Int",
+			"Accomodation" : "Float",
+			"Sustinance" : "Float",
 			"Entry" : 
 			{
 				"What" : "String",
-				"Amount" : "Int"
+				"Amount" : "Float"
 			}
 		},
 		"Calculations" :
@@ -82,11 +86,12 @@
 	{
 		"Name" : "Subcontracting",
 		"Currency" : "EUR",
+		"displayInt" : true,
 		"Fields" : 
 		{
 			"What" : "String",
 			"Why" : "String",
-			"Amount" : "Int"
+			"Amount" : "Float"
 		},
 		"Calculations" :
 		{
@@ -98,11 +103,12 @@
 	{
 		"Name" : "Internally Invoiced Services",
 		"Currency" : "EUR",
+		"displayInt" : true,
 		"Fields" : 
 		{
 			"What" : "String",
 			"Why" : "String",
-			"Amount" : "Int"
+			"Amount" : "Float"
 		},
 		"Calculations" :
 		{
