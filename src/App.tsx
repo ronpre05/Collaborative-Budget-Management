@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { supabase } from './database' // Assuming you exported `supabase` from `database.tsx`
 
 
-
+// this is called after any user signs in
 const HandleUserLogin = async (user: any) => {
   console.log("HandleUserLogin was called!", user)
 
@@ -15,17 +15,17 @@ const HandleUserLogin = async (user: any) => {
     console.error("No user found in Clerk.")
     return
   }
-
+  // information on user is parsed
   const email = user.primaryEmailAddress?.emailAddress
   const username = user.username || user.firstName || email
   const firstName = user.firstName || "Unknown"; // Fallback value for firstName
-  const lastName = user.lastName || "Unknown";
+  const lastName = user.lastName || "Unknown"; // Fallback value for lastname
 
   if (!email || !username) {
     console.error("Required user information missing.")
     return
   }
-
+  // check if the user exists in supabse User table
   try {
     const { data, error } = await supabase
       .from('Users')
@@ -37,11 +37,13 @@ const HandleUserLogin = async (user: any) => {
     }
 
     let userId
-
+    // check if corresponding user is found
     if (data && data.length > 0) {
       userId = data[0].userID
       console.log(`User found: ${userId}`)
-    } else {
+    } 
+    // create a new user if there isnt one already
+    else {
       const { data: newUser, error: insertError } = await supabase
         .from('Users')
         .insert({
