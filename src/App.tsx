@@ -2,10 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import "./App.css";
-import Home from "./page/HomePage"
-import About from "./page/About"
-import Projects from "./page/Projects"
-import CreateProject from "./page/CreateProjects";
+import Home from "./pages/HomePage"
+import About from "./pages/About"
+import Projects from "./pages/Projects"
+import CreateProject from "./pages/CreateProjects";
 
 
 
