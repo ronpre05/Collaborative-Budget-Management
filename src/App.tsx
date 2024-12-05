@@ -6,6 +6,26 @@ import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/c
 import { useEffect } from 'react'
 import { supabase } from './database' // Assuming you exported `supabase` from `database.tsx`
 
+const App = () => {
+  const { user } = useUser()
+
+  useEffect(() => {
+    if (user) {
+      HandleUserLogin(user)
+    }
+  }, [user])
+
+  return (
+    <header>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+    </header>
+  )
+}
 
 // this is called after any user signs in
 const HandleUserLogin = async (user: any) => {
@@ -69,27 +89,6 @@ const HandleUserLogin = async (user: any) => {
   } catch (err) {
     console.error(`Error handling user login: ${err.message}`)
   }
-}
-
-const App = () => {
-  const { user } = useUser()
-
-  useEffect(() => {
-    if (user) {
-      HandleUserLogin(user)
-    }
-  }, [user])
-
-  return (
-    <header>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </header>
-  )
 }
 
 export default App
