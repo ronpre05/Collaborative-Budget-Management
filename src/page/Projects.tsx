@@ -1,3 +1,5 @@
+import { Link, useLocation } from "react-router-dom";
+
 // Projects Page
 const Projects: React.FC = () => (
     <div className="content">
@@ -9,4 +11,4 @@ const Projects: React.FC = () => (
     </div>
   );
 
-  export default Project;
+  export default Projects;

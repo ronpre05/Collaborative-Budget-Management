@@ -1,18 +1,24 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import "./App.css";
+import Home from "./page/HomePage"
+import About from "./page/About"
+import Projects from "./page/Projects"
+import CreateProject from "./page/CreateProjects";
+
 
 
 function App() {
   return (
     <Router>
+      {/* Signed out View*/}
       <SignedOut>
         <div className="center-content">
           <SignInButton />
         </div>
       </SignedOut>
-
+      {/* Signed in View*/}
       <SignedIn>
         <div className="app-container">
           <aside className="sidebar">
