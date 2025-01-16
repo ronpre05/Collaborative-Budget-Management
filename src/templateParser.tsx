@@ -13,10 +13,12 @@ function getTemplateName(template : any) : string
 {
     let i = 0;
 
-    // Find the templateName entry inside the given string
+    
     while(template[i])
+    // Loopp through each entry inside the template
     {
         if(template[i] == "templateName")
+        // Check if its the templateName entry
         {
             // Return its value
             return template.templateName;
@@ -30,329 +32,111 @@ function getTemplateName(template : any) : string
     return "";
 }
 
-function getCategoryNames(template : any) : string[]
+function getCategoriesSection(template : any) : any
 {
-    // Find the string section representing categories
-    let i = 0;
+    // Loop through the template
+    // Find the section called "Categories"
+    // Store that section in a variable
+    // Return it
+}
 
-    while(template[i])
-    {
-        if(template[i] == "Categories")
-        {
-            // Get an array ready to return
-            let catNames : string[] = [];
-            let j = 0;
+function getCategoryNames(categories : any) : string[]
+{
+    // Loop through the categories section
+    // Save each section in a variable
+    // Find its "Name" entry
+    // Add to an array
+    // Return the array
 
-            while(template[i][j])
-            // Loop through this section
-            {
-                // Find each entry
-                // Save as String[] temporarily
-                let cat : any;
-                cat = template[i][j];
-
-                // Find its name entry
-                // Add to an array
-                catNames.push(cat.Name);
-
-                j++;
-            }
-
-            // Return the array
-            return catNames;
-        }
-
-        i++;
-    }
-    // Error if not such section found
-    
     return [""];
 }
 
-function getFieldNames(template : any, category : string) : string[]
+function getIndividualCategory(categories : any, categoryName : string) : any
 {
-        // Find the string section representing categories
-        let i = 0;
+    // Loop through the categories
+    // Save each category
+    // Check if its Name entry matches the categoryName
+        // If so return it
+}
 
-        while(template[i])
-        {
-            if(template[i] == "Categories")
-            {
-                let j = 0;
+function getFieldsSection(category : any) : any
+{
+    // Loop through the categories entries
+    // Find the one called "Fields"
+    // Store in a variable and return it
+}
 
-                while(template[i][j])
-                // Loop through the categories section and find one with the name matching
-                {
-                    if(template[i][j].Name == category)
-                    {
-                        let k = 0;
+function getFieldNames(fields : any) : string[]
+{
+    // Loop through the fields section
+    // Save each section in a variable
+    // Find its "Name" entry
+    // Add to an array
+    // Return the array
 
-                        while(template[i][j][k])
-                        {
-                            if(template[i][j][k] == "Fields")
-                            // Find its fields section
-                            {
-                                // Get an array ready to return
-                                let fieldNames : string[] = [];
-                                let l = 0;
-
-                                while(template[i][j][k][l])
-                                // Loop through this section
-                                {
-                                    // Find each entry
-                                    // Save as string[] temporarily
-                                    let field : any;
-                                    field = template[i][j][k][l];
-
-                                    // Find its name entry
-                                    // Add to an array
-                                    fieldNames.push(field.Name);
-
-                                    l++;
-                                }
-                                // Return the array
-                                return fieldNames;
-                            }
-                            k++;
-                        }
-                        // Error if doesnt exist
-                    }
-                    j++;
-                }
-                // Error if no matching
-            }
-            i++;
-        }
-        // Error if not such section found
-        
     return [""];
 }
 
-function getFieldType(template : any, category : string, field : string) : string
+function getIndividualField(fields : any, fieldName : string) : any
 {
-    let i = 0;
+    // Loop through the fields
+    // Save each field
+    // Check if its Name entry matches the fieldName
+        // If so return it
+}
 
-    while(template[i])
-    {
-        // Find the string section representing categories
-        if(template[i] == "Categories")
-        {
-            let j = 0;
-
-            while(template[i][j])
-            {
-                // Loop through the categories section and find one with the name matching
-                if(template[i][j].Name == category)
-                {
-                    let k = 0;
-
-                    while(template[i][j][k])
-                    {
-                        if(template[i][j][k] == "Fields")
-                        // Find the string section representing fields
-                        {
-                            let l = 0;
-
-                            while(template[i][j][k][l])
-                                // Loop through this section
-                            {
-                                // Find each entry
-                                    // Check if matches field name
-                                if(template[i][j][k][l].Name == field)
-                                {
-                                    // If so, find the type entry
-                                        // If doesn't exist give error
-                                    return template[i][j][k][l].Type;
-                                    // Return the type
-                                }
-
-                                l++;
-                            }
-                        }
-                        k++;
-                    }
-                    // Error if not such section found
-                }
-                j++;
-            }
-            // Error if no matching
-        }
-        i++;
-    }
-    // Error if not such section found
-        
-    return "";
-}   
-
-function getCalulationNames(template : any, category : string) : string[]
+function getFieldPrefix(field : any) : string
 {
-    // Find the string section representing categories
-    let i = 0;
+    return field.Prefix;
+}
 
-    while(template[i])
-    {
-        if(template[i] == "Categories")
-        {
-            let j = 0;
+function getFieldValue(field : any) : string
+{
+    return field.Value;
+}
 
-            while(template[i][j])
-            // Loop through the categories section and find one with the name matching
-            {
-                if(template[i][j].Name == category)
-                {
-                    let k = 0;
+function getFieldPostfix(field : any) : string
+{
+    return field.Postfix;
+}
 
-                    while(template[i][j][k])
-                    {
-                        if(template[i][j][k] == "Calculations")
-                        // Find its calculations section
-                        {
-                            // Get an array ready to return
-                            let calcNames : string[] = [];
-                            let l = 0;
+function getFieldType(field : any) : string
+{
+    return field.Type;
+}
 
-                            while(template[i][j][k][l])
-                            // Loop through this section
-                            {
-                                // Find each entry
-                                // Save as string[] temporarily
-                                let calc : any;
-                                calc = template[i][j][k][l];
+function getFieldVisible(field : any) : boolean
+{
+    return field.Visible;
+}
 
-                                // Find its name entry
-                                // Add to an array
-                                calcNames.push(calc.Name);
+function getCalculationsSection(category : any) : any
+{
+    // Loop through the categories entries
+    // Find the one called "Calculations"
+    // Store in a variable and return it
+}
 
-                                l++;
-                            }
-                            // Return the array
-                            return calcNames;
-                        }
-                        k++;
-                    }
-                    // Error if doesnt exist
-                }
-                j++;
-            }
-            // Error if no matching
-        }
-        i++;
-    }
-    // Error if not such section found
-    
+function getCalculationNames(calculations : any) : string[]
+{
+    // Loop through the calculations section
+    // Save each section in a variable
+    // Find its "Name" entry
+    // Add to an array
+    // Return the array
+
     return [""];
 }
 
-function getExpression(template : any, category : string, calculation : string) : string
+function getIndividualCalculations(calculations : any, calcName : string) : any
 {
-    let i = 0;
-
-    while(template[i])
-    {
-        // Find the string section representing categories
-        if(template[i] == "Categories")
-        {
-            let j = 0;
-
-            while(template[i][j])
-            {
-                // Loop through the categories section and find one with the name matching
-                if(template[i][j].Name == category)
-                {
-                    let k = 0;
-
-                    while(template[i][j][k])
-                    {
-                        if(template[i][j][k] == "Calculations")
-                        // Find the string section representing calculations
-                        {
-                            let l = 0;
-
-                            while(template[i][j][k][l])
-                                // Loop through this section
-                            {
-                                // Find each entry
-                                    // Check if matches calculation name
-                                if(template[i][j][k][l].Name == calculation)
-                                {
-                                    // If so, find the expression entry
-                                        // If doesn't exist give error
-                                    return template[i][j][k][l].Expression;
-                                    // Return the type
-                                }
-
-                                l++;
-                            }
-                        }
-                        k++;
-                    }
-                    // Error if not such section found
-                }
-                j++;
-            }
-            // Error if no matching
-        }
-        i++;
-    }
-    // Error if not such section found
-        
-    return "";
+    // Loop through the calculations
+    // Save each calculation
+    // Check if its Name entry matches the calcName
+        // If so return it
 }
 
-function getVisible(template : any, category : string, field : string) : boolean
+function getFieldExpression(calc : any) : string
 {
-    let i = 0;
-
-    while(template[i])
-    {
-        // Find the string section representing categories
-        if(template[i] == "Categories")
-        {
-            let j = 0;
-
-            while(template[i][j])
-            {
-                // Loop through the categories section and find one with the name matching
-                if(template[i][j].Name == category)
-                {
-                    let k = 0;
-
-                    while(template[i][j][k])
-                    {
-                        if(template[i][j][k] == "Fields")
-                        // Find the string section representing fields
-                        {
-                            let l = 0;
-
-                            while(template[i][j][k][l])
-                                // Loop through this section
-                            {
-                                // Find each entry
-                                    // Check if matches field name
-                                if(template[i][j][k][l].Name == field)
-                                {
-                                    // If so, find the visible entry
-                                        // If doesn't exist give error
-                                    return template[i][j][k][l].Visible;
-                                    // Return the type
-                                }
-
-                                l++;
-                            }
-                        }
-                        k++;
-                    }
-                    // Error if not such section found
-                }
-                j++;
-            }
-            // Error if no matching
-        }
-        i++;
-    }
-    // Error if not such section found
-        
-    return false;
+    return calc.Expression;
 }
-
-
