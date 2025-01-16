@@ -1,14 +1,6 @@
 {
 	"templateName" : "Horizon RIA",
 
-	"Currency" : 
-	{
-		"Prefix" : "€",
-		"Value" : "",
-		"Postfix" : "",
-		"Type" : "Int"
-	},
-
 	"Categories" :
 	{
 		"PC": 
@@ -19,10 +11,10 @@
 				"Amount" : 
 				{
 					"Name" : "amount",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				},
 				"Start Date" : 
@@ -103,10 +95,10 @@
 				"Amount" : 
 				{
 					"Name" : "amount",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				}
 			},
@@ -146,10 +138,10 @@
 				"Amount" : 
 				{
 					"Name" : "amount",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				}
 			},
@@ -189,10 +181,10 @@
 				"Sustinance" : 
 				{
 					"Name" : "sustinance",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				},
 				"Entry" : 
@@ -209,10 +201,10 @@
 					"Amount" : 
 					{
 						"Name" : "amount",
-						"Prefix" : "",
+						"Prefix" : "€",
 						"Value" : "",
 						"Postfix" : "",
-						"Type" : "Currency",
+						"Type" : "Int",
 						"Visible" : true
 					}
 				}
@@ -264,10 +256,10 @@
 				"Amount" : 
 				{
 					"Name" : "amount",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				}
 			},
@@ -307,10 +299,10 @@
 				"Amount" : 
 				{
 					"Name" : "amount",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				}
 			},
@@ -332,10 +324,10 @@
 				"Amount" : 
 				{
 					"Name" : "amount",
-					"Prefix" : "",
+					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"Visible" : true
 				}
 			},
