@@ -1,7 +1,12 @@
 import { readFile } from "fs/promises";
 
-const template : Promise<any> = readJsonFile(".\template1.json");
-console.log(template);
+main();
+
+function main()
+{
+    const template : Promise<any> = readJsonFile(".\template1.json");
+    console.log(template);
+}
 
 async function readJsonFile(path : string) : Promise<any>
 {
@@ -15,7 +20,7 @@ function getTemplateName(template : any) : string
 
     
     while(template[i])
-    // Loopp through each entry inside the template
+    // Loop through each entry inside the template
     {
         if(template[i] == "templateName")
         // Check if its the templateName entry
@@ -34,55 +39,124 @@ function getTemplateName(template : any) : string
 
 function getCategoriesSection(template : any) : any
 {
+    let i = 0;
+
+    while(template[i])
     // Loop through the template
-    // Find the section called "Categories"
-    // Store that section in a variable
-    // Return it
+    {
+        if(template[i] = "Categories")
+        // Find the section called "Categories"
+        {
+            // Return it
+            return template[i];
+        }
+
+        i++;
+    }
+    
 }
 
 function getCategoryNames(categories : any) : string[]
 {
-    // Loop through the categories section
-    // Save each section in a variable
-    // Find its "Name" entry
-    // Add to an array
-    // Return the array
+    let i = 0;
+    let catNames : string[] = [];
 
-    return [""];
+    while(categories[i])
+    // Loop through the categories section
+    {
+        // Save each section in a variable
+        let cat : any = categories[i];
+
+        // Add to an array
+        catNames.push(cat.Name);
+
+        i++;
+    }
+    
+    // Return the array
+    return catNames;
 }
 
 function getIndividualCategory(categories : any, categoryName : string) : any
 {
+    let i = 0;
+    
+    while(categories[i])
     // Loop through the categories
-    // Save each category
-    // Check if its Name entry matches the categoryName
-        // If so return it
+    {
+        // Save each category
+        let cat : any = categories[i];
+
+        if(cat.Name == categoryName)
+        // Check if its Name entry matches the categoryName
+        {
+            // If so return it
+            return cat;
+        }
+
+        i++;
+    }
+    
 }
 
 function getFieldsSection(category : any) : any
 {
+    let i = 0;
+
+    while(category[i])
     // Loop through the categories entries
-    // Find the one called "Fields"
-    // Store in a variable and return it
+    {
+        if(category[i] = "Fields")
+        // Find the one called "Fields"
+        {
+            // Return it
+            return category[i];
+        }
+
+        i++;
+    }
 }
 
 function getFieldNames(fields : any) : string[]
 {
-    // Loop through the fields section
-    // Save each section in a variable
-    // Find its "Name" entry
-    // Add to an array
-    // Return the array
+    let i = 0;
+    let fieldNames : string[] = [];
 
-    return [""];
+    while(fields[i])
+    // Loop through the fields section
+    {
+        // Save each section in a variable
+        let field : any = fields[i];
+
+        // Add to an array
+        fieldNames.push(field.Name);
+
+        i++;
+    }
+    
+    // Return the array
+    return fieldNames;
 }
 
 function getIndividualField(fields : any, fieldName : string) : any
 {
+    let i = 0;
+
+    while(fields[i])
     // Loop through the fields
-    // Save each field
-    // Check if its Name entry matches the fieldName
-        // If so return it
+    {
+        // Save each field
+        let field : any = fields[i];
+
+        if(field.Name == fieldName)
+        // Check if its Name entry matches the fieldName
+        {
+            // If so return it
+            return field;
+        }
+
+        i++;
+    }
 }
 
 function getFieldPrefix(field : any) : string
@@ -112,28 +186,62 @@ function getFieldVisible(field : any) : boolean
 
 function getCalculationsSection(category : any) : any
 {
+    let i = 0;
+
+    while(category[i])
     // Loop through the categories entries
-    // Find the one called "Calculations"
-    // Store in a variable and return it
+    {
+        if(category[i] = "Calculations")
+        // Find the one called "Calculations"
+        {
+            // Return it
+            return category[i];
+        }
+
+        i++;
+    }
 }
 
 function getCalculationNames(calculations : any) : string[]
 {
-    // Loop through the calculations section
-    // Save each section in a variable
-    // Find its "Name" entry
-    // Add to an array
-    // Return the array
+    let i = 0;
+    let calcNames : string[] = [];
 
-    return [""];
+    while(calculations[i])
+    // Loop through the calculations section
+    {
+        let calc : any = calculations[i];
+
+        // Add to an array
+        calcNames.push(calc.Name);
+
+        i++;
+    }
+    
+    // Return the array
+    return calcNames;
+
 }
 
 function getIndividualCalculations(calculations : any, calcName : string) : any
 {
+    let i = 0;
+
+    while(calculations[i])
     // Loop through the calculations
-    // Save each calculation
-    // Check if its Name entry matches the calcName
-        // If so return it
+    {
+        // Save each calculation
+        let calc : any = calculations[i];
+
+        if(calc.Name == calcName)
+        // Check if its Name entry matches the calcName
+        {
+            // If so return it
+            return calc;
+        }
+    
+        i++;
+    }
 }
 
 function getFieldExpression(calc : any) : string
