@@ -1,4 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
+import GoodsServicesCosts from "./GoodsServicesCosts";
+
 
 // Creates Project Page
 const CreateProject: React.FC = () => {
@@ -24,6 +26,9 @@ const CreateProject: React.FC = () => {
           <Link to="/create-project/travel-costs" className={`tab ${location.pathname === "/create-project/travel-costs" ? "active-tab" : ""}`}>
             Travel Costs
           </Link>
+          <Link to="/create-project/goods-services-costs" className={`tab ${location.pathname === "/create-project/goods-services-costs" ? "active-tab" : ""}`}>
+            Goods/Services Costs
+          </Link>
         </div>
   
         {
@@ -33,6 +38,7 @@ const CreateProject: React.FC = () => {
           {location.pathname === "/create-project/personnel-costs" && <h2>Personnel Costs</h2>}
           {location.pathname === "/create-project/equipment-costs" && <h2>Equipment Costs</h2>}
           {location.pathname === "/create-project/travel-costs" && <h2>Travel Costs</h2>}
+          {location.pathname === "/create-project/goods-services-costs" && <GoodsServicesCosts />}
           {location.pathname === "/create-project" && <p>Select a cost category using the tabs above.</p>}
         </div>
       </div>

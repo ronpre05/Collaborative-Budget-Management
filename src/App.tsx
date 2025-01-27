@@ -50,6 +50,7 @@ function App() {
               <Route path="/create-project/personnel-costs" element={<CreateProject />} />
               <Route path="/create-project/equipment-costs" element={<CreateProject />} />
               <Route path="/create-project/travel-costs" element={<CreateProject />} />
+              <Route path="/create-project/goods-services-costs" element={<CreateProject />} />
             </Routes>
           </main>
         </div>
