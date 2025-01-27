@@ -1,48 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import "./App.css";
+import Home from "./pages/HomePage"
+import About from "./pages/About"
+import Projects from "./pages/Projects"
+import CreateProject from "./pages/CreateProjects";
+
+
 
 function App() {
-
-  const [count, setCount] = useState(0)
-
   return (
-    <header>
+    <Router>
+      {/* Signed out View*/}
       <SignedOut>
-        <SignInButton />
+        <div className="center-content">
+          <SignInButton />
+        </div>
       </SignedOut>
+      {/* Signed in View*/}
       <SignedIn>
-        <UserButton />
+        <div className="app-container">
+          <aside className="sidebar">
+            <header>
+              <h2>COLLABORATIVE BUDGET MANAGEMENT TOOL</h2>
+            </header>
+            <div className="user-section">
+              <UserButton />
+            </div>
+            <nav>
+              <Link to="/">
+                <button>Home</button>
+              </Link>
+              <Link to="/projects">
+                <button>Projects</button>
+              </Link>
+              <Link to="/support">
+                <button>Support</button>
+              </Link>
+            </nav>
+          </aside>
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
+              <Route path="/create-project" element={<CreateProject />} />
+              <Route path="/create-project/personnel-costs" element={<CreateProject />} />
+              <Route path="/create-project/equipment-costs" element={<CreateProject />} />
+              <Route path="/create-project/travel-costs" element={<CreateProject />} />
+            </Routes>
+          </main>
+        </div>
       </SignedIn>
-    </header>
+    </Router>
   );
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
 }
 
-export default App
+export default App;
