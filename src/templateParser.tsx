@@ -1,12 +1,28 @@
 import { readFile } from "fs/promises";
+import { validateHeaderName } from "http";
+
+type FieldType =
+{
+    name : string;
+    prefix : string;
+    value : string;
+    postfix : string;
+    type : string;
+    visible : boolean;
+};
+
+type CalculationType =
+{
+    name : string;
+    expression : string;
+};
 
 main("template1.json");
 
 async function main(templateName : string)
 {
     const template : any = await(readJsonFile(templateName));
-    const cats : any[] = getCategoriesObjectsFromTemplate(template);
-    console.log(getCalcObjectsFromCategory(cats[0]));
+
 } 
 
 async function readJsonFile(path : string) : Promise<any>
@@ -171,6 +187,35 @@ function getFieldObjectsFromCategory(category : any) : any[]
 
 }
 
+function getFieldData(field : any) : FieldType
+{
+    let ret : FieldType = 
+    {
+        name : field.Name,
+        prefix : field.Prefix,
+        value : field.Value,
+        postfix : field.Postfix,
+        type : field.Type,
+        visible : field.Visible
+    };
+
+    return ret;
+}
+
+function getAllFieldData(category : any) : FieldType[]
+{
+    let fields : any[] = getFieldObjectsFromCategory(category);
+    let fieldData : FieldType[] = [];
+
+    Object.values(fields).forEach(value =>
+    {
+        fieldData.push(getFieldData(value))
+    }
+    )
+
+    return fieldData;
+}
+
 // CREATE SOMETHING THAT WILL TAKE IN A FIELD OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
 // THEN CREATE ONE THAT WILL TAKE IN THE ARRAY, AND RETURN AN ARRAY OF THOSE STRUCTURES
 
@@ -274,7 +319,27 @@ function getCalcObjectsFromCategory(category : any) : any[]
 // CREATE SOMETHING THAT WILL TAKE IN A CALC OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
 // THEN CREATE ONE THAT WILL TAKE IN THE ARRAY, AND RETURN AN ARRAY OF THOSE STRUCTURES
 
-function getCalcxpression(calc : any) : string
+function getCalcData(calc : any) : CalculationType
 {
-    return calc.Expression;
+    let ret : CalculationType = 
+    {
+        name : calc.Name,
+        expression : calc.Expression
+    };
+
+    return ret;
+}
+
+function getAllCalcData(category : any) : CalculationType[]
+{
+    let calcs: any[] = getCalcObjectsFromCategory(category);
+    let calcData : CalculationType[] = [];
+
+    Object.values(calcs).forEach(value =>
+    {
+        calcData.push(getCalcData(value))
+    }
+    )
+
+    return calcData;
 }
