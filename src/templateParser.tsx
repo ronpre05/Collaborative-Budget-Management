@@ -1,103 +1,117 @@
 import { readFile } from "fs/promises";
 
-main();
+main("template1.json");
 
-function main()
+async function main(templateName : string)
 {
-    const template : Promise<any> = readJsonFile(".\template1.json");
-    console.log(template);
+    const template : any = await(readJsonFile(templateName));
+    console.log(getTemplateName(template));
+    console.log(getCatNamesFromTemplate(template));
+    console.log(getCategoriesObjectsFromTemplate(template));
+
 }
 
 async function readJsonFile(path : string) : Promise<any>
 {
     const file = await readFile(path, "utf8");
-    return JSON.parse(file);
+    return await(JSON.parse(file));
 }
 
+// Gets the value in the "templateName" section of the JSON
 function getTemplateName(template : any) : string
 {
-    let i = 0;
-
-    
-    while(template[i])
-    // Loop through each entry inside the template
-    {
-        if(template[i] == "templateName")
-        // Check if its the templateName entry
-        {
-            // Return its value
-            return template.templateName;
-        }
-        
-        i++;
-    }
-
-    // Error if no template name found
-        
-    return "";
+    // Returns the name
+    return template.templateName;
 }
 
-function getCategoriesSection(template : any) : any
+// Gets the whole Categories object from the JSON
+function getCategoriesSection(template : any) : any[]
 {
-    let i = 0;
-
-    while(template[i])
-    // Loop through the template
-    {
-        if(template[i] = "Categories")
-        // Find the section called "Categories"
-        {
-            // Return it
-            return template[i];
-        }
-
-        i++;
-    }
-    
+    return template.Categories;
 }
 
+// Gets the names of the categories from the Categories object
 function getCategoryNames(categories : any) : string[]
 {
-    let i = 0;
     let catNames : string[] = [];
 
-    while(categories[i])
-    // Loop through the categories section
+    Object.values(categories).forEach(value => 
+    // Loop through the categories
     {
-        // Save each section in a variable
-        let cat : any = categories[i];
+        // Add each category name to the array
+        catNames.push((value as any).Name);
+    });
 
-        // Add to an array
-        catNames.push(cat.Name);
-
-        i++;
-    }
-    
     // Return the array
     return catNames;
 }
 
-function getIndividualCategory(categories : any, categoryName : string) : any
+// Gets an array of categoru names from the template directly
+function getCatNamesFromTemplate(template : any) : string[]
 {
-    let i = 0;
-    
-    while(categories[i])
-    // Loop through the categories
-    {
-        // Save each category
-        let cat : any = categories[i];
-
-        if(cat.Name == categoryName)
-        // Check if its Name entry matches the categoryName
-        {
-            // If so return it
-            return cat;
-        }
-
-        i++;
-    }
-    
+    // Return the categories names after gathering the categories section
+    return getCategoryNames(getCategoriesSection(template));
 }
+
+// Bet the object of each individual category by name
+function getCategoryObject(categories : any, catName : string) : any
+{
+    // Create a value to hold the return
+    let ret : any = [];
+
+    Object.values(categories).forEach(value =>
+    // Loop through the categories object
+    {
+        // Take each entry
+        let cat : any = value;
+
+        // Check if the name matches the goal
+        if(cat.Name == catName)
+        {
+            // If so set the return value
+            ret = cat;
+        }
+    }
+    )
+
+    // Return the value
+    return ret;
+}
+
+function getCategoriesObjectsFromTemplate(template : any) : any[]
+{
+    // Gather the required names and categories object
+    let catNames : string[] = getCatNamesFromTemplate(template);
+    let categories : any = getCategoriesSection(template);
+
+    // Create a return array
+    let catObs : any[] = [];
+
+    Object.values(catNames).forEach(value =>
+    // Loop through each of the names
+    {
+        // Get the object for that name
+        let cat : any = getCategoryObject(categories, value)
+
+        // Add the object to an array
+        catObs.push(cat);
+    }
+    )
+
+    // Return the array
+    return catObs;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 function getFieldsSection(category : any) : any
 {
@@ -244,7 +258,7 @@ function getIndividualCalculations(calculations : any, calcName : string) : any
     }
 }
 
-function getFieldExpression(calc : any) : string
+function getCalcxpression(calc : any) : string
 {
     return calc.Expression;
 }
