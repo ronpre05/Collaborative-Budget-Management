@@ -6,8 +6,8 @@ async function main(templateName : string)
 {
     const template : any = await(readJsonFile(templateName));
     const cats : any[] = getCategoriesObjectsFromTemplate(template);
-    console.log(getFieldObjectsFromCategory(cats[0]));
-}
+    console.log(getCalcObjectsFromCategory(cats[0]));
+} 
 
 async function readJsonFile(path : string) : Promise<any>
 {
@@ -134,11 +134,11 @@ function getFieldObject(fields : any, fieldName : string) : any
         let field : any = value;
 
         if(field.Name == fieldName)
-            // Check if its Name entry matches the fieldName
-            {
-                // If so it to the return value
-                ret = field;
-            }
+        // Check if its Name entry matches the fieldName
+        {
+            // If so it to the return value
+            ret = field;
+        }
     }
     )
 
@@ -203,62 +203,72 @@ function getFieldVisible(field : any) : boolean
 
 function getCalculationsSection(category : any) : any
 {
-    let i = 0;
-
-    while(category[i])
-    // Loop through the categories entries
-    {
-        if(category[i] = "Calculations")
-        // Find the one called "Calculations"
-        {
-            // Return it
-            return category[i];
-        }
-
-        i++;
-    }
+    return category.Calculations;
 }
 
 function getCalculationNames(calculations : any) : string[]
 {
-    let i = 0;
     let calcNames : string[] = [];
 
-    while(calculations[i])
+    Object.values(calculations).forEach(value =>
     // Loop through the calculations section
     {
-        let calc : any = calculations[i];
-
         // Add to an array
-        calcNames.push(calc.Name);
-
-        i++;
+        calcNames.push((value as any).Name);
     }
-    
+    )
+
     // Return the array
     return calcNames;
 
 }
 
-function getIndividualCalculations(calculations : any, calcName : string) : any
+function getCalculationObject(calculations : any, calcName : string) : any
 {
-    let i = 0;
+    // Create a value to hold the return
+    let ret : any = [];
 
-    while(calculations[i])
+    Object.values(calculations).forEach(value =>
     // Loop through the calculations
     {
         // Save each calculation
-        let calc : any = calculations[i];
+        let calc : any = value;
 
         if(calc.Name == calcName)
         // Check if its Name entry matches the calcName
         {
-            // If so return it
-            return calc;
+            // If so it to the return value
+            ret = calc;
         }
-    
-        i++;
     }
+    )
+    
+    return ret;
+}
+
+function getCalcObjectsFromCategory(category : any) : any[]
+{
+    // Gather the required names and calc object
+    let calcNames : string[] = getCalculationNames(getCalculationsSection(category));
+    let calcs : any = getCalculationsSection(category);
+
+    // Create a return array
+    let calcObs : any[] = [];
+
+    Object.values(calcNames).forEach(value =>
+    // Loop through each of the names
+    {
+        // Get the object for that name
+        let calc : any = getCalculationObject(calcs, value)
+
+        // Add the object to an array
+        calcObs.push(calc);
+    }
+    )
+
+    // Return the array
+    return calcObs;
+
 }
 
 // CREATE SOMETHING THAT WILL TAKE IN A CALC OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
