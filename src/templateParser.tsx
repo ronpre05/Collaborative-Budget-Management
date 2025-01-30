@@ -5,10 +5,8 @@ main("template1.json");
 async function main(templateName : string)
 {
     const template : any = await(readJsonFile(templateName));
-    console.log(getTemplateName(template));
-    console.log(getCatNamesFromTemplate(template));
-    console.log(getCategoriesObjectsFromTemplate(template));
-
+    const cats : any[] = getCategoriesObjectsFromTemplate(template);
+    console.log(getFieldObjectsFromCategory(cats[0]));
 }
 
 async function readJsonFile(path : string) : Promise<any>
@@ -102,76 +100,79 @@ function getCategoriesObjectsFromTemplate(template : any) : any[]
     return catObs;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 function getFieldsSection(category : any) : any
 {
-    let i = 0;
-
-    while(category[i])
-    // Loop through the categories entries
-    {
-        if(category[i] = "Fields")
-        // Find the one called "Fields"
-        {
-            // Return it
-            return category[i];
-        }
-
-        i++;
-    }
+    return category.Fields;
 }
 
 function getFieldNames(fields : any) : string[]
 {
-    let i = 0;
     let fieldNames : string[] = [];
 
-    while(fields[i])
+    Object.values(fields).forEach(value =>
     // Loop through the fields section
     {
-        // Save each section in a variable
-        let field : any = fields[i];
-
         // Add to an array
-        fieldNames.push(field.Name);
-
-        i++;
+        fieldNames.push((value as any).Name);
     }
+    )
     
     // Return the array
     return fieldNames;
+
 }
 
-function getIndividualField(fields : any, fieldName : string) : any
+function getFieldObject(fields : any, fieldName : string) : any
 {
-    let i = 0;
+    // Create a value to hold the return
+    let ret : any = [];
 
-    while(fields[i])
+    Object.values(fields).forEach(value =>
     // Loop through the fields
     {
         // Save each field
-        let field : any = fields[i];
+        let field : any = value;
 
         if(field.Name == fieldName)
-        // Check if its Name entry matches the fieldName
-        {
-            // If so return it
-            return field;
-        }
-
-        i++;
+            // Check if its Name entry matches the fieldName
+            {
+                // If so it to the return value
+                ret = field;
+            }
     }
+    )
+
+    return ret;
+
 }
+
+function getFieldObjectsFromCategory(category : any) : any[]
+{
+    // Gather the required names and fields object
+    let fieldNames : string[] = getFieldNames(getFieldsSection(category));
+    let fields : any = getFieldsSection(category);
+
+    // Create a return array
+    let fieldObs : any[] = [];
+
+    Object.values(fieldNames).forEach(value =>
+    // Loop through each of the names
+    {
+        // Get the object for that name
+        let field : any = getFieldObject(fields, value)
+
+        // Add the object to an array
+        fieldObs.push(field);
+    }
+    )
+
+    // Return the array
+    return fieldObs;
+
+}
+
+// CREATE SOMETHING THAT WILL TAKE IN A FIELD OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
+// THEN CREATE ONE THAT WILL TAKE IN THE ARRAY, AND RETURN AN ARRAY OF THOSE STRUCTURES
 
 function getFieldPrefix(field : any) : string
 {
@@ -197,6 +198,8 @@ function getFieldVisible(field : any) : boolean
 {
     return field.Visible;
 }
+
+
 
 function getCalculationsSection(category : any) : any
 {
@@ -257,6 +260,9 @@ function getIndividualCalculations(calculations : any, calcName : string) : any
         i++;
     }
 }
+
+// CREATE SOMETHING THAT WILL TAKE IN A CALC OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
+// THEN CREATE ONE THAT WILL TAKE IN THE ARRAY, AND RETURN AN ARRAY OF THOSE STRUCTURES
 
 function getCalcxpression(calc : any) : string
 {
