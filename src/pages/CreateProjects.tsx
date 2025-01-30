@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import GoodsServicesCosts from "./GoodsServicesCosts";
+import PersonnelCosts from "./PersonnelCosts";
 
 
 // Creates Project Page
@@ -35,7 +36,7 @@ const CreateProject: React.FC = () => {
         //Tab content
         }
         <div className="tab-content">
-          {location.pathname === "/create-project/personnel-costs" && <h2>Personnel Costs</h2>}
+          {location.pathname === "/create-project/personnel-costs" && <PersonnelCosts />}
           {location.pathname === "/create-project/equipment-costs" && <h2>Equipment Costs</h2>}
           {location.pathname === "/create-project/travel-costs" && <h2>Travel Costs</h2>}
           {location.pathname === "/create-project/goods-services-costs" && <GoodsServicesCosts />}
