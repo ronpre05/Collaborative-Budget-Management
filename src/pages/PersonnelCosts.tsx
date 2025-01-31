@@ -1,143 +1,151 @@
 import React, { useState } from "react";
+import { CategoryType, TemplateData } from "../types";
+import templateDataJson from "../../template1.json";
 
 const PersonnelCosts: React.FC = () => {
-  const [personnel, setPersonnel] = useState<{ 
-    name: string; 
-    role: string; 
-    salary: number; 
-    startDate: string; 
-    endDate: string; 
-    percentage: number; 
-    personMonths: number; 
-    totalCost: number; 
-    justification: string; 
-  }[]>([]);
+  // "PC" is your Personnel category
+  const templateData = templateDataJson as TemplateData;
+  const personnelCategory: CategoryType = templateData.Categories.PC;
 
-  const [newName, setNewName] = useState("");
-  const [newRole, setNewRole] = useState("");
-  const [newSalary, setNewSalary] = useState("");
-  const [newStartDate, setNewStartDate] = useState("");
-  const [newEndDate, setNewEndDate] = useState("");
-  const [newPercentage, setNewPercentage] = useState("");
-  const [newJustification, setNewJustification] = useState("");
+  // Array of items
+  const [personnel, setPersonnel] = useState<Array<Record<string, string>>>([]);
+  const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   const [totalCost, setTotalCost] = useState(0);
 
-  const calculatePersonMonths = (start: string, end: string, percentage: number) => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate >= endDate) {
-      return 0; // Invalid dates
-    }
-
-    // Gets full months between start and end date
-    const monthsWorked = (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-                         (endDate.getMonth() - startDate.getMonth());
-
-    // Multiplies by the percentage worked
-    return monthsWorked * (percentage / 100);
+  const handleFieldChange = (fieldKey: string, value: string) => {
+    setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));
   };
 
   const handleAddPersonnel = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!newName || !newRole || !newSalary || !newStartDate || !newEndDate || !newPercentage || !newJustification) {
-      alert("Please fill in all fields!");
-      return;
+    // Basic validation
+    for (const [fieldKey, fieldDef] of Object.entries(personnelCategory.Fields)) {
+      if (!fieldDef.Visible) continue;
+      if (!newItemValues[fieldKey]) {
+        alert(`Please fill out the field: ${fieldKey}`);
+        return;
+      }
     }
 
-    const salary = parseFloat(newSalary);
-    const percentage = parseFloat(newPercentage);
-    const personMonths = calculatePersonMonths(newStartDate, newEndDate, percentage);
-    const total = salary * personMonths;
+    //We parse "Start Date" and "End Date" as actual date objects
+    const startDateKey = Object.entries(personnelCategory.Fields).find(
+      ([, def]) => def.Name.toLowerCase().includes("startdate")
+    )?.[0];
+    const endDateKey = Object.entries(personnelCategory.Fields).find(
+      ([, def]) => def.Name.toLowerCase().includes("enddate")
+    )?.[0];
+    const percentageKey = Object.entries(personnelCategory.Fields).find(
+      ([, def]) => def.Name.toLowerCase().includes("percentage")
+    )?.[0];
+    const amountKey = Object.entries(personnelCategory.Fields).find(
+      ([, def]) => def.Name.toLowerCase() === "amount"
+    )?.[0];
 
-    if (personMonths <= 0) {
-      alert("Invalid person months calculation. Please check the dates and percentage.");
-      return;
+    let personMonths = 0;
+    let numericAmount = 0;
+
+    if (startDateKey && endDateKey && percentageKey) {
+      const sDate = new Date(newItemValues[startDateKey]);
+      const eDate = new Date(newItemValues[endDateKey]);
+      const perc = parseFloat(newItemValues[percentageKey]) || 0;
+
+      // Simple check: full-month difference
+      const monthsWorked =
+        (eDate.getFullYear() - sDate.getFullYear()) * 12 +
+        (eDate.getMonth() - sDate.getMonth());
+
+      personMonths = monthsWorked * (perc / 100);
+      if (personMonths < 0) personMonths = 0; // in case dates are reversed
     }
 
-    const newEntry = { 
-      name: newName, 
-      role: newRole, 
-      salary, 
-      startDate: newStartDate, 
-      endDate: newEndDate, 
-      percentage, 
-      personMonths, 
-      totalCost: total, 
-      justification: newJustification 
-    };
+    if (amountKey) {
+      numericAmount = parseFloat(newItemValues[amountKey]) || 0;
+    }
 
-    setPersonnel([...personnel, newEntry]);
-    setTotalCost(totalCost + total);
+    // Suppose total cost for this item is "amount * personMonths" 
+    const itemTotal = numericAmount * personMonths;
 
-    // Reset input fields
-    setNewName("");
-    setNewRole("");
-    setNewSalary("");
-    setNewStartDate("");
-    setNewEndDate("");
-    setNewPercentage("");
-    setNewJustification("");
+    // Save the new item
+    const newItem = { ...newItemValues };
+    // We can store the calculated "personMonths" or "itemTotal" as extra fields for display:
+    newItem["personMonthsCalculated"] = personMonths.toFixed(2);
+    newItem["totalCost"] = itemTotal.toFixed(2);
+
+    setPersonnel((prev) => [...prev, newItem]);
+    setTotalCost((prev) => prev + itemTotal);
+
+    // Clear the form
+    setNewItemValues({});
+  };
+
+  const mapFieldType = (fieldType: string): string => {
+    switch (fieldType) {
+      case "Int":
+      case "Float":
+      case "Currency":
+        return "number";
+      case "String":
+      default:
+        return "text";
+    }
   };
 
   return (
     <div>
-      <h2>Personnel Costs</h2>
+      <h2>{personnelCategory.Name} Costs</h2>
 
-      {/* Form Section */}
       <form onSubmit={handleAddPersonnel} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
-        
-        <label>Employee Name:</label>
-        <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} required />
-        
-        <label>Role:</label>
-        <input type="text" value={newRole} onChange={(e) => setNewRole(e.target.value)} required />
-
-        <label>Monthly Salary (£):</label>
-        <input type="number" value={newSalary} onChange={(e) => setNewSalary(e.target.value)} required />
-
-        <label>Start Date:</label>
-        <input type="date" value={newStartDate} onChange={(e) => setNewStartDate(e.target.value)} required />
-
-        <label>End Date:</label>
-        <input type="date" value={newEndDate} onChange={(e) => setNewEndDate(e.target.value)} required />
-
-        <label>Percentage of Time Worked:</label>
-        <input 
-          type="number" 
-          value={newPercentage} 
-          onChange={(e) => setNewPercentage(e.target.value)} 
-          placeholder="100 for full-time, 50 for half-time" 
-          required 
-        />
-
-        <label>Justification:</label>
-        <textarea value={newJustification} onChange={(e) => setNewJustification(e.target.value)} required />
+        {Object.entries(personnelCategory.Fields).map(([fieldKey, field]) => {
+          if (!field.Visible) return null;
+          return (
+            <div key={fieldKey} style={{ marginBottom: "0.5rem" }}>
+              <label>
+                {fieldKey}:
+                <input
+                  type={mapFieldType(field.Type)}
+                  value={newItemValues[fieldKey] || ""}
+                  onChange={(e) => handleFieldChange(fieldKey, e.target.value)}
+                  placeholder={field.Name}
+                  style={{ marginLeft: "0.5rem" }}
+                />
+              </label>
+            </div>
+          );
+        })}
 
         <button type="submit" style={{ marginTop: "10px" }}>Add Personnel</button>
       </form>
 
-      {/* Total Cost Section */}
       <h3>Total Personnel Costs: £{totalCost.toFixed(2)}</h3>
 
-      {/* List of Added Personnel */}
       <ul style={{ maxWidth: "500px", listStyle: "none", padding: 0 }}>
         {personnel.map((person, index) => (
-          <li key={index} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px", borderRadius: "5px" }}>
-            <strong>{person.name} ({person.role})</strong>  
-            <br />
-            <span> <strong>Salary:</strong> £{person.salary.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Duration:</strong> {person.startDate} → {person.endDate}</span>  
-            <br />
-            <span> <strong>Percentage Worked:</strong> {person.percentage}%</span>  
-            <br />
-            <span> <strong>Person Months:</strong> {person.personMonths.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Total Cost:</strong> £{person.totalCost.toFixed(2)}</span>  
-            <br />
-            <em> Justification:</em> {person.justification}
+          <li
+            key={index}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px"
+            }}
+          >
+            {Object.entries(personnelCategory.Fields).map(([fieldKey, field]) => {
+              if (!field.Visible) return null;
+              return (
+                <div key={fieldKey}>
+                  <strong>{fieldKey}:</strong> {person[fieldKey] || ""}
+                </div>
+              );
+            })}
+
+            {/* Display our custom-calculated fields too */}
+            <div>
+              <strong>Person Months (Calculated):</strong> {person["personMonthsCalculated"] || "0"}
+            </div>
+            <div>
+              <strong>Total Cost:</strong> £{person["totalCost"] || "0.00"}
+            </div>
           </li>
         ))}
       </ul>
