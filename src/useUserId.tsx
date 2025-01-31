@@ -28,3 +28,5 @@ const useUserId = () => {
 
   return userId; // returns latest userId
 };
+
+export default useUserId;
