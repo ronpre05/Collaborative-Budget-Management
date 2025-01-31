@@ -6,12 +6,15 @@ import { useState, useEffect } from "react";
 // Projects Page
 const Projects: React.FC = () => {
   const [userId, setUserId] = useState<number | null>(null);
+  const [userdata, setUserData] = useState<any>(null);
 
   useEffect(() => {
     const fetchUserID = async () => {
       const { data } = await supabase.auth.getUser();
+      setUserData(data);
 
       if (data?.user) {
+        <p>SupaBase Data: {JSON.stringify(userdata, null, 2)}</p>;
         setUserId(data.user.id);
       }
     };
