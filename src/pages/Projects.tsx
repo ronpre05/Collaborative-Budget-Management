@@ -1,31 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ProjectsView from "../fetchProjects";
-import { supabase } from "../database";
-import { useState, useEffect } from "react";
+import useUserId from "../useUserId";
 
 // Projects Page
 const Projects: React.FC = () => {
-  const [userId, setUserId] = useState<number | null>(null);
-  const [userdata, setUserData] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchUserID = async () => {
-      const { data } = await supabase.from("Users").select();
-      setUserData(data);
-
-      if (data?.user) {
-        setUserId(data.user.id);
-      }
-    };
-
-    fetchUserID();
-  }, []);
+  const userId = useUserId;
 
   return (
     <div className="content">
       <h1>Projects Page</h1>
       <p>Manage your projects here.</p>
-      <p>SupaBase Data: {JSON.stringify(userdata, null, 2)}</p>
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>
