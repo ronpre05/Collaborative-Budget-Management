@@ -10,7 +10,7 @@ const Projects: React.FC = () => {
 
   useEffect(() => {
     const fetchUserID = async () => {
-      const { data } = await supabase.auth.getUser();
+      const { data } = await supabase.from("Users").select();
       setUserData(data);
 
       if (data?.user) {
