@@ -14,7 +14,6 @@ const Projects: React.FC = () => {
       setUserData(data);
 
       if (data?.user) {
-        <p>SupaBase Data: {JSON.stringify(userdata, null, 2)}</p>;
         setUserId(data.user.id);
       }
     };
@@ -26,6 +25,7 @@ const Projects: React.FC = () => {
     <div className="content">
       <h1>Projects Page</h1>
       <p>Manage your projects here.</p>
+      <p>SupaBase Data: {JSON.stringify(userdata, null, 2)}</p>
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>
