@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/clerk-react"; // import clerk hook
 
+// hook used to get user email off Clerk
 const useUserEmail = () => {
   const { user } = useUser(); // get current logged in user
 
