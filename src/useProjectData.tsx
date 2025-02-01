@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 
 // hook used to get projectId off Supabase
 // WARNING: TESTING PURPOSES ONLY
+
+// WARNING: DOESN'T WORK
 const useProjectData = () => {
   const projectId = useProjectId(); // grab projectId via our own hook
   const [projectData, setProjectData] = useState<string[][]>([]); // variable to store projectID
@@ -21,12 +23,12 @@ const useProjectData = () => {
         .from("CategoryEntry")
         .select(
           `
-            Categories(categoryname),
-            FieldValues(value)
+            Categories!inner(categoryname),
+            FieldValues!inner(value)
         `
         )
         .eq("projectid", projectId);
-
+      console.log("supabase result:", data);
       if (error) {
         console.error("Error fetching data:", error);
       } else {
