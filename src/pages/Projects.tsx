@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import ProjectsView from "../fetchProjects";
 import useUserId from "../useUserId";
 import useProjectData from "../useProjectData";
+import DynamicDisplay from "../dynamicDisplay";
 
 // Projects Page
 const Projects: React.FC = () => {
@@ -13,6 +14,7 @@ const Projects: React.FC = () => {
       <h1>Projects Page</h1>
       <p>Manage your projects here, {userId}</p>
       <p>User ID: {userId}</p>
+      <DynamicDisplay></DynamicDisplay>
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>
