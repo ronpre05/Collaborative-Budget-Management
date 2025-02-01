@@ -18,14 +18,14 @@ const useProjectData = () => {
 
       // query to get 2d array of project fields of the given projectID
       const { data, error } = await supabase
-        .from("Categories")
+        .from("CategoryEntry")
         .select(
           `
             Categories(categoryname),
             FieldValues(value)
-            `
+        `
         )
-        .eq("CategoryEntry.projectid", projectId);
+        .eq("projectid", projectId);
 
       if (error) {
         console.error("Error fetching data:", error);

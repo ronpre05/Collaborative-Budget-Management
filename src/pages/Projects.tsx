@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import ProjectsView from "../fetchProjects";
 import useUserId from "../useUserId";
+import useProjectData from "../useProjectData";
 
 // Projects Page
 const Projects: React.FC = () => {
   const userId = useUserId();
   console.log("User ID given:", userId);
+  useProjectData();
   return (
     <div className="content">
       <h1>Projects Page</h1>
