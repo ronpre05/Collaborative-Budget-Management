@@ -21,7 +21,7 @@ const useUserId = () => {
       // query to get userId of the given email
       const { data, error } = await supabase
         .from("Users")
-        .select("userId")
+        .select("userID")
         .eq("email", email)
         .single();
 
@@ -29,8 +29,8 @@ const useUserId = () => {
         console.error("Error fetching user ID:", error.message);
         return;
       }
-      console.log("Fetched user ID:", data?.userId);
-      setUserId(data?.userId); //update data
+      console.log("Fetched user ID:", data?.userID);
+      setUserId(data?.userID); //update data
     };
 
     fetchUserId(); // calls async function inside useEffect
