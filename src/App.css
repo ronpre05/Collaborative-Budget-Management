@@ -130,3 +130,24 @@ h1 {
   background-color: white;
 }
 
+.error-message {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #800020;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.error-message button {
+  margin-left: 10px;
+  background-color: white;
+  color: #800020;
+  border: none;
+  cursor: pointer;
+}
+
+
