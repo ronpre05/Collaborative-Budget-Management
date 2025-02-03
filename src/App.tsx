@@ -86,6 +86,7 @@ const HandleUserLogin = async (user: any) => {
   const firstName = user.firstName || "Unknown";
   const lastName = user.lastName || "Unknown";
 
+  // If missing email or username
   if (!email || !username) {
     console.error("Required user information missing.");
     return;
@@ -102,10 +103,14 @@ const HandleUserLogin = async (user: any) => {
       throw new Error(`Error checking user existence: ${error.message}`);
     }
 
+    // If user in db exists
     if (data && data.length > 0) {
       userId = data[0].userID;
       console.log(`User found: ${userId}`);
-    } else {
+    } 
+    // If no user found in db
+    else {
+      // Insert new user info into db
       const { data: newUser, error: insertError } = await supabase
         .from('Users')
         .insert({
@@ -124,7 +129,7 @@ const HandleUserLogin = async (user: any) => {
       console.log(`New user created: ${userId}`);
     }
 
-    // Fetch role information
+    // Fetch role information for the user from the UserInstitutionProject table
     const { data: roleData, error: roleError } = await supabase
       .from('UserInstitutionProject')
       .select('roleID')
@@ -134,7 +139,9 @@ const HandleUserLogin = async (user: any) => {
       throw new Error(`Error fetching user role: ${roleError.message}`);
     }
 
+    // Retrieve the roleID from the roleData (or null if no role is found)
     const userRoleId = roleData?.[0]?.roleID || null;
+    // Store both userID and roleID in localStorage for later use
     localStorage.setItem('userID', userId);
     localStorage.setItem('userRole', userRoleId);
 
