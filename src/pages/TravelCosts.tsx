@@ -1,114 +1,127 @@
 import React, { useState } from "react";
+import { CategoryType, TemplateData } from "../types";
+import templateDataJson from "../../template1.json";
 
 const TravelCosts: React.FC = () => {
-  const [travels, setTravels] = useState<{ 
-    destination: string; 
-    purpose: string;
-    flights: number; 
-    accommodation: number; 
-    food: number; 
-    transport: number; 
-    total: number; 
-  }[]>([]);
+  const templateData = templateDataJson as TemplateData;
+  const travelCategory: CategoryType = templateData.Categories.TC;
 
-  const [newDestination, setNewDestination] = useState("");
-  const [newPurpose, setNewPurpose] = useState("");
-  const [newFlights, setNewFlights] = useState("");
-  const [newAccommodation, setNewAccommodation] = useState("");
-  const [newFood, setNewFood] = useState("");
-  const [newTransport, setNewTransport] = useState("");
+  const [items, setItems] = useState<Array<Record<string, string>>>([]);
+  const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   const [totalTravelCost, setTotalTravelCost] = useState(0);
+
+  const handleFieldChange = (fieldKey: string, value: string) => {
+    setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));
+  };
 
   const handleAddTravel = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!newDestination || !newPurpose || !newFlights || !newAccommodation || !newFood || !newTransport) {
-      alert("Please fill in all fields!");
-      return;
+    // Validate
+    for (const [fieldKey, fieldDef] of Object.entries(travelCategory.Fields)) {
+      if (!fieldDef.Visible) continue;
+      if (!newItemValues[fieldKey]) {
+        alert(`Please fill out the field: ${fieldKey}`);
+        return;
+      }
     }
 
-    const flights = parseFloat(newFlights);
-    const accommodation = parseFloat(newAccommodation);
-    const food = parseFloat(newFood);
-    const transport = parseFloat(newTransport);
+    let days = 0, accomodation = 0, sustinance = 0, entryAmount = 0;
+    
+    const daysKey = Object.entries(travelCategory.Fields).find(([, def]) => def.Name.toLowerCase() === "days")?.[0];
+    const accomKey = Object.entries(travelCategory.Fields).find(([, def]) => def.Name.toLowerCase() === "accomodation")?.[0];
+    const sustKey = Object.entries(travelCategory.Fields).find(([, def]) => def.Name.toLowerCase() === "sustinance")?.[0];
+    const entryKey = Object.entries(travelCategory.Fields).find(([key]) => key === "Entry.Amount")?.[0];
 
-    if (isNaN(flights) || isNaN(accommodation) || isNaN(food) || isNaN(transport) || flights < 0 || accommodation < 0 || food < 0 || transport < 0) {
-      alert("Please enter valid numerical values for costs.");
-      return;
+    if (daysKey && newItemValues[daysKey]) {
+      days = parseFloat(newItemValues[daysKey]) || 0;
+    }
+    if (accomKey && newItemValues[accomKey]) {
+      accomodation = parseFloat(newItemValues[accomKey]) || 0;
+    }
+    if (sustKey && newItemValues[sustKey]) {
+      sustinance = parseFloat(newItemValues[sustKey]) || 0;
+    }
+    if (entryKey && newItemValues[entryKey]) {
+      entryAmount = parseFloat(newItemValues[entryKey]) || 0;
     }
 
-    const total = flights + accommodation + food + transport;
+    const baseTotal = days * accomodation + days * sustinance;
+    const total = baseTotal + entryAmount;
 
-    const newEntry = { 
-      destination: newDestination, 
-      purpose: newPurpose,
-      flights, 
-      accommodation, 
-      food, 
-      transport, 
-      total 
-    };
+    // Store the new item
+    const newItem = { ...newItemValues };
+    newItem["calculatedTotal"] = total.toFixed(2);
 
-    setTravels([...travels, newEntry]);
-    setTotalTravelCost(totalTravelCost + total);
+    setItems((prev) => [...prev, newItem]);
+    setTotalTravelCost((prev) => prev + total);
 
-    // Reset input fields
-    setNewDestination("");
-    setNewPurpose("");
-    setNewFlights("");
-    setNewAccommodation("");
-    setNewFood("");
-    setNewTransport("");
+    setNewItemValues({});
+  };
+
+  const mapFieldType = (fieldType: string): string => {
+    switch (fieldType) {
+      case "Int":
+      case "Float":
+      case "Currency":
+        return "number";
+      case "String":
+      default:
+        return "text";
+    }
   };
 
   return (
     <div>
-      <h2>Travel Costs</h2>
+      <h2>{travelCategory.Name} Costs</h2>
 
-      {/* Form Section */}
       <form onSubmit={handleAddTravel} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
-        
-        <label>Destination:</label>
-        <input type="text" value={newDestination} onChange={(e) => setNewDestination(e.target.value)} required />
+        {Object.entries(travelCategory.Fields).map(([fieldKey, field]) => {
+          if (!field.Visible) return null;
+          return (
+            <div key={fieldKey} style={{ marginBottom: "0.5rem" }}>
+              <label>
+                {fieldKey}:
+                <input
+                  type={mapFieldType(field.Type)}
+                  value={newItemValues[fieldKey] || ""}
+                  onChange={(e) => handleFieldChange(fieldKey, e.target.value)}
+                  placeholder={field.Name}
+                  style={{ marginLeft: "0.5rem" }}
+                />
+              </label>
+            </div>
+          );
+        })}
 
-        <label>Purpose of Travel:</label>
-        <textarea value={newPurpose} onChange={(e) => setNewPurpose(e.target.value)} required />
-
-        <label>Flights (£):</label>
-        <input type="number" value={newFlights} onChange={(e) => setNewFlights(e.target.value)} required />
-
-        <label>Accommodation (£):</label>
-        <input type="number" value={newAccommodation} onChange={(e) => setNewAccommodation(e.target.value)} required />
-
-        <label>Food (£):</label>
-        <input type="number" value={newFood} onChange={(e) => setNewFood(e.target.value)} required />
-
-        <label>Local Transport (£):</label>
-        <input type="number" value={newTransport} onChange={(e) => setNewTransport(e.target.value)} required />
-
-        <button type="submit" style={{ marginTop: "10px" }}>Add Travel Cost</button>
+        <button type="submit" style={{ marginTop: "10px" }}>Add Travel Item</button>
       </form>
 
-      {/* Total Cost Section */}
       <h3>Total Travel Costs: £{totalTravelCost.toFixed(2)}</h3>
 
-      {/* List of Added Travel Expenses */}
       <ul style={{ maxWidth: "500px", listStyle: "none", padding: 0 }}>
-        {travels.map((trip, index) => (
-          <li key={index} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px", borderRadius: "5px" }}>
-            <strong> {trip.destination}</strong>  
-            <br />
-            <span> <strong>Flights:</strong> £{trip.flights.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Accommodation:</strong> £{trip.accommodation.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Food:</strong> £{trip.food.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Transport:</strong> £{trip.transport.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Total Cost:</strong> £{trip.total.toFixed(2)}</span>  
-            <br />
-            <em> Purpose:</em> {trip.purpose}
+        {items.map((travelItem, index) => (
+          <li
+            key={index}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px"
+            }}
+          >
+            {Object.entries(travelCategory.Fields).map(([fieldKey, field]) => {
+              if (!field.Visible) return null;
+              return (
+                <div key={fieldKey}>
+                  <strong>{fieldKey}:</strong> {travelItem[fieldKey] || ""}
+                </div>
+              );
+            })}
+
+            <div>
+              <strong>Calculated Total:</strong> £{travelItem["calculatedTotal"] || "0.00"}
+            </div>
           </li>
         ))}
       </ul>
