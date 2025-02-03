@@ -1,6 +1,7 @@
 import { supabase } from './database';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
+import RoleBasedRoute from "./RoleBasedRoute";
 import { useEffect } from 'react';
 import "./App.css";
 import Home from "./pages/HomePage"
@@ -11,6 +12,7 @@ import Login from "./pages/Login";
 
 
 function App() {
+
   // Get currently logged in user from Clerk
   const { user } = useUser();
 
@@ -55,7 +57,10 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
-              <Route path="/create-project" element={<CreateProject />} />
+              {/* Admin-only routes */}
+              <Route element={<RoleBasedRoute allowedRoles={[3]} />}>
+                <Route path="/create-project" element={<CreateProject />} />
+              </Route>
               <Route path="/create-project/personnel-costs" element={<CreateProject />} />
               <Route path="/create-project/equipment-costs" element={<CreateProject />} />
               <Route path="/create-project/travel-costs" element={<CreateProject />} />
@@ -81,13 +86,13 @@ const HandleUserLogin = async (user: any) => {
   const firstName = user.firstName || "Unknown";
   const lastName = user.lastName || "Unknown";
 
-  // If missing email or username
   if (!email || !username) {
     console.error("Required user information missing.");
     return;
   }
 
   try {
+    let userId;
     const { data, error } = await supabase
       .from('Users')
       .select('userID')
@@ -97,15 +102,10 @@ const HandleUserLogin = async (user: any) => {
       throw new Error(`Error checking user existence: ${error.message}`);
     }
 
-    let userId;
-    // If user in db exists
     if (data && data.length > 0) {
       userId = data[0].userID;
       console.log(`User found: ${userId}`);
-    } 
-    // If no user found in db
-    else {
-      // Insert new user info into db
+    } else {
       const { data: newUser, error: insertError } = await supabase
         .from('Users')
         .insert({
@@ -120,17 +120,30 @@ const HandleUserLogin = async (user: any) => {
       if (insertError) {
         throw new Error(`Error creating user: ${insertError.message}`);
       }
-
       userId = newUser?.userID;
       console.log(`New user created: ${userId}`);
     }
 
+    // Fetch role information
+    const { data: roleData, error: roleError } = await supabase
+      .from('UserInstitutionProject')
+      .select('roleID')
+      .eq('userID', userId);
+
+    if (roleError) {
+      throw new Error(`Error fetching user role: ${roleError.message}`);
+    }
+
+    const userRoleId = roleData?.[0]?.roleID || null;
     localStorage.setItem('userID', userId);
-    console.log(`User session stored with ID: ${userId}`);
-    return userId;
+    localStorage.setItem('userRole', userRoleId);
+
+    console.log(`User session stored with ID: ${userId} and Role ID: ${userRoleId}`);
+    return { userId, userRoleId };
   } catch (err) {
-    console.error(`Error handling user login (userID ${userId}): ${err.message}`);
+    console.error(`Error handling user login: ${err.message}`);
   }
 };
 
 export default App;
+
