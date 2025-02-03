@@ -63,21 +63,20 @@ const HandleUserLogin = async (user: any) => {
 
 const LoginPage = () => {
   const { user } = useUser();
-
+  
   useEffect(() => {
     if (user) {
+      alert("test");
       HandleUserLogin(user);
+    }
+    else{
+      alert("test2");
     }
   }, [user]);
 
   return (
     <header>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
+      <SignInButton/>
     </header>
   );
 };
