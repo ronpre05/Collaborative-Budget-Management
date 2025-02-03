@@ -1,3 +1,4 @@
+// centralized the type definitions here to avoid repeating them in multiple files
 export interface FieldType {
     Name: string;
     Prefix: string;

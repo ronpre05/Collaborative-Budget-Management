@@ -29,7 +29,7 @@ const GoodsServicesCosts: React.FC = () => {
     // Identify the "Amount" field, parse as number
     const amountFieldKey = Object.entries(goodsCategory.Fields).find(
       ([, def]) => def.Name.toLowerCase() === "amount"
-    )?.[0];
+    )?.[0]; // ?.[0] makes it we extract only the first element and if no match is found it prevents an errro by returning undefined
 
     let numericAmount = 0;
     if (amountFieldKey) {
