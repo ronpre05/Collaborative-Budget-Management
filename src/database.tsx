@@ -39,6 +39,8 @@ export const getUsersProjects = async (userID: number): Promise<any[]> => {
             Project(*)
         `)
         .eq('userID', userID);
+        console.log('Successfully created user institution project: ', data);
+
 
     if (error) {
         console.error('Error fetching user projects: ', error.message);
