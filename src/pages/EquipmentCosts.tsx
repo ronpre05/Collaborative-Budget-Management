@@ -1,108 +1,123 @@
 import React, { useState } from "react";
+import { CategoryType, TemplateData } from "../types";
+import templateDataJson from "../../template1.json";
 
 const EquipmentCosts: React.FC = () => {
-  const [equipment, setEquipment] = useState<{ 
-    name: string; 
-    category: string;
-    unitCost: number; 
-    quantity: number; 
-    total: number; 
-    justification: string; 
-  }[]>([]);
+  // Extract the "EC" category from the template JSON
+  const templateData = templateDataJson as TemplateData;
+  const equipmentCategory: CategoryType = templateData.Categories.EC;
 
-  const [newName, setNewName] = useState("");
-  const [newCategory, setNewCategory] = useState("Hardware");
-  const [newUnitCost, setNewUnitCost] = useState("");
-  const [newQuantity, setNewQuantity] = useState("");
-  const [newJustification, setNewJustification] = useState("");
-  const [totalEquipmentCost, setTotalEquipmentCost] = useState(0);
+  // store multiple 'equipment lines'. Each line is just an object
+  // keyed by the 'fieldKey' (like "What", "Why", "Amount").
+  const [items, setItems] = useState<Array<Record<string, string>>>([]);
 
-  const handleAddEquipment = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Temporary state holding the user’s input for a *new* item
+  const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
 
-    if (!newName || !newUnitCost || !newQuantity || !newJustification) {
-      alert("Please fill in all fields!");
-      return;
+  // Keep a running total of the "Amount" field
+  const [totalCost, setTotalCost] = useState(0);
+
+  // Update the field values as the user types
+  const handleFieldChange = (fieldKey: string, value: string) => {
+    setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));
+  };
+
+  // Handle form submission
+  const handleAddEquipment = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    // Validate required fields
+    for (const [fieldKey, fieldDef] of Object.entries(equipmentCategory.Fields)) {
+      if (!fieldDef.Visible) continue;
+      if (!newItemValues[fieldKey] || newItemValues[fieldKey].trim() === "") {
+        alert(`Please fill out the field: ${fieldKey}`);
+        return;
+      }
     }
 
-    const unitCost = parseFloat(newUnitCost);
-    const quantity = parseInt(newQuantity);
+    // Identify which key in newItemValues corresponds to "Amount" so we can parse it as a number for the total
+    const amountFieldKey = Object.entries(equipmentCategory.Fields).find(
+      ([, def]) => def.Name.toLowerCase() === "amount"
+    )?.[0];
 
-    if (isNaN(unitCost) || isNaN(quantity) || quantity <= 0 || unitCost < 0) {
-      alert("Please enter valid numerical values for unit cost and quantity.");
-      return;
+    let numericAmount = 0;
+    if (amountFieldKey) {
+      numericAmount = parseFloat(newItemValues[amountFieldKey] || "0");
+      if (isNaN(numericAmount)) numericAmount = 0;
     }
 
-    const total = unitCost * quantity;
+    // Add new item to array
+    setItems((prev) => [...prev, newItemValues]);
 
-    const newEntry = { 
-      name: newName, 
-      category: newCategory,
-      unitCost, 
-      quantity, 
-      total, 
-      justification: newJustification 
-    };
+    // Update total
+    setTotalCost((prev) => prev + numericAmount);
 
-    setEquipment([...equipment, newEntry]);
-    setTotalEquipmentCost(totalEquipmentCost + total);
+    // Reset form
+    setNewItemValues({});
+  };
 
-    // Reset input fields
-    setNewName("");
-    setNewCategory("Hardware");
-    setNewUnitCost("");
-    setNewQuantity("");
-    setNewJustification("");
-};
-
+  // Helper to pick an appropriate <input type> based on the JSON "Type"
+  const mapFieldType = (fieldType: string): string => {
+    switch (fieldType) {
+      case "Int":
+      case "Float":
+      case "Currency":
+        return "number";
+      case "String":
+      default:
+        return "text";
+    }
+  };
 
   return (
     <div>
-      <h2>Equipment Costs</h2>
+      <h2>{equipmentCategory.Name} Costs</h2>
 
-      {/* Form Section */}
       <form onSubmit={handleAddEquipment} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
-        
-        <label>Equipment Name:</label>
-        <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} required />
-
-        <label>Category:</label>
-        <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
-          <option value="Hardware">Hardware</option>
-          <option value="Software">Software</option>
-          <option value="Lab Equipment">Lab Equipment</option>
-          <option value="Office Equipment">Office Equipment</option>
-          <option value="Other">Other</option>
-        </select>
-
-        <label>Unit Cost (£):</label>
-        <input type="number" value={newUnitCost} onChange={(e) => setNewUnitCost(e.target.value)} required />
-
-        <label>Quantity:</label>
-        <input type="number" value={newQuantity} onChange={(e) => setNewQuantity(e.target.value)} required />
-
-        <label>Justification:</label>
-        <textarea value={newJustification} onChange={(e) => setNewJustification(e.target.value)} required />
+        {/* Generate inputs for each visible field */}
+        {Object.entries(equipmentCategory.Fields).map(([fieldKey, field]) => {
+          if (!field.Visible) return null;
+          return (
+            <div key={fieldKey} style={{ marginBottom: "0.5rem" }}>
+              <label>
+                {fieldKey}:
+                <input
+                  type={mapFieldType(field.Type)}
+                  value={newItemValues[fieldKey] || ""}
+                  onChange={(e) => handleFieldChange(fieldKey, e.target.value)}
+                  placeholder={field.Name}
+                  style={{ marginLeft: "0.5rem" }}
+                />
+              </label>
+            </div>
+          );
+        })}
 
         <button type="submit" style={{ marginTop: "10px" }}>Add Equipment</button>
       </form>
 
-      {/* Total Cost Section */}
-      <h3>Total Equipment Costs: £{totalEquipmentCost.toFixed(2)}</h3>
+      <h3>Total Equipment Costs: £{totalCost.toFixed(2)}</h3>
 
-      {/* List of Added Equipment */}
       <ul style={{ maxWidth: "500px", listStyle: "none", padding: 0 }}>
-        {equipment.map((item, index) => (
-          <li key={index} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px", borderRadius: "5px" }}>
-            <strong> {item.name} ({item.category})</strong>  
-            <br />
-            <span> <strong>Unit Cost:</strong> £{item.unitCost.toFixed(2)}</span>  
-            <br />
-            <span> <strong>Quantity:</strong> {item.quantity}</span>  
-            <br />
-            <span> <strong>Total Cost:</strong> £{item.total.toFixed(2)}</span>  
-            <br />
-            <em> Justification:</em> {item.justification}
+        {items.map((item, index) => (
+          <li
+            key={index}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            {/* Display each field's value */}
+            {Object.entries(equipmentCategory.Fields).map(([fieldKey, field]) => {
+              if (!field.Visible) return null;
+              return (
+                <div key={fieldKey}>
+                  <strong>{fieldKey}:</strong> {item[fieldKey] || ""}
+                </div>
+              );
+            })}
           </li>
         ))}
       </ul>
