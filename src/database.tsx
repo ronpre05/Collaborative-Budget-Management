@@ -30,21 +30,29 @@ export const createUserInstitutionProjectQuery = async (): Promise<void> => {
         console.log('Successfully created user institution project: ', data)
     }
 }
-
+// Function to fetch all projects associated with a given user ID
 export const getUsersProjects = async (userID: number): Promise<any[]> => {
+    // Query the 'UserInstitutionProject' table to get the projects for the specified user
     const { data, error } = await supabase
-        .from('UserInstitutionProject')
+        .from('UserInstitutionProject') // Table storing user-project associations
         .select(`
-            projectID,
-            Project(*)
+            projectID,   // Selecting the project ID
+            Project(*)   // Selecting all columns from the related Project table
         `)
-        .eq('userID', userID);
+        .eq('userID', userID); // Filtering to only retrieve projects belonging to the specified user
 
+    // Debugging log to check the retrieved data
+    console.log('Successfully retrieved user institution projects: ', data);
+
+    // Error handling: Log and throw an error if the query fails
     if (error) {
         console.error('Error fetching user projects: ', error.message);
         throw new Error(error.message);
     }
 
+    // Debugging log to confirm the fetched projects
     console.log('Fetched user projects: ', data);
+
+    // Return the retrieved data, or an empty array if no data is found
     return data || [];
 };
