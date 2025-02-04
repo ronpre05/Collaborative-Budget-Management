@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
 
@@ -26,6 +27,25 @@ const Projects: React.FC = () => {
       <p>Manage your projects here.</p>
 
       {/* Button to navigate to the Create Project page */}
+=======
+import ProjectsView from "../fetchProjects";
+import useUserId from "../useUserId";
+import useProjectData from "../useProjectData";
+import DynamicDisplay from "../dynamicDisplay";
+
+// Projects Page
+const Projects: React.FC = () => {
+  const userId = useUserId();
+  console.log("User ID given:", userId);
+  useProjectData();
+  return (
+    <div className="content">
+      <h1>Projects Page</h1>
+      <p>Manage your projects here, {userId}</p>
+      <p>User ID: {userId}</p>
+      <DynamicDisplay></DynamicDisplay>
+      <ProjectsView userId={userId}></ProjectsView>
+>>>>>>> 007d94c391b12da6f127e2bc9283260dadddb0d9
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>
       </Link>
