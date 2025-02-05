@@ -5,10 +5,17 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 export const createProjectQuery = async (): Promise<void> => {
+    // Retrieve the user ID from localStorage
+    const userID = localStorage.getItem('userID');
+
+    if (!userID) {
+        console.error('No user ID found in localStorage.');
+        return;
+    }
+    
     const {data, error} = await supabase
         .from('Project')
-         //// replace PLACEHOLDER with actual templates
-        .insert({templateID: 'PLACEHOLDER'});
+        .insert({principalInvestigatorID: userID})
     if(error){
         console.log('Error creating project: ', error.message);
     }
@@ -19,6 +26,14 @@ export const createProjectQuery = async (): Promise<void> => {
 
     
 export const createUserInstitutionProjectQuery = async (): Promise<void> => {
+    // Retrieve the user ID from localStorage
+    const userID = localStorage.getItem('userID');
+
+    if (!userID) {
+        console.error('No user ID found in localStorage.');
+        return;
+    }
+    
     const {data, error} = await supabase
         .from('UserInstitutionProject')
          //// obviously need to replace the PLACEHOLDER text with actual data
