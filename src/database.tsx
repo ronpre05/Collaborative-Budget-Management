@@ -30,8 +30,18 @@ export const createUserInstitutionProjectQuery = async (): Promise<void> => {
         console.log('Successfully created user institution project: ', data)
     }
 }
+
 // Function to fetch all projects associated with a given user ID
-export const getUsersProjects = async (userID: number): Promise<any[]> => {
+export const getUsersProjects = async (): Promise<any[]> => {
+    // Retrieve the user ID from localStorage
+    const userID = localStorage.getItem('userID');
+
+    if (!userID) {
+        console.error('No user ID found in localStorage.');
+        // Return empty array if no user logged in
+        return [];
+    }
+
     // Query the 'UserInstitutionProject' table to get the projects for the specified user
     const { data, error } = await supabase
         .from('UserInstitutionProject') // Table storing user-project associations
