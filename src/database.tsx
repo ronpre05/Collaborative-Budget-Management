@@ -35,10 +35,7 @@ export const getUsersProjects = async (userID: number): Promise<any[]> => {
     // Query the 'UserInstitutionProject' table to get the projects for the specified user
     const { data, error } = await supabase
         .from('UserInstitutionProject') // Table storing user-project associations
-        .select(`
-            projectID,   // Selecting the project ID
-            Project(*)   // Selecting all columns from the related Project table
-        `)
+        .select(`projectID, Project(*)`) // Display all projectIDs
         .eq('userID', userID); // Filtering to only retrieve projects belonging to the specified user
 
     // Debugging log to check the retrieved data
