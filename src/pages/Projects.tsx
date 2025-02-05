@@ -31,7 +31,7 @@ const Projects: React.FC = () => {
       </Link>
 
       {/* Render the ProjectsView component if the user ID is available, otherwise display a loading message */}
-      {userId ? <ProjectsView userId={userId} /> : <p>Loading user...</p>}
+      {userId ? <ProjectsView /> : <p>Loading user...</p>}
     </div>
   );
 };
