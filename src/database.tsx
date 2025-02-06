@@ -4,7 +4,7 @@ const supabaseUrl = 'https://xybccoipttcvmdniwysj.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA'
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
-export const createProjectQuery = async (): Promise<void> => {
+export const createProjectQuery = async (institutionID: number): Promise<void> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem('userID');
 
@@ -16,14 +16,21 @@ export const createProjectQuery = async (): Promise<void> => {
     const {data, error} = await supabase
         .from('Project')
         .insert({principalInvestigatorID: userID})
+        .select("projectID");
     if(error){
         console.log('Error creating project: ', error.message);
+        return;
+    }
+
+    if(data && data.length > 0){
+        const projectID = data[0].projectID;
+        await createUserInstitutionProjectQuery(institutionID, projectID);
     }
 
 }
 
     
-export const createUserInstitutionProjectQuery = async (): Promise<void> => {
+export const createUserInstitutionProjectQuery = async (institutionID: number, projectID: number): Promise<void> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem('userID');
 
@@ -31,10 +38,10 @@ export const createUserInstitutionProjectQuery = async (): Promise<void> => {
         console.error('No user ID found in localStorage.');
         return;
     }
-    // TODO: How do we know what institution and role to assign this to?
+
     const {data, error} = await supabase
         .from('UserInstitutionProject')
-        //.insert({userID : userID, institutionID: 2, roleID: 3, projectID: });
+        .insert({userID : userID, institutionID: institutionID, roleID: 3, projectID: projectID});
     if(error){
         console.log('Error creating user institution project: ', error.message);
     }
@@ -42,6 +49,48 @@ export const createUserInstitutionProjectQuery = async (): Promise<void> => {
         console.log('Successfully created user institution project: ', data)
     }
 }
+
+// Query to find the ID of an institution given its name
+export const getInstitutionID = async (institutionName : String): Promise<number | null> => {
+
+    const {data, error} = await supabase
+        .from("Institutions")
+        .select("institutionID")
+        .eq("institutionName", institutionName)
+        .single();
+    if(error){
+        console.log('Error finding institution ID: ', error.message);
+        return null;
+    }
+
+    // Return the ID of the institution
+    return data ? data.institutionID : null;
+}
+
+export const getUsersInstitutions = async (): Promise<any[]> => {
+    // Retrieve the user ID from localStorage
+    const userID = localStorage.getItem('userID');
+
+    if (!userID) {
+        console.error('No user ID found in localStorage.');
+        // Return empty array if no user logged in
+        return [];
+    }
+
+    // Find all Institutions linked to the users account
+    const { data, error } = await supabase
+        .from("UserInstitutions")
+        .select("Institutions(institutionName)")
+        .eq("userID", userID);
+
+    if (error) {
+        console.error("Error fetching institutions:", error);
+        return [];
+    }
+
+    // Return institutions as array of strings
+    return data.map((entry: any) => entry.Institutions.institutionName);
+};
 
 // Function to fetch all projects associated with a given user ID
 export const getUsersProjects = async (): Promise<any[]> => {
