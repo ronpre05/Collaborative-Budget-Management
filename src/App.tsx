@@ -6,8 +6,9 @@ import "./App.css";
 import Home from "./pages/HomePage"
 import About from "./pages/About"
 import Projects from "./pages/Projects"
-import CreateProject from "./pages/CreateProjects";
+import ProjectView from "./pages/ProjectView";
 import Login from "./pages/Login";
+import ProjectConfig from './pages/ProjectConfig';
 
 
 function App() {
@@ -55,11 +56,12 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
-              <Route path="/create-project" element={<CreateProject />} />
-              <Route path="/create-project/personnel-costs" element={<CreateProject />} />
-              <Route path="/create-project/equipment-costs" element={<CreateProject />} />
-              <Route path="/create-project/travel-costs" element={<CreateProject />} />
-              <Route path="/create-project/goods-services-costs" element={<CreateProject />} />
+              <Route path="/create-project" element={<ProjectConfig />} />
+              <Route path="/project-view" element={<ProjectView />} />
+              <Route path="/create-project/personnel-costs" element={<ProjectView />} />
+              <Route path="/create-project/equipment-costs" element={<ProjectView />} />
+              <Route path="/create-project/travel-costs" element={<ProjectView />} />
+              <Route path="/create-project/goods-services-costs" element={<ProjectView />} />
             </Routes>
           </main>
         </div>
