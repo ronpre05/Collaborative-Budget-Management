@@ -4,13 +4,13 @@ const supabaseUrl = 'https://xybccoipttcvmdniwysj.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA'
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
-export const createProjectQuery = async (institutionID: number): Promise<void> => {
+export const createProjectQuery = async (institutionID: number): Promise<string | null> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem('userID');
 
     if (!userID) {
         console.error('No user ID found in localStorage.');
-        return;
+        return null;
     }
     
     const {data, error} = await supabase
@@ -19,14 +19,16 @@ export const createProjectQuery = async (institutionID: number): Promise<void> =
         .select("projectID");
     if(error){
         console.log('Error creating project: ', error.message);
-        return;
+        return null;
     }
 
     if(data && data.length > 0){
         const projectID = data[0].projectID;
         await createUserInstitutionProjectQuery(institutionID, projectID);
+        return projectID;
     }
 
+    return null;
 }
 
     

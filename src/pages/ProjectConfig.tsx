@@ -13,7 +13,13 @@ const ProjectConfigPage: React.FC = () => {
             let institutionID = await getInstitutionID(selectedInstitution);
 
             if(institutionID !== null){
-                await createProjectQuery(institutionID);
+                let projectID =  await createProjectQuery(institutionID);
+                
+                // Set projectID in localstorage
+                if(projectID !== null){
+                    localStorage.setItem('projectID', projectID);
+                }
+
                 console.log("Project created successfully!");
             }
             else{
