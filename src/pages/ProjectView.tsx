@@ -4,7 +4,7 @@ import PersonnelCosts from "./PersonnelCosts";
 import EquipmentCosts from "./EquipmentCosts";
 import TravelCosts from "./TravelCosts";
 
-const CreateProject: React.FC = () => {
+const ProjectView: React.FC = () => {
   const location = useLocation();
 
   return (
@@ -52,4 +52,4 @@ const CreateProject: React.FC = () => {
   );
 };
 
-export default CreateProject;
+export default ProjectView;
