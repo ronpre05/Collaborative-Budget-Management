@@ -19,9 +19,7 @@ export const createProjectQuery = async (): Promise<void> => {
     if(error){
         console.log('Error creating project: ', error.message);
     }
-    else{
-        console.log('Successfully created project ', data)
-    }
+
 }
 
     
@@ -33,11 +31,10 @@ export const createUserInstitutionProjectQuery = async (): Promise<void> => {
         console.error('No user ID found in localStorage.');
         return;
     }
-    
+    // TODO: How do we know what institution and role to assign this to?
     const {data, error} = await supabase
         .from('UserInstitutionProject')
-         //// obviously need to replace the PLACEHOLDER text with actual data
-        .insert({userID : 'PLACEHOLDER', institutionID: 'PLACEHOLDER', roleID: 'PLACEHOLDER', projectID: 'PLACEHOLDER'});
+        //.insert({userID : userID, institutionID: 2, roleID: 3, projectID: });
     if(error){
         console.log('Error creating user institution project: ', error.message);
     }

@@ -19,16 +19,6 @@ const Projects: React.FC = () => {
       console.error("No user ID found in localStorage.");
     }
   }, []); // Runs only once when the component mounts
-
-  // Create project button call
-  const handleCreateProject = async () => {
-    try {
-      await createProjectQuery();
-      console.log("Project created successfully!");
-    } catch (error) {
-      console.error("Error creating project:", error);
-    }
-  };
   
 
   return (
@@ -38,7 +28,7 @@ const Projects: React.FC = () => {
 
       {/* Button to navigate to the Create Project page */}
       <Link to="/create-project">
-        <button onClick={handleCreateProject} className="create-project-btn">Create Project</button>
+        <button className="create-project-btn">Create New Project</button>
       </Link>
 
       {/* Render the ProjectsView component if the user ID is available, otherwise display a loading message */}
