@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 /**
  * takes a 2D array of all data for a respective category within a project,
  * displays data
