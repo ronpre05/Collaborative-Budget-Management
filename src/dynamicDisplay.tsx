@@ -1,25 +1,30 @@
 import { useState } from "react";
 
 const DynamicDisplay = () => {
-  const [sampleData, setSampleData] = useState<string[][]>([
-    ["Field1", "Field2", "Field8"],
-    ["Field3", "Field4"],
-    ["Field5", "Field6", "Field7"],
-  ]);
+  const headings = ["field1", "field2", "field3", "field4"];
+  const data = [
+    ["item1a", "item1b", "item1c", "item1d"],
+    ["item2a", , "item 2c", "item2d"],
+    ["item3a", "item3b", "item3c", "item3d"],
+  ];
 
   return (
-    <div>
+    <div className="dymcTable">
       <h2>dynamic table display</h2>
-      {sampleData.map((category, index) => (
-        <div key={index}>
-          <h3>Category {index + 1}</h3>
-          <ul>
-            {category.map((field, fieldIndex) => (
-              <li key={fieldIndex}>{field}</li>
+      <table>
+        <thead>
+          <tr>
+            {headings.map((header, index) => (
+              <th key={index}>{header}</th>
             ))}
-          </ul>
-        </div>
-      ))}
+          </tr>
+        </thead>
+        <tr>
+          <td>thing1</td>
+          <td>thing2</td>
+          <td>thing3</td>
+        </tr>
+      </table>
     </div>
   );
 };
