@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import usePersonnelEntry from "../usePersonnelEntry"; UNDO AFTERWARDS
+import usePersonnelEntry from "../usePersonnelEntry";
 
 const PersonnelCosts: React.FC = () => {
   const [personnel, setPersonnel] = useState<
