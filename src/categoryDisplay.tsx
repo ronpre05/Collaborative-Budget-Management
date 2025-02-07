@@ -1,12 +1,13 @@
 /**
  * takes a 2D array of all data for a respective category within a project,
- * displays data
+ * then displays said data into basic HTML table
+ * CURRENTLY ASSUMES EVERY ITEM IS A STRING
  */
 const CategoryDisplay: React.FC<{ data: string[][] }> = ({ data }) => {
   /**
    * slices data into 2 arrays,
-   * "headings" array, for category fields - 1D
-   * "tableItems" array, everything else - 2D
+   * "headings" array, for category fields - 1D array
+   * "tableItems" array, contents of every field - 2D array
    */
   const [headings, ...tableItems] = data;
 
