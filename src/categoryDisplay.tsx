@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-const DynamicDisplay = () => {
+const CategoryDisplay = () => {
   const headings = ["field1", "field2", "field3", "field4"];
-  const data = [
+  const tableItems = [
     ["item1a", "item1b", "item1c", "item1d"],
-    ["item2a", , "item 2c", "item2d"],
+    ["item2a", "", "item 2c", "item2d"],
     ["item3a", "item3b", "item3c", "item3d"],
   ];
 
@@ -19,13 +19,17 @@ const DynamicDisplay = () => {
             ))}
           </tr>
         </thead>
-        <tr>
-          <td>thing1</td>
-          <td>thing2</td>
-          <td>thing3</td>
-        </tr>
+        <tbody>
+          {tableItems.map((row, index) => (
+            <tr key={index}>
+              {row.map((item, itemIndex) => (
+                <td key={itemIndex}>{item}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
 };
-export default DynamicDisplay;
+export default CategoryDisplay;
