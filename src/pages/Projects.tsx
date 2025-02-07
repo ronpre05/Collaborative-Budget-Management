@@ -14,7 +14,7 @@ const Projects: React.FC = () => {
       <h1>Projects Page</h1>
       <p>Manage your projects here, {userId}</p>
       <p>User ID: {userId}</p>
-      <CategoryDisplay></CategoryDisplay>
+      <CategoryDisplay data={[[]]}></CategoryDisplay>
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>

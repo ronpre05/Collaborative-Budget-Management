@@ -1,12 +1,16 @@
 import { useState } from "react";
 
-const CategoryDisplay = () => {
-  const headings = ["field1", "field2", "field3", "field4"];
-  const tableItems = [
-    ["item1a", "item1b", "item1c", "item1d"],
-    ["item2a", "", "item 2c", "item2d"],
-    ["item3a", "item3b", "item3c", "item3d"],
-  ];
+/**
+ * takes a 2D array of all data for a respective category within a project,
+ * displays data
+ */
+const CategoryDisplay: React.FC<{ data: string[][] }> = ({ data }) => {
+  /**
+   * slices data into 2 arrays,
+   * "headings" array, for category fields - 1D
+   * "tableItems" array, everything else - 2D
+   */
+  const [headings, ...tableItems] = data;
 
   return (
     <div className="dymcTable">
