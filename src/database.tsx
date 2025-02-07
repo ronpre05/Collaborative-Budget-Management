@@ -71,20 +71,20 @@ export const createCategoryEntry = async (categoryID: number): Promise<number | 
 export const insertFieldValues = async (entryID: number, values: string[]) => {
     const fieldIDs = [1, 2, 3, 4, 5];
 
-    const fieldValues = fieldIDs.map((fieldID, index) => ({
-        entryID,
-        fieldID,
-        value: values[index] || "" 
-    }));
+    for (let i = 0; i < fieldIDs.length; i++) {
+        const fieldValue = {
+            entryID,
+            fieldID: fieldIDs[i],
+            value: values[i] || "" 
+        };
 
-    const { error } = await supabase
-        .from("FieldValues")
-        .insert(fieldValues)
+        const { error } = await supabase.from("FieldValues").insert(fieldValue);
 
-    if (error) {
-        console.error("Error inserting FieldValues:", error.message);
-    } else {
-        console.log("Successfully inserted FieldValues:", fieldValues);
+        if (error) {
+            console.error(`Error inserting FieldValue for fieldID ${fieldIDs[i]}:`, error.message);
+        } else {
+            console.log(`Successfully inserted FieldValue for fieldID ${fieldIDs[i]}:`, fieldValue);
+        }
     }
 };
 
@@ -98,4 +98,5 @@ export const createPersonnelEntry = async (personName: string, salary: string, t
     const values = [personName, justification, totalCost, salary, personMonths];
 
     await insertFieldValues(entryID, values);
+
 };
