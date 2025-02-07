@@ -48,3 +48,54 @@ export const getUsersProjects = async (userID: number): Promise<any[]> => {
     console.log('Fetched user projects: ', data);
     return data || [];
 };
+
+
+
+
+export const createCategoryEntry = async (categoryID: number): Promise<number | null> => {
+    const { data, error } = await supabase
+        .from('CategoryEntry')
+        .insert({ projectID: 1, categoryID: categoryID, institutionID: null })
+        .select('entryID')
+        .single(); // should only create 1 row
+
+    if (error) {
+        console.error('Error creating CategoryEntry:', error.message);
+        return null;
+    }
+
+    console.log('Successfully created CategoryEntry:', data);
+    return data.entryID;
+};
+
+export const insertFieldValues = async (entryID: number, values: string[]) => {
+    const fieldIDs = [1, 2, 3, 4, 5];
+
+    const fieldValues = fieldIDs.map((fieldID, index) => ({
+        entryID,
+        fieldID,
+        value: values[index] || "" 
+    }));
+
+    const { error } = await supabase
+        .from("FieldValues")
+        .insert(fieldValues)
+
+    if (error) {
+        console.error("Error inserting FieldValues:", error.message);
+    } else {
+        console.log("Successfully inserted FieldValues:", fieldValues);
+    }
+};
+
+
+
+export const createPersonnelEntry = async (personName: string, salary: string, totalCost: string, justification: string, personMonths: string) => {
+    const categoryID = 1; 
+    const entryID = await createCategoryEntry(categoryID);
+    if (!entryID) return;
+
+    const values = [personName, justification, totalCost, salary, personMonths];
+
+    await insertFieldValues(entryID, values);
+};

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import usePersonnelEntry from "../usePersonnelEntry";
+
 
 const PersonnelCosts: React.FC = () => {
   const [personnel, setPersonnel] = useState<{ 
@@ -21,6 +23,9 @@ const PersonnelCosts: React.FC = () => {
   const [newPercentage, setNewPercentage] = useState("");
   const [newJustification, setNewJustification] = useState("");
   const [totalCost, setTotalCost] = useState(0);
+
+  const { addPersonnelEntry } = usePersonnelEntry(); 
+
 
   const calculatePersonMonths = (start: string, end: string, percentage: number) => {
     const startDate = new Date(start);
@@ -70,6 +75,8 @@ const PersonnelCosts: React.FC = () => {
 
     setPersonnel([...personnel, newEntry]);
     setTotalCost(totalCost + total);
+
+    addPersonnelEntry(newName, newSalary, total.toString(), newJustification, personMonths.toString());
 
     // Reset input fields
     setNewName("");
