@@ -241,12 +241,13 @@ export const createEntry = async (categoryID: number, fieldData: Record<string, 
 
 /*
 to use this function:
-this is for personnel costs (as categoryID is 1). To add new fields you can add new entries to the dictionary easily.
+To add new fields you can add new entries to the dictionary easily.
 
 if categoryID does not exist in the Categories table then a new row is created but with Placeholder for categoryname
 
 may be possible to use template jsons to create the dictionarys automatically
 
+for personnel costs (as categoryID is 1)
 createEntry(1, {
       "Employee Name" : newName,
       "Role" : newRole,
