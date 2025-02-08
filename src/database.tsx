@@ -126,3 +126,141 @@ export const getUsersProjects = async (): Promise<any[]> => {
     // Return the retrieved data, or an empty array if no data is found
     return data || [];
 };
+
+
+
+
+
+// Create a new CategoryEntry and return entryID
+export const createCategoryEntry = async (categoryID: number): Promise<number | null> => {
+    const { data, error } = await supabase
+        .from('CategoryEntry')
+        //////////CHANGE projectID:1 to getProject function when implemented
+        .insert({ projectID: 1, categoryID: categoryID, institutionID: null })
+        .select('entryID')
+        .single();
+
+    if (error) {
+        console.error('Error creating CategoryEntry:', error.message);
+        return null;
+    }
+
+    console.log('Successfully created CategoryEntry:', data);
+    return data.entryID;
+};
+
+// checks field exists, return fieldID
+export const ensureFieldExists = async (categoryID: number, fieldName: string): Promise<number | null> => {
+    // Check if the field already exists
+    let { data, error } = await supabase
+        .from('CategoryFields')
+        .select('fieldID')
+        .eq('categoryID', categoryID)
+        .eq('value', fieldName)
+        .single();
+
+    if (error && error.code !== 'PGRST116') { // Ignore "no rows found" error
+        console.error(`Error checking field "${fieldName}":`, error.message);
+        return null;
+    }
+
+    // If the field exists, return its fieldID
+    if (data) return data.fieldID;
+
+    // If not, insert new field
+    const { data: newField, error: insertError } = await supabase
+        .from('CategoryFields')
+        .insert({ categoryID, value: fieldName, datatype: 'varchar' })
+        .select('fieldID')
+        .single();
+
+    if (insertError) {
+        console.error(`Error inserting new field "${fieldName}":`, insertError.message);
+        return null;
+    }
+
+    return newField.fieldID;
+};
+
+
+const ensureCategoryExists = async (categoryID: number) => {
+    const { data } = await supabase
+        .from('Categories')
+        .select('categoryID')
+        .eq('categoryID', categoryID)
+        .single();
+
+    if (!data) {
+        console.log(`Category ${categoryID} not found. Creating new category...`);
+
+        const { error: insertError } = await supabase
+            .from('Categories')
+            .insert({ categoryID, categoryname: 'PLACEHOLDER' });
+
+        if (insertError) {
+            console.error(`Error creating category ${categoryID}:`, insertError.message);
+            return false;
+        }
+    }
+    return true;
+};
+
+//insert values based on a dictionary input
+export const insertFieldValues = async (entryID: number, categoryID: number, data: Record<string, string>) => {
+    const fieldValues = [];
+
+    for (const [fieldName, value] of Object.entries(data)) {
+        const fieldID = await ensureFieldExists(categoryID, fieldName);
+        if (!fieldID) continue;
+
+        fieldValues.push({ entryID, fieldID, value });
+    }
+
+    if (fieldValues.length === 0) {
+        console.warn("No valid fields to insert.");
+        return;
+    }
+
+    const { error } = await supabase.from("FieldValues").insert(fieldValues);
+
+    if (error) {
+        console.error("Error inserting FieldValues:", error.message);
+    } else {
+        console.log("Successfully inserted FieldValues:", fieldValues);
+    }
+};
+
+// Main function to create an entry with dynamic fields
+export const createEntry = async (categoryID: number, fieldData: Record<string, string>) => {
+    await ensureCategoryExists(categoryID);
+    const entryID = await createCategoryEntry(categoryID);
+    if (!entryID) return;
+
+    await insertFieldValues(entryID, categoryID, fieldData);
+};
+
+/*
+to use this function:
+this is for personnel costs (as categoryID is 1). To add new fields you can add new entries to the dictionary easily.
+
+if categoryID does not exist in the Categories table then a new row is created but with Placeholder for categoryname
+
+may be possible to use template jsons to create the dictionarys automatically
+
+createEntry(1, {
+      "Employee Name" : newName,
+      "Role" : newRole,
+      "Amount" : total.toString(),
+      "Monthly Salary" : newSalary,
+      "Person Months" : personMonths.toString(),
+      "Why" : newJustification
+  });
+
+for equipment costs:
+createEntry(2, {
+      "What" : newName,
+      "Why" : newRole,
+      "Amount" : total.toString()
+  });
+
+*/
