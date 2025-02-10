@@ -1,11 +1,27 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import GoodsServicesCosts from "./GoodsServicesCosts";
 import PersonnelCosts from "./PersonnelCosts";
 import EquipmentCosts from "./EquipmentCosts";
 import TravelCosts from "./TravelCosts";
+import InviteUser from "./InviteUser"; // Import the InviteUser component
+import { inviteUserToProject } from "../database"; // Adjust if needed
+
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
+  const [projectID, setProjectID] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Retrieve the project ID from localStorage
+    const storedProjectID = localStorage.getItem("projectID");
+
+    if (storedProjectID) {
+      setProjectID(parseInt(storedProjectID, 10));
+    } else {
+      console.error("No project ID found in localStorage.");
+    }
+  }, []);
 
   return (
     <div className="create-project-content">
@@ -43,13 +59,14 @@ const ProjectView: React.FC = () => {
         {location.pathname === "/create-project/equipment-costs" && <EquipmentCosts />}
         {location.pathname === "/create-project/travel-costs" && <TravelCosts />}
         {location.pathname === "/create-project/goods-services-costs" && <GoodsServicesCosts />}
-
-        {location.pathname === "/create-project" && (
-          <p>Select a cost category using the tabs above.</p>
-        )}
+        {location.pathname === "/create-project" && <p>Select a cost category using the tabs above.</p>}
       </div>
+
+      {/* Show InviteUser only when projectID is available */}
+      {projectID && <InviteUser projectID={projectID} />}
     </div>
   );
 };
 
 export default ProjectView;
+

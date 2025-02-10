@@ -94,6 +94,41 @@ export const getUsersInstitutions = async (): Promise<any[]> => {
     return data.map((entry: any) => entry.Institutions.institutionName);
 };
 
+export const inviteUserToProject = async (email: string, projectID: number, roleID: number) => {
+    // Find the userID from the email
+    const { data: user, error: userError } = await supabase
+        .from("Users")
+        .select("userID")
+        .eq("email", email)
+        .single();
+   
+    if (userError || !user) {
+        console.error("User not found:", userError?.message);
+        return null;
+    }
+   
+    const userID = user.userID;
+   
+    // Insert into UserInstitutionProject to associate the user with the project and their role
+    const { data, error } = await supabase
+        .from("UserInstitutionProject")
+        .insert({ userID, projectID, roleID })
+        .select("*");
+
+        console.log("Insert data:", data);
+        console.log("Insert error:", error);
+   
+    if (error && !null) {
+        console.error("Error inviting user:", error.message);
+    } else {
+        console.log("User invited successfully:", data); // Log the actual response data
+    }
+    
+    return data; // Ensure this is returning the inserted data or null
+   };
+   
+
+
 // Function to fetch all projects associated with a given user ID
 export const getUsersProjects = async (): Promise<any[]> => {
     // Retrieve the user ID from localStorage
@@ -126,3 +161,21 @@ export const getUsersProjects = async (): Promise<any[]> => {
     // Return the retrieved data, or an empty array if no data is found
     return data || [];
 };
+
+export const getRoles = async () => {
+    const { data, error } = await supabase
+        .from("Roles")  // Make sure "roles" is the correct table name in Supabase
+        .select("roleID, roleName");
+
+    if (error) {
+        console.error("Error fetching roles:", error.message);
+        return [];
+    }
+
+    console.log("Roles from database:", data); // Debugging log
+    return data || [];
+};
+
+
+
+
