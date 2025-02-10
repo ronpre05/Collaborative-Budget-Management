@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 <<<<<<< HEAD
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
-
+import { createProjectQuery } from "../database"
 // Projects Page Component
 const Projects: React.FC = () => {
   // State to store the user's ID
@@ -20,6 +20,7 @@ const Projects: React.FC = () => {
       console.error("No user ID found in localStorage.");
     }
   }, []); // Runs only once when the component mounts
+  
 
   return (
     <div className="content">
@@ -47,11 +48,11 @@ const Projects: React.FC = () => {
       <ProjectsView userId={userId}></ProjectsView>
 >>>>>>> 007d94c391b12da6f127e2bc9283260dadddb0d9
       <Link to="/create-project">
-        <button className="create-project-btn">Create Project</button>
+        <button className="create-project-btn">Create New Project</button>
       </Link>
 
       {/* Render the ProjectsView component if the user ID is available, otherwise display a loading message */}
-      {userId ? <ProjectsView userId={userId} /> : <p>Loading user...</p>}
+      {userId ? <ProjectsView /> : <p>Loading user...</p>}
     </div>
   );
 };

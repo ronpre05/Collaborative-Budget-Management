@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getUsersProjects } from './database';
 
-// Define the props interface for the ProjectsView component
 interface ProjectsViewProps {
-  userId: number; // The user's ID used to fetch their projects
 }
 
 // Component to display a user's projects
-const ProjectsView: React.FC<ProjectsViewProps> = ({ userId }) => {
+const ProjectsView: React.FC<ProjectsViewProps> = () => {
   // State to store the fetched projects
   const [projects, setProjects] = useState<any[]>([]);
   // State to handle errors
@@ -19,8 +17,8 @@ const ProjectsView: React.FC<ProjectsViewProps> = ({ userId }) => {
     // Function to fetch projects from the database
     const fetchProjects = async () => {
       try {
-        // Retrieve projects associated with the given user ID
-        const data = await getUsersProjects(userId);
+        // Retrieve projects associated
+        const data = await getUsersProjects();
         setProjects(data);
         setError(null);
         setHasFetched(true); // Mark fetching as complete
@@ -31,8 +29,8 @@ const ProjectsView: React.FC<ProjectsViewProps> = ({ userId }) => {
       }
     };
     
-    fetchProjects(); // Call the function when the component mounts or userId changes
-  }, [userId]);
+    fetchProjects();
+  }, []);
 
   return (
     <main>
@@ -44,7 +42,7 @@ const ProjectsView: React.FC<ProjectsViewProps> = ({ userId }) => {
         <div>
           {projects.map((project, index) => (
             <div key={index} className="project-data">
-              <p>Project ID: {project.Project.projectID}, User ID: {userId}</p>
+              <p>Project ID: {project.Project.projectID}</p>
             </div>
           ))}
         </div>

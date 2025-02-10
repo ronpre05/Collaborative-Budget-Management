@@ -1,5 +1,4 @@
 import { readFile } from "fs/promises";
-import { validateHeaderName } from "http";
 
 type FieldType =
 {
@@ -17,13 +16,42 @@ type CalculationType =
     expression : string;
 };
 
-main("template1.json");
+// main("template1.json");
 
-async function main(templateName : string)
-{
-    const template : any = await(readJsonFile(templateName));
+// async function main(templateName : string)
+// {
+//     const template : any = await(readJsonFile(templateName));
 
-} 
+//     // Get the Name of the template
+//     console.log(getTemplateName(template));
+//     console.log("");
+
+//     // List all category names
+//     console.log(getCatNamesFromTemplate(template));
+//     console.log("");
+
+//     // List all category objects
+//     let catObs : any[] = getCategoriesObjectsFromTemplate(template);
+//     console.log(catObs);
+//     console.log("");
+
+//     // List all of the fields in personnel costs
+//     let fieldObs : FieldType[] = getFieldObjectsFromCategory(catObs[0]);
+//     console.log(fieldObs);
+//     console.log("");
+
+//     // List the field data for amount in personnel costs
+//     console.log(getFieldData(fieldObs[0]));
+//     console.log("");
+
+//     // List the calculations for travel costs
+//     let calcObs : CalculationType[] = getCalcObjectsFromCategory(catObs[3]);
+//     console.log(calcObs);
+//     console.log("");
+
+//     // List the calculation data for the base total of travel costs
+//     console.log(getCalcData(calcObs[0]));
+// } 
 
 async function readJsonFile(path : string) : Promise<any>
 {
@@ -162,14 +190,14 @@ function getFieldObject(fields : any, fieldName : string) : any
 
 }
 
-function getFieldObjectsFromCategory(category : any) : any[]
+function getFieldObjectsFromCategory(category : any) : FieldType[]
 {
     // Gather the required names and fields object
     let fieldNames : string[] = getFieldNames(getFieldsSection(category));
     let fields : any = getFieldsSection(category);
 
     // Create a return array
-    let fieldObs : any[] = [];
+    let fieldObs : FieldType[] = [];
 
     Object.values(fieldNames).forEach(value =>
     // Loop through each of the names
@@ -202,50 +230,6 @@ function getFieldData(field : any) : FieldType
     return ret;
 }
 
-function getAllFieldData(category : any) : FieldType[]
-{
-    let fields : any[] = getFieldObjectsFromCategory(category);
-    let fieldData : FieldType[] = [];
-
-    Object.values(fields).forEach(value =>
-    {
-        fieldData.push(getFieldData(value))
-    }
-    )
-
-    return fieldData;
-}
-
-// CREATE SOMETHING THAT WILL TAKE IN A FIELD OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
-// THEN CREATE ONE THAT WILL TAKE IN THE ARRAY, AND RETURN AN ARRAY OF THOSE STRUCTURES
-
-function getFieldPrefix(field : any) : string
-{
-    return field.Prefix;
-}
-
-function getFieldValue(field : any) : string
-{
-    return field.Value;
-}
-
-function getFieldPostfix(field : any) : string
-{
-    return field.Postfix;
-}
-
-function getFieldType(field : any) : string
-{
-    return field.Type;
-}
-
-function getFieldVisible(field : any) : boolean
-{
-    return field.Visible;
-}
-
-
-
 function getCalculationsSection(category : any) : any
 {
     return category.Calculations;
@@ -268,7 +252,7 @@ function getCalculationNames(calculations : any) : string[]
 
 }
 
-function getCalculationObject(calculations : any, calcName : string) : any
+function getCalculationObject(calculations : any, calcName : string) : CalculationType
 {
     // Create a value to hold the return
     let ret : any = [];
@@ -291,20 +275,20 @@ function getCalculationObject(calculations : any, calcName : string) : any
     return ret;
 }
 
-function getCalcObjectsFromCategory(category : any) : any[]
+function getCalcObjectsFromCategory(category : any) : CalculationType[]
 {
     // Gather the required names and calc object
     let calcNames : string[] = getCalculationNames(getCalculationsSection(category));
     let calcs : any = getCalculationsSection(category);
 
     // Create a return array
-    let calcObs : any[] = [];
+    let calcObs : CalculationType[] = [];
 
     Object.values(calcNames).forEach(value =>
     // Loop through each of the names
     {
         // Get the object for that name
-        let calc : any = getCalculationObject(calcs, value)
+        let calc : CalculationType = getCalculationObject(calcs, value)
 
         // Add the object to an array
         calcObs.push(calc);
@@ -316,9 +300,6 @@ function getCalcObjectsFromCategory(category : any) : any[]
 
 }
 
-// CREATE SOMETHING THAT WILL TAKE IN A CALC OBJECT AND RETURN A STRUCTURE WILL ALL OF ITS VALUES IN IT
-// THEN CREATE ONE THAT WILL TAKE IN THE ARRAY, AND RETURN AN ARRAY OF THOSE STRUCTURES
-
 function getCalcData(calc : any) : CalculationType
 {
     let ret : CalculationType = 
@@ -328,18 +309,4 @@ function getCalcData(calc : any) : CalculationType
     };
 
     return ret;
-}
-
-function getAllCalcData(category : any) : CalculationType[]
-{
-    let calcs: any[] = getCalcObjectsFromCategory(category);
-    let calcData : CalculationType[] = [];
-
-    Object.values(calcs).forEach(value =>
-    {
-        calcData.push(getCalcData(value))
-    }
-    )
-
-    return calcData;
 }
