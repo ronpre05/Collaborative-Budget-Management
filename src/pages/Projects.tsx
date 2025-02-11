@@ -10,8 +10,10 @@ import useProjectId from "../useProjectId";
 const Projects: React.FC = () => {
   const userId = useUserId();
   const projectId = useProjectId();
+  const projectEntries = useProjectEntries();
   console.log("User ID given:", userId);
   console.log("First Project ID given:", projectId);
+  console.log("Project entries:", projectEntries);
   useProjectEntries();
   return (
     <div className="content">
@@ -19,6 +21,7 @@ const Projects: React.FC = () => {
       <p>Manage your projects here, {userId}</p>
       <p>User ID: {userId}</p>
       <p>FIRST Project ID: {projectId}</p>
+      <p>ALL Project Entries: {projectEntries}</p>
       <p></p>
       {/**
        *  use testData. and then pick from:
