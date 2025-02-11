@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const useProjectEntries = () => {
   const projectId = useProjectId();
-  const [projectEntries, setProjectEntries] = useState<[]>([]);
+  const [projectEntries, setProjectEntries] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchProjectEntries = async () => {
@@ -24,6 +24,7 @@ const useProjectEntries = () => {
       }
 
       console.log(data);
+      setProjectEntries(data.map((item) => item.entryID));
     };
     fetchProjectEntries();
   }, [projectId]);
