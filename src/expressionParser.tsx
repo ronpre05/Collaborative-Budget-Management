@@ -28,7 +28,20 @@ const operators : Operator[] =
 
 console.log(expressionToRPN("12 + 4 * ( 3 - 1 )"));
 console.log("");
+console.log(basicEvaluator(expressionToRPN("12 + 4 * ( 3 - 1 )")));
+console.log("");
 console.log(expressionToRPN("50 + b * ( c ^ 2 - e )"));
+console.log(" ");
+console.log(basicEvaluator(expressionToRPN("3 + 2")));
+console.log("");
+console.log(basicEvaluator(expressionToRPN("3 - 2")));
+console.log("");
+console.log(basicEvaluator(expressionToRPN("3 * 2")));
+console.log("");
+console.log(basicEvaluator(expressionToRPN("3 / 2")));
+console.log("");
+console.log(basicEvaluator(expressionToRPN("3 ^ 2")));
+console.log("");
 
 // split string at spaces into a list of strings
 // Need to create a stack/queue - do with arrays and pop/pus
@@ -201,6 +214,95 @@ function expressionToRPN(expression : string) : string[]
 
 function basicEvaluator(postfixExpr : string[]) : number
 {
+    let stack : string[] = []
+
+    Object.values(postfixExpr).forEach(token =>
+    {
+        if(!isOperator(token)) // not an operator
+        {
+            stack.push(token);
+        }
+        else // is operator
+        {
+            let sOp1 = stack.pop();
+            let sOp2 = stack.pop();
+            let op1 : number = 0;
+            let op2 : number = 0;
+
+            // pop two more from stack
+            if(sOp1 != undefined)
+            {
+                op1 = Number.parseFloat(sOp1);
+
+            }
+            else
+            {   
+                op1 = 1;
+            }
+
+            if(sOp2 != undefined)
+            {
+                op2 = Number.parseFloat(sOp2);
+            }
+            else
+            {
+                op2 = 1;
+            }
+
+            let val : number = 0;
+
+            // evaluate the thing
+            switch (token)
+            {
+                case "+":
+                {
+                    val = op2 + op1;
+                    break;
+                }
+
+                case "-":
+                {
+                    val = op2- op1;
+                    break;
+                }
+
+                case "*":
+                {
+                    val = op2 * op1;
+                    break;
+                }
+
+                case "/":
+                {
+                    if(op2 == 0)
+                    {
+                        val = 0;
+                    }
+                    else
+                    {
+                        val = op2 / op1;
+                    }
+
+                    break;
+                }
+
+                case "^":
+                {
+                    val = op2 ** op1;
+                }
+            }
+            
+            // push to stack
+            stack.push(val.toString());            
+        }
+    }
+    );
+
+    let val = stack.pop();
+    if(val != undefined)
+    {
+        return Number.parseFloat(val);
+    }
 
     return 0;
 }
