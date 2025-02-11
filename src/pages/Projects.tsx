@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import ProjectsView from "../fetchProjects";
 import useUserId from "../useUserId";
-import useProjectData from "../useProjectData";
 import CategoryDisplay from "../categoryDisplay";
 import * as testData from "../SampleCategoryData";
 
@@ -9,7 +8,6 @@ import * as testData from "../SampleCategoryData";
 const Projects: React.FC = () => {
   const userId = useUserId();
   console.log("User ID given:", userId);
-  useProjectData();
   return (
     <div className="content">
       <h1>Projects Page</h1>
