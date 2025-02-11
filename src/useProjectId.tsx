@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 // hook used to get projectId off Supabase
 // WARNING: ASSUMES 1 PROJECT PER USER
+// ONLY GETS FIRST PROJECT ID
 const useProjectId = () => {
   const userId = useUserId(); // grab userID via our own hook
   const [projectId, setProjectId] = useState<number | null>(null); // variable to store projectID
@@ -20,14 +21,14 @@ const useProjectId = () => {
       const { data, error } = await supabase
         .from("UserInstitutionProject")
         .select("projectID")
-        .eq("userID", userId)
-        .single();
+        .eq("userID", userId);
 
       if (error) {
         console.error("Error fetching project ID:", error.message);
         return;
       }
-      setProjectId(data?.projectID); //update data
+      console.log(data[0]);
+      setProjectId(data[0]?.projectID); //update data
     };
 
     fetchProjectId(); // calls async function inside useEffect
