@@ -1,11 +1,29 @@
+import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import GoodsServicesCosts from "./GoodsServicesCosts";
 import PersonnelCosts from "./PersonnelCosts";
 import EquipmentCosts from "./EquipmentCosts";
 import TravelCosts from "./TravelCosts";
+import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
+
+async function test(){
+  // Get template categories
+  let a = await readJsonFile("./template1.json");
+  // Check against stored values in db
+  let cats = getCategoriesSection(a);
+    // If present, return
+  let catNames = getCategoryNames(cats);
+  console.log(catNames);
+    // Else, store new categories
+}
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    console.log("test running");
+      test();
+  });
 
   return (
     <div className="create-project-content">

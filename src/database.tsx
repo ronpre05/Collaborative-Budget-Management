@@ -4,6 +4,20 @@ const supabaseUrl = 'https://xybccoipttcvmdniwysj.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA'
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
+// export const checkCategoriesExist = async (): Promise<void> => {
+//     // Retrieve the project ID from localStorage
+//     const projectID = localStorage.getItem('projectID');
+
+//     if (!projectID) {
+//         console.error('No project ID found in localStorage.');
+//         return null;
+//     }
+
+
+
+// }
+
+
 export const createProjectQuery = async (institutionID: number): Promise<string | null> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem('userID');
@@ -93,6 +107,41 @@ export const getUsersInstitutions = async (): Promise<any[]> => {
     // Return institutions as array of strings
     return data.map((entry: any) => entry.Institutions.institutionName);
 };
+
+export const inviteUserToProject = async (email: string, projectID: number, roleID: number) => {
+    // Find the userID from the email
+    const { data: user, error: userError } = await supabase
+        .from("Users")
+        .select("userID")
+        .eq("email", email)
+        .single();
+   
+    if (userError || !user) {
+        console.error("User not found:", userError?.message);
+        return null;
+    }
+   
+    const userID = user.userID;
+   
+    // Insert into UserInstitutionProject to associate the user with the project and their role
+    const { data, error } = await supabase
+        .from("UserInstitutionProject")
+        .insert({ userID, projectID, roleID })
+        .select("*");
+
+        console.log("Insert data:", data);
+        console.log("Insert error:", error);
+   
+    if (error && !null) {
+        console.error("Error inviting user:", error.message);
+    } else {
+        console.log("User invited successfully:", data); // Log the actual response data
+    }
+    
+    return data; // Ensure this is returning the inserted data or null
+   };
+   
+
 
 // Function to fetch all projects associated with a given user ID
 export const getUsersProjects = async (): Promise<any[]> => {
@@ -265,3 +314,18 @@ createEntry(2, {
   });
 
 */
+
+
+export const getRoles = async () => {
+    const { data, error } = await supabase
+        .from("Roles")  // Make sure "roles" is the correct table name in Supabase
+        .select("roleID, roleName");
+
+    if (error) {
+        console.error("Error fetching roles:", error.message);
+        return [];
+    }
+
+    console.log("Roles from database:", data); // Debugging log
+    return data || [];
+};
