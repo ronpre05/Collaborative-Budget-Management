@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
 import { createProjectQuery } from "../database"
+
 // Projects Page Component
 const Projects: React.FC = () => {
   // State to store the user's ID
