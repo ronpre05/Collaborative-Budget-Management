@@ -13,3 +13,9 @@ export async function getCategoryID(entryID: number): Promise<number> {
 
   return data?.categoryID;
 }
+
+export async function getCategoryHeaders(
+  categoryID: number
+): Promise<string[]> {
+  return [];
+}
