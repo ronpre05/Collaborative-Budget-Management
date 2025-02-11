@@ -23,14 +23,6 @@ const Projects: React.FC = () => {
       <p>FIRST Project ID: {projectId}</p>
       <p>ALL Project Entries: {projectEntries}</p>
       <p></p>
-      {/**
-       *  use testData. and then pick from:
-       *  - testUserData
-       *  - testProductData
-       *  - testSalaryData
-       *  - testLargeData10x10
-       *  - testLargeData10x20
-       */}
       <CategoryDisplay data={testData.testLargeData10x20}></CategoryDisplay>
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
