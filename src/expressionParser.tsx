@@ -19,18 +19,18 @@ type Operator =
 
 const operators : Operator[] = 
 [
-    {symbol : "+", precedence : 2, associativity : Associativity.Left},
-    {symbol : "-", precedence : 2, associativity : Associativity.Left},
-    {symbol : "*", precedence : 3, associativity : Associativity.Left},
-    {symbol : "/", precedence : 3, associativity : Associativity.Left},
-    {symbol : "^", precedence : 4, associativity : Associativity.Right},
+    {symbol : "+", precedence : 1, associativity : Associativity.Left},
+    {symbol : "-", precedence : 1, associativity : Associativity.Left},
+    {symbol : "*", precedence : 2, associativity : Associativity.Left},
+    {symbol : "/", precedence : 2, associativity : Associativity.Left},
+    {symbol : "^", precedence : 3, associativity : Associativity.Right},
 ]
 
-console.log(expressionToRPN("12 + 4 * ( 3 - 1 )"));
+console.log(expressionToRPN("12+4*(3-1)"));
 console.log("");
-console.log(basicEvaluator(expressionToRPN("12 + 4 * ( 3 - 1 )")));
+console.log(basicEvaluator(expressionToRPN("12+4*(3-1)")));
 console.log("");
-console.log(expressionToRPN("50 + b * ( c ^ 2 - e )"));
+console.log(expressionToRPN("50 +b:e:c * (c^2 - e)"));
 console.log(" ");
 console.log(basicEvaluator(expressionToRPN("3 + 2")));
 console.log("");
@@ -43,18 +43,15 @@ console.log("");
 console.log(basicEvaluator(expressionToRPN("3 ^ 2")));
 console.log("");
 
-// split string at spaces into a list of strings
-// Need to create a stack/queue - do with arrays and pop/pus
-
 function isSpace(element : string) : boolean
 // Checks if an elements is a space or a blank string
 {
     if(element == " " || element == "")
     {
-        return false;
+        return true;
     }
     
-    return true;
+    return false;
 }
 
 function isOperator(value : string) : boolean
@@ -138,10 +135,101 @@ function precCheck(op1 : string, op2 : string) : boolean
     
 }
 
+function isNumeric(c : string) : boolean
+{
+    if((Number.isFinite(+c) || c === ".") && !isSpace(c))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+function isAlphabet(c : string) : boolean
+{
+    if(((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === ":") && !isSpace(c))
+    {
+        return true;
+    }
+    
+    return false;
+}
+
 function prepString(expression : string) : string[]
 {
-    let tokens : string[] = expression.split(" ").filter(isSpace);
+    let tokens : string[] = [];
+    let i = 0;
 
+    for(i = 0; i < expression.length; i++)
+        // Loop through each character
+    {
+        // if its a space, ignore it
+        if(isSpace(expression[i]))
+        {
+            continue;
+        }
+        // if its a bracket / operator push to tokens
+        else if(isOperator(expression[i]) || expression[i] == "(" || expression[i] == ")")
+        {
+            tokens.push(expression[i]);
+            continue;
+        }
+        // if its a number, create a new loop and loop until there isn't another number value, add this as a whole into tokens
+        else if(isNumeric(expression[i]))
+        {
+            // Create another string[]
+            let num : string[] = [];
+            let j = i;
+
+            // Loop through until find something not a number adding all to new string[]
+            for(j = i; j < expression.length ; j++)
+            {
+                if(isNumeric(expression[j]))
+                {
+                    num.push(expression[j]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // add to tokens
+            tokens.push(num.join(""));
+
+            i = j - 1;
+            continue;
+        }
+        // if its a letter, create a new loop until there isn't another letter value, add this as a whole into tokens
+        else if(isAlphabet(expression[i]))
+        {
+            // Create another string[]
+            let vari : string[] = [];
+            let j = i;
+
+            // Loop through until find something not a letter adding all to new string[]
+            for(j = i; j < expression.length ; j++)
+            {
+                if(isAlphabet(expression[j]))
+                {
+                    vari.push(expression[j]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // add to tokens
+            tokens.push(vari.join(""));
+
+            i = j - 1;
+            continue;
+        }
+        
+    }
+
+    //let tokens : string[] = expression.split(" ").filter(isSpace);
     return tokens;
 }
 
