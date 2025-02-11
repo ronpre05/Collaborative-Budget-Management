@@ -1,6 +1,20 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createProjectQuery, getUsersInstitutions, getInstitutionID } from "../database";
+import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
+import { checkAndAddCategories } from "../database";
+
+async function categoryCheck(){
+  // Get template data
+  let templateData = await readJsonFile("./template1.json");
+  // Get list of categories
+  let categoryList = getCategoriesSection(templateData);
+  // Get names of categories
+  let categoryNames = getCategoryNames(categoryList);
+  
+  // Check for missing categories and add any missing ones
+  await checkAndAddCategories(categoryNames);
+}
 
 // Configuration page for creating a new project
 const ProjectConfigPage: React.FC = () => {
@@ -20,6 +34,8 @@ const ProjectConfigPage: React.FC = () => {
             localStorage.setItem('projectID', projectID);
           }
 
+          // Create categories for template used
+          await categoryCheck();
           console.log("Project created successfully!");
         }
         else{

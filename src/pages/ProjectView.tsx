@@ -5,24 +5,25 @@ import PersonnelCosts from "./PersonnelCosts";
 import EquipmentCosts from "./EquipmentCosts";
 import TravelCosts from "./TravelCosts";
 import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
+import { checkAndAddCategories } from "../database";
 
-async function test(){
+async function categoryCheck(){
   // Get template categories
-  let a = await readJsonFile("./template1.json");
+  let templateData = await readJsonFile("./template1.json");
   // Check against stored values in db
-  let cats = getCategoriesSection(a);
+  let categoryList = getCategoriesSection(templateData);
     // If present, return
-  let catNames = getCategoryNames(cats);
-  console.log(catNames);
-    // Else, store new categories
+  let categoryNames = getCategoryNames(categoryList);
+  
+  // Check for missing categories and add any missing ones
+  await checkAndAddCategories(categoryNames);
 }
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("test running");
-      test();
+    categoryCheck();
   });
 
   return (

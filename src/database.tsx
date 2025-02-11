@@ -4,18 +4,58 @@ const supabaseUrl = 'https://xybccoipttcvmdniwysj.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA'
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
-// export const checkCategoriesExist = async (): Promise<void> => {
-//     // Retrieve the project ID from localStorage
-//     const projectID = localStorage.getItem('projectID');
+// Check for any missing categories and add them to the db
+export const checkAndAddCategories = async (categoryNames: string[]): Promise<void | null> => {
+    // Retrieve the project ID from localStorage
+    const projectID = localStorage.getItem('projectID');
 
-//     if (!projectID) {
-//         console.error('No project ID found in localStorage.');
-//         return null;
-//     }
+    if (!projectID) {
+        console.error('No project ID found in localStorage');
+        return null;
+    }
 
+    // Query the database for existing categories
+    const { data, error } = await supabase
+        .from('Categories')
+        .select('categoryName')
+        .eq('projectID', projectID)
+        .in('categoryName', categoryNames);
 
+    if (error) {
+        console.error('Error fetching categories:', error);
+        return null;
+    }
 
-// }
+    // Get categories found in database
+    const existingCategoryNames = new Set((data ?? []).map(category => category.categoryName));
+
+    // Filter out for any categories which are missing from the db
+    const missingCategories = categoryNames.filter(categoryName => !existingCategoryNames.has(categoryName));
+
+    // No missing categories
+    if (missingCategories.length === 0) {
+        console.log('All categories already exist');
+        return;
+    }
+
+    // Map projectid with missing categories
+    const newCategories = missingCategories.map(categoryName => ({
+        projectID,
+        categoryName
+    }));
+
+    // Insert missing categories
+    const { error: insertError } = await supabase
+        .from('Categories')
+        .insert(newCategories);
+
+    if (insertError) {
+        console.error('Error inserting missing categories:', insertError);
+        return null;
+    }
+
+    console.log('Missing categories added successfully');
+};
 
 
 export const createProjectQuery = async (institutionID: number): Promise<string | null> => {
@@ -23,7 +63,7 @@ export const createProjectQuery = async (institutionID: number): Promise<string 
     const userID = localStorage.getItem('userID');
 
     if (!userID) {
-        console.error('No user ID found in localStorage.');
+        console.error('No user ID found in localStorage');
         return null;
     }
     
@@ -51,7 +91,7 @@ export const createUserInstitutionProjectQuery = async (institutionID: number, p
     const userID = localStorage.getItem('userID');
 
     if (!userID) {
-        console.error('No user ID found in localStorage.');
+        console.error('No user ID found in localStorage');
         return;
     }
 
