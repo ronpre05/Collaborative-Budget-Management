@@ -14,6 +14,7 @@ type CalculationType =
 {
     name : string;
     expression : string;
+    type : string;
 };
 
 // main("template1.json");
@@ -305,7 +306,8 @@ function getCalcData(calc : any) : CalculationType
     let ret : CalculationType = 
     {
         name : calc.Name,
-        expression : calc.Expression
+        expression : calc.Expression,
+        type : calc.Type
     };
 
     return ret;

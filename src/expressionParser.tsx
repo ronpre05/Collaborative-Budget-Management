@@ -2,6 +2,13 @@ type CalculationType =
 {
     name : string;
     expression : string;
+    type : string;
+};
+
+enum ValueType
+{
+    Calc,
+    Field,
 };
 
 enum Associativity
@@ -300,7 +307,7 @@ function expressionToRPN(expression : string) : string[]
     return outQueue;
 }
 
-function basicEvaluator(postfixExpr : string[]) : number
+function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number) : number
 {
     let stack : string[] = []
 
@@ -309,6 +316,10 @@ function basicEvaluator(postfixExpr : string[]) : number
         if(!isOperator(token)) // not an operator
         {
             stack.push(token);
+        }
+        else if(isAlphabet(token[0]))
+        {
+            stack.push(parseVariable(token, projectID, entryID).toString());
         }
         else // is operator
         {
@@ -393,4 +404,60 @@ function basicEvaluator(postfixExpr : string[]) : number
     }
 
     return 0;
+}
+
+
+function parseVariable(vari : string, projectID : number, entryID : number) : number
+{
+    // Split the variable up into its constituent types
+    const splitString : string[] = vari.split(":");
+
+    let catName : string = splitString[0];
+    let valName : string = splitString[2];
+
+    let valueType : ValueType;
+
+    if(splitString[1] == "F")
+    {
+        valueType = ValueType.Field;
+    }
+    else
+    {
+        valueType = ValueType.Calc;
+    }
+
+    return getVariable(catName, valueType, valName, projectID, entryID);
+}
+
+function getVariable(catName : string, valueType : ValueType, valName : string, projectID : number, entryID : number) : number
+{
+    // Query the database to get the value, either in the field or calculation section
+    // Can use the project and entry ids to do this
+
+    return 1;
+}
+
+
+function localEvaluator(expr : string, projectID : number, entryID : number) : number
+{
+    let RPN : string[] = expressionToRPN(expr);
+
+    return basicEvaluator(RPN, projectID, entryID);
+}
+
+function globalEvaluator(expr : string, projectID : number, categoryID : number) : number
+{
+    // Get a list of entries in that category
+    let entries : number[] = [categoryID]
+    let total : number = 0;
+
+    let RPN : string[] = expressionToRPN(expr);
+
+    Object.values(entries).forEach(entry =>
+    {
+        total += basicEvaluator(RPN, projectID, entry);
+    }
+    );
+
+    return total;
 }
