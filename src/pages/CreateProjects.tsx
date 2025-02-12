@@ -1,4 +1,3 @@
-// components/CreateProjects.tsx
 import React from "react";
 import DynamicBudgetForm from "./DynamicBudgetForm";
 

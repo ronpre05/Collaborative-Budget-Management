@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import { CategoryType, FieldType } from "../types";
 import { flattenFields } from "../templateParser";
 
+//GenericForm.tsx is a fully dynamic form  generator that can be later re-used.
+//It renders input fields, validates user input and performs calculations based on the selected budget category
+
+// How DynamicBudgetForm and GenericForm work together:
+// 1. DynamicBudgetForm manages category selection and passes the correct category to GenericForm.
+// 2. GenericForm renders and processes the form dynamically for the selected category.
 interface GenericFormProps {
   category: CategoryType;
 }
