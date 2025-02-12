@@ -58,13 +58,21 @@
 			{
 				"PersonMonths" : 
 				{
-					"Name" : "Person Months",
-					"Expression" : "(endDate - startDate) * Percentage"
+					"Name" : "Person_Months",
+					"Expression" : "(Personnel:F:endDate - Personnel:F:startDate) * Personnel:F:percentage",
+					"Type" : "Local"
 				},
-				"Total" : 
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Personnel:F:amount",
+					"Type" : "Local"
+				},
+				"Total:Global" : 
 				{
 					"Name" : "Total",
-					"Expression" : "Amount.Value"
+					"Expression" : "Personnel:C:Entry_Total",
+					"Type" : "Global"
 				}
 			}
 		},
@@ -104,17 +112,24 @@
 			},
 			"Calculations" :
 			{
-				"Total" : 
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Equipment:F:amount",
+					"Type" : "Local"
+				},
+				"Total:Global" : 
 				{
 					"Name" : "Total",
-					"Expression" : "Amount.Value"
+					"Expression" : "Equipment:C:Entry_Total",
+					"Type" : "Global"
 				}
 			}
 		},
 
 		"OGC" : 
 		{
-			"Name" : "Other Goods and Services",
+			"Name" : "Other_Goods_and_Services",
 			"Fields" : 
 			{
 				"What" : 
@@ -147,17 +162,24 @@
 			},
 			"Calculations" :
 			{
-				"Total" : 
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Other_Goods_and_Services:F:amount",
+					"Type" : "Local"
+				},
+				"Total:Global" : 
 				{
 					"Name" : "Total",
-					"Expression" : "Amount.Value"
+					"Expression" : "Other_Goods_and_Services:C:Entry_Total",
+					"Type" : "Global"
 				}
 			}
 		},
 
 		"TC" : 
 		{
-			"Name" : "Travel Costs",
+			"Name" : "Travel_Costs",
 			"Fields" : 
 			{
 				"Days"  : 
@@ -213,18 +235,27 @@
 			{
 				"baseTotal" : 
 				{
-					"Name" : "Base Total",
-					"Expression" : "Days*Accomodation + Days*Sustinance"
+					"Name" : "Base_Total",
+					"Expression" : "Travel_Costs:F:days*Travel_Costs:F:accomodation + Travel_Costs:F:says*Travel_Costs:F:sustinance",
+					"Type" : "Local"
 				},
 				"entryTotals" :
 				{
-					"Name" : "Entry Total",
-					"Expression" : "Entry.Amount"
+					"Name" : "Entry_Total",
+					"Expression" : "Travel_Costs:F:amount",
+					"Type" : "Local"
 				},
-				"Total" : 
+				"Total:Local" : 
+				{
+					"Name" : "Trip_Total",
+					"Expression" : "Travel_Costs:C:Base_Total + Travel_Costs:C:Entry_Total",
+					"Type" : "Local"
+				},
+				"Total:Global"
 				{
 					"Name" : "Total",
-					"Expression" : "baseTotal + entryTotals"
+					"Expression" : "Travel_Costs:C:Trip_Total",
+					"Type" : "Global"
 				}
 			}
 			
@@ -265,17 +296,24 @@
 			},
 			"Calculations" :
 			{
-				"Total" : 
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Subcontracting:F:amount",
+					"Type" : "Local"
+				},
+				"Total:Global" : 
 				{
 					"Name" : "Total",
-					"Expression" : "Amount.Value"
+					"Expression" : "Subcontracting:C:Entry_Total",
+					"Type" : "Global"
 				}
 			}
 		},
 
 		"IIC" : 
 		{
-			"Name" : "Internally Invoiced Services",
+			"Name" : "Internally_Invoiced_Services",
 			"Fields" : 
 			{
 				"What" : 
@@ -308,10 +346,17 @@
 			},
 			"Calculations" :
 			{
-				"Total" : 
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Internally_Invoiced_Services:F:amount",
+					"Type" : "Local"
+				},
+				"Total:Global" : 
 				{
 					"Name" : "Total",
-					"Expression" : "Amount.Value"
+					"Expression" : "Internally_Invoiced_Services:C:Entry_Total",
+					"Type" : "Global"
 				}
 			}
 		},
@@ -335,8 +380,9 @@
 			{
 				"Total" : 
 				{
-					"Name" : "Indirect Cost",
-					"Expression" : "0.25 * (PC.Total + EC.Total + OGC.Total + TC.Total)"
+					"Name" : "Indirect_Cost",
+					"Expression" : "0.25 * (Personnel:C:Total + Equipment:C:Total + Other_Goods_and_Services:C:Total + Travel_Costs:C:Total)",
+					"Type" : "Local"
 				}
 			}
 		}

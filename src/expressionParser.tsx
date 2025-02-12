@@ -147,7 +147,7 @@ function isNumeric(c : string) : boolean
 
 function isAlphabet(c : string) : boolean
 {
-    if(((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === ":") && !isSpace(c))
+    if(((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === ":" || c === "_") && !isSpace(c))
     {
         return true;
     }
