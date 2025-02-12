@@ -1,4 +1,3 @@
-// App.tsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
@@ -6,6 +5,7 @@ import "./App.css";
 import Home from "./pages/HomePage";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
+// We keep the route for create-project, but it won't be linked from the sidebar.
 import CreateProject from "./pages/CreateProjects";
 
 function App() {
@@ -37,9 +37,7 @@ function App() {
               <Link to="/support">
                 <button>Support</button>
               </Link>
-              <Link to="/create-project">
-                <button>Create Project</button>
-              </Link>
+              {/* Removed the Create Project link here */}
             </nav>
           </aside>
           <main className="main-content">
