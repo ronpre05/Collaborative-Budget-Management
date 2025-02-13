@@ -42,7 +42,7 @@ export async function getFieldIDs(categoryID: number): Promise<number[]> {
   return data.map((item) => item.fieldID);
 }
 
-export async function getFieldData(fieldIDs: number[]): Promise<number[][]> {
+export async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   const fieldData = [];
   for (const fieldID of fieldIDs) {
     console.log("fetching data for fieldID:", fieldID);
@@ -61,4 +61,11 @@ export async function getFieldData(fieldIDs: number[]): Promise<number[][]> {
   }
 
   return fieldData;
+}
+
+export async function formatData(
+  categoryHeaders: string[],
+  fieldData: string[][]
+): Promise<[][]> {
+  return [[]];
 }
