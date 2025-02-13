@@ -1,3 +1,4 @@
+import { buffer } from "stream/consumers";
 import { supabase } from "./database";
 export async function getCategoryID(entryID: number): Promise<number> {
   const { data, error } = await supabase
@@ -55,6 +56,7 @@ export async function getFieldData(fieldIDs: number[]): Promise<number[][]> {
       return [[]];
     }
     const bufferArray = data.map((item) => item.value);
+    console.log("Result for fieldID:", fieldID, "is:", bufferArray);
     fieldData.push(bufferArray);
   }
 
