@@ -5,11 +5,16 @@ import CategoryDisplay from "../categoryDisplay";
 import useProjectEntries from "../useProjectEntries";
 import * as testData from "../SampleCategoryData";
 import useProjectId from "../useProjectId";
-import { getCategoryID, getCategoryHeaders } from "../queryFunctions";
+import {
+  getCategoryID,
+  getCategoryHeaders,
+  getFieldIDs,
+} from "../queryFunctions";
 
 // testing in console
 (window as any).getCategoryID = getCategoryID;
 (window as any).getCategoryHeaders = getCategoryHeaders;
+(window as any).getFieldIDs = getFieldIDs;
 
 // Projects Page
 const Projects: React.FC = () => {

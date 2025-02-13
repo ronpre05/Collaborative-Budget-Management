@@ -28,3 +28,15 @@ export async function getCategoryHeaders(
 
   return data.map((item) => item.value);
 }
+
+export async function getFieldIDs(categoryID: number): Promise<number[]> {
+  const { data, error } = await supabase
+    .from("CategoryFields")
+    .select("fieldID")
+    .eq("categoryID", categoryID);
+  if (error) {
+    console.error("Unable to fetch field IDs for CategoryID:", categoryID);
+    return [];
+  }
+  return data.map((item) => item.fieldID);
+}
