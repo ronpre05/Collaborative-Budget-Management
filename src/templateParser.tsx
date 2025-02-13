@@ -53,10 +53,9 @@ type CalculationType =
 //     console.log(getCalcData(calcObs[0]));
 // } 
 
-async function readJsonFile(path : string) : Promise<any>
-{
-    const file = await readFile(path, "utf8");
-    return await(JSON.parse(file));
+export async function readJsonFile(path: string): Promise<any> {
+    const response = await fetch(path);
+    return await response.json();
 }
 
 // Gets the value in the "templateName" section of the JSON
@@ -67,13 +66,13 @@ function getTemplateName(template : any) : string
 }
 
 // Gets the whole Categories object from the JSON
-function getCategoriesSection(template : any) : any[]
+export function getCategoriesSection(template : any) : any[]
 {
     return template.Categories;
 }
 
 // Gets the names of the categories from the Categories object
-function getCategoryNames(categories : any) : string[]
+export function getCategoryNames(categories : any) : string[]
 {
     let catNames : string[] = [];
 
@@ -88,15 +87,15 @@ function getCategoryNames(categories : any) : string[]
     return catNames;
 }
 
-// Gets an array of categoru names from the template directly
+// Gets an array of category names from the template directly
 function getCatNamesFromTemplate(template : any) : string[]
 {
     // Return the categories names after gathering the categories section
     return getCategoryNames(getCategoriesSection(template));
 }
 
-// Bet the object of each individual category by name
-function getCategoryObject(categories : any, catName : string) : any
+// Get the object of each individual category by name
+export function getCategoryObject(categories : any, catName : string) : any
 {
     // Create a value to hold the return
     let ret : any = [];
@@ -144,12 +143,12 @@ function getCategoriesObjectsFromTemplate(template : any) : any[]
     return catObs;
 }
 
-function getFieldsSection(category : any) : any
+export function getFieldsSection(category : any) : any
 {
     return category.Fields;
 }
 
-function getFieldNames(fields : any) : string[]
+export function getFieldNames(fields : any) : string[]
 {
     let fieldNames : string[] = [];
 
