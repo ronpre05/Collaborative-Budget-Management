@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CategoryType, TemplateData } from "../types";
 import templateDataJson from "../../template1.json";
+import RemoveCollaborator from "./RemoveCollaborator"; // Import RemoveCollaborator
 
 const GoodsServicesCosts: React.FC = () => {
   const templateData = templateDataJson as TemplateData;
@@ -9,6 +10,7 @@ const GoodsServicesCosts: React.FC = () => {
   const [items, setItems] = useState<Array<Record<string, string>>>([]);
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   const [totalCost, setTotalCost] = useState(0);
+  const projectID = 94; // Replace with dynamic value if needed
 
   const handleFieldChange = (fieldKey: string, value: string) => {
     setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));
@@ -17,7 +19,6 @@ const GoodsServicesCosts: React.FC = () => {
   const handleAddGoods = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate
     for (const [fieldKey, fieldDef] of Object.entries(goodsCategory.Fields)) {
       if (!fieldDef.Visible) continue;
       if (!newItemValues[fieldKey]) {
@@ -26,10 +27,9 @@ const GoodsServicesCosts: React.FC = () => {
       }
     }
 
-    // Identify the "Amount" field, parse as number
     const amountFieldKey = Object.entries(goodsCategory.Fields).find(
       ([, def]) => def.Name.toLowerCase() === "amount"
-    )?.[0]; // ?.[0] makes it we extract only the first element and if no match is found it prevents an errro by returning undefined
+    )?.[0];
 
     let numericAmount = 0;
     if (amountFieldKey) {
@@ -100,6 +100,10 @@ const GoodsServicesCosts: React.FC = () => {
           </li>
         ))}
       </ul>
+
+      {/* Remove Collaborator Section */}
+      <h3>Manage Collaborators</h3>
+      <RemoveCollaborator projectID={projectID} />
     </div>
   );
 };
