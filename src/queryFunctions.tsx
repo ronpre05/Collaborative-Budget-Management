@@ -40,3 +40,23 @@ export async function getFieldIDs(categoryID: number): Promise<number[]> {
   }
   return data.map((item) => item.fieldID);
 }
+
+export async function getFieldData(fieldIDs: number[]): Promise<number[][]> {
+  const fieldData = [];
+  for (const fieldID of fieldIDs) {
+    console.log("fetching data for fieldID:", fieldID);
+
+    const { data, error } = await supabase
+      .from("FieldValues")
+      .select("value")
+      .eq("fieldID", fieldID);
+    if (error) {
+      console.error("Unable to fetch fieldData for fieldID:", fieldID);
+      return [[]];
+    }
+    const bufferArray = data.map((item) => item.value);
+    fieldData.push(bufferArray);
+  }
+
+  return fieldData;
+}

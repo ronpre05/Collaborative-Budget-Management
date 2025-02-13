@@ -9,12 +9,14 @@ import {
   getCategoryID,
   getCategoryHeaders,
   getFieldIDs,
+  getFieldData,
 } from "../queryFunctions";
 
 // testing in console
 (window as any).getCategoryID = getCategoryID;
 (window as any).getCategoryHeaders = getCategoryHeaders;
 (window as any).getFieldIDs = getFieldIDs;
+(window as any).getFieldData = getFieldData;
 
 // Projects Page
 const Projects: React.FC = () => {
