@@ -80,6 +80,16 @@ export const createCategoryFields = async (categoryList: string[], categoryNames
         .eq("categoryName", categoryName)
         .single();
 
+        if (error) {
+            console.error("Error fetching category ID for ${categoryName}:", error);
+            continue;
+        }
+
+        if (!data) {
+            console.warn("No category found for ${categoryName}");
+            continue;
+        }
+
         // Get categoryID
         const categoryID = data?.categoryID;
 
