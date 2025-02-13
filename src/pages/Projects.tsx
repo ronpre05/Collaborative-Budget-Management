@@ -12,6 +12,7 @@ import {
   getFieldData,
   formatData,
 } from "../queryFunctions";
+import { useEffect, useState } from "react";
 
 // testing in console
 (window as any).getCategoryID = getCategoryID;
@@ -39,6 +40,23 @@ const Projects: React.FC = () => {
   console.log("First Project ID given:", projectId);
   console.log("Project entries:", projectEntries);
   useProjectEntries();
+
+  // rough way for now, needs to be merged into hook later
+  const [formattedData, setFormattedData] = useState<string[][]>([[]]);
+
+  useEffect(() => {
+    async function getData() {
+      const catID = await getCategoryID(49);
+      const fieldIDs = await getFieldIDs(catID);
+      const catHeaders = await getCategoryHeaders(catID);
+      const fieldData = await getFieldData(fieldIDs);
+      const result = await formatData(catHeaders, fieldData);
+      setFormattedData(result);
+    }
+    getData();
+  }, []);
+  // rough way for now, needs to be merged into hook later
+
   return (
     <div className="content">
       <h1>Projects Page</h1>
@@ -47,7 +65,7 @@ const Projects: React.FC = () => {
       <p>FIRST Project ID: {projectId}</p>
       <p>ALL Project Entries: {projectEntries}</p>
       <p></p>
-      <CategoryDisplay data={testData.testLargeData10x20}></CategoryDisplay>
+      <CategoryDisplay data={formattedData}></CategoryDisplay>
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>
