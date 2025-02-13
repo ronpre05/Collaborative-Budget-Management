@@ -66,6 +66,11 @@ export async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
 export async function formatData(
   categoryHeaders: string[],
   fieldData: string[][]
-): Promise<[][]> {
-  return [[]];
+): Promise<string[][]> {
+  const transposed = fieldData[0].map((_, colIndex) =>
+    fieldData.map((row) => row[colIndex])
+  );
+  transposed.unshift(categoryHeaders);
+
+  return transposed;
 }
