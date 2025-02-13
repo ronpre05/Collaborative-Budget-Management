@@ -33,22 +33,8 @@ const operators : Operator[] =
     {symbol : "^", precedence : 3, associativity : Associativity.Right},
 ]
 
-console.log(expressionToRPN("12+4*(3-1)"));
-console.log("");
-console.log(basicEvaluator(expressionToRPN("12+4*(3-1)")));
-console.log("");
-console.log(expressionToRPN("50 +b:e:c * (c^2 - e)"));
-console.log(" ");
-console.log(basicEvaluator(expressionToRPN("3 + 2")));
-console.log("");
-console.log(basicEvaluator(expressionToRPN("3 - 2")));
-console.log("");
-console.log(basicEvaluator(expressionToRPN("3 * 2")));
-console.log("");
-console.log(basicEvaluator(expressionToRPN("3 / 2")));
-console.log("");
-console.log(basicEvaluator(expressionToRPN("3 ^ 2")));
-console.log("");
+console.log(localEvaluator("b:C:e + b:F:d", 0, 0));
+console.log(globalEvaluator("b:C:e^2 + b:F:e^2", 0, 0));
 
 function isSpace(element : string) : boolean
 // Checks if an elements is a space or a blank string
@@ -311,17 +297,17 @@ function basicEvaluator(postfixExpr : string[], projectID : number, entryID : nu
 {
     let stack : string[] = []
 
+    console.log(postfixExpr);
+
     Object.values(postfixExpr).forEach(token =>
     {
-        if(!isOperator(token)) // not an operator
+        if(isAlphabet(token[0]))
         {
-            stack.push(token);
+            let num = parseVariable(token, projectID, entryID);
+            stack.push(num.toString());
+            
         }
-        else if(isAlphabet(token[0]))
-        {
-            stack.push(parseVariable(token, projectID, entryID).toString());
-        }
-        else // is operator
+        else if(isOperator(token)) // is operator
         {
             let sOp1 = stack.pop();
             let sOp2 = stack.pop();
@@ -394,6 +380,10 @@ function basicEvaluator(postfixExpr : string[], projectID : number, entryID : nu
             // push to stack
             stack.push(val.toString());            
         }
+        else
+        {
+            stack.push(token); // is a number
+        }
     }
     );
 
@@ -426,6 +416,10 @@ function parseVariable(vari : string, projectID : number, entryID : number) : nu
         valueType = ValueType.Calc;
     }
 
+    console.log(catName);
+    console.log(valueType);
+    console.log(valName);
+
     return getVariable(catName, valueType, valName, projectID, entryID);
 }
 
@@ -433,6 +427,11 @@ function getVariable(catName : string, valueType : ValueType, valName : string, 
 {
     // Query the database to get the value, either in the field or calculation section
     // Can use the project and entry ids to do this
+
+    if(valueType == ValueType.Field)
+    {
+        return 100;
+    }
 
     return 1;
 }
