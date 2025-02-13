@@ -4,6 +4,7 @@ import { createProjectQuery, getUsersInstitutions, getInstitutionID } from "../d
 import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
 import { checkAndAddCategories } from "../database";
 
+// Inserts new categories for a project into the database
 async function categoryCheck(){
   // Get template data
   let templateData = await readJsonFile("./template1.json");
@@ -11,9 +12,9 @@ async function categoryCheck(){
   let categoryList = getCategoriesSection(templateData);
   // Get names of categories
   let categoryNames = getCategoryNames(categoryList);
-  
+
   // Check for missing categories and add any missing ones
-  await checkAndAddCategories(categoryNames);
+  await checkAndAddCategories(categoryList, categoryNames);
 }
 
 // Configuration page for creating a new project

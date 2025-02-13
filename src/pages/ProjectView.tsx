@@ -1,30 +1,11 @@
-import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import GoodsServicesCosts from "./GoodsServicesCosts";
 import PersonnelCosts from "./PersonnelCosts";
 import EquipmentCosts from "./EquipmentCosts";
 import TravelCosts from "./TravelCosts";
-import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
-import { checkAndAddCategories } from "../database";
-
-async function categoryCheck(){
-  // Get template categories
-  let templateData = await readJsonFile("./template1.json");
-  // Check against stored values in db
-  let categoryList = getCategoriesSection(templateData);
-    // If present, return
-  let categoryNames = getCategoryNames(categoryList);
-  
-  // Check for missing categories and add any missing ones
-  await checkAndAddCategories(categoryNames);
-}
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
-
-  useEffect(() => {
-    categoryCheck();
-  });
 
   return (
     <div className="create-project-content">
