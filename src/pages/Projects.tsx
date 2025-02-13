@@ -20,6 +20,16 @@ import {
 (window as any).getFieldData = getFieldData;
 (window as any).formatData = formatData;
 
+//testing purposes only
+(async () => {
+  const catID = await getCategoryID(49);
+  const fieldIDs = await getFieldIDs(catID);
+  const catHeaders = await getCategoryHeaders(catID);
+  const fieldData = await getFieldData(fieldIDs);
+  const result = await formatData(catHeaders, fieldData);
+  console.log(result);
+})();
+
 // Projects Page
 const Projects: React.FC = () => {
   const userId = useUserId();
