@@ -20,14 +20,14 @@ export async function getCategoryHeaders(
 ): Promise<string[]> {
   const { data, error } = await supabase
     .from("CategoryFields")
-    .select("value")
+    .select("fieldName")
     .eq("categoryID", categoryID);
   if (error) {
     console.error("Unable to fetch headings for CategoryID:", categoryID);
     return [];
   }
 
-  return data.map((item) => item.value);
+  return data.map((item) => item.fieldName);
 }
 
 export async function getFieldIDs(categoryID: number): Promise<number[]> {
