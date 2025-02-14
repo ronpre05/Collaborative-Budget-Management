@@ -176,6 +176,23 @@ export const getRoles = async () => {
     return data || [];
 };
 
+export const removeCollaborator = async (userID: number, projectID: number) => {
+    const { error } = await supabase
+        .from("UserInstitutionProject")
+        .delete()
+        .eq("userID", userID)
+        .eq("projectID", projectID);
+
+    if (error) {
+        console.error("Error removing collaborator:", error.message);
+        return false;
+    } else {
+        console.log("Collaborator removed successfully.");
+        return true;
+    }
+};
+
+
 
 
 
