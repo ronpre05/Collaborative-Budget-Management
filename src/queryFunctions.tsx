@@ -26,7 +26,7 @@ async function getCategoryID(entryID: number): Promise<number> {
 /**
  * Fetches all FieldNames for the Field of a given Category.
  * @param {number} categoryID ID of category to fetch FieldNames for.
- * @returns {Promise<string[]>} A promise that resolves to a 2D array of FieldNames.
+ * @returns {Promise<string[]>} A promise that resolves to an array of FieldNames.
  *
  * @example
  * const categoryHeaders = await getCategoryHeaders(categoryID);
@@ -99,15 +99,24 @@ async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
 }
 
 /**
+ * Formats data in the required format for the [CategoryDisplay](./categoryDisplay.tsx) component.
  *
- * @param categoryHeaders
- * @param fieldData
- * @returns
+ * Flips the columns and rows of given FieldData, and then pushes the array of Category
+ * Headings to the front of the 2D array.
+ * @param {string[]} categoryHeaders 1D array of CategoryHeadings - FieldNames.
+ * @param {string[][]} fieldData 2D array of FieldValues, for a given entryID.
+ * @returns {string[][]} A 2D array of data containing [CategoryHeadings, ...fieldData].
+ *
+ * @example
+ * const categoryHeaders = await getCategoryHeaders(categoryID);
+ * const fieldData = await getFieldData(arrayOfFieldIDs);
+ * const formattedData = formatData(categoryHeaders, fieldData);
+ * @see {@link CategoryDisplay}
  */
-async function formatData(
+function formatData(
   categoryHeaders: string[],
   fieldData: string[][]
-): Promise<string[][]> {
+): string[][] {
   const transposed = fieldData[0].map((_, colIndex) =>
     fieldData.map((row) => row[colIndex])
   );
