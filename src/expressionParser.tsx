@@ -494,7 +494,7 @@ async function globalEvaluator(calc : CalculationType, projectID : number, categ
     return total;
 }
 
-async function completeCalculations(projectID : number, template : any)
+export async function completeCalculations(projectID : number, template : any)
 {
     // Get all category names
     const cats : any[] = getCategoriesObjectsFromTemplate(template);
@@ -553,8 +553,12 @@ main("template1.json");
 
 async function main(templateName : string)
 {
-    console.log(await readJsonFile(templateName));
-    await completeCalculations(99, await readJsonFile(templateName));
+    console.log(await getCategoryID("Personnel", 88)); // Gives 35
+    console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
+    console.log(await getFieldID(28, "personMonth")); // 64
+    console.log(await getValue(46, 57)) // Gives 100
+    console.log(await getValueID(46, 57)); // Gives 89
+    console.log(await updateIndividualField(105, 10000));
 }
 
 

@@ -136,6 +136,7 @@ export const getCategoryID = async (catName : string, projectID : number): Promi
         .select("categoryID")
         .eq("categoryName", catName)
         .eq("projectID", projectID)
+        .single()
 
     if(error)
     {
@@ -143,7 +144,7 @@ export const getCategoryID = async (catName : string, projectID : number): Promi
         return -1;
     }
 
-    return data;
+    return data.categoryID;
 }
 
 
@@ -161,7 +162,7 @@ export const getAllCategoryEntries = async (catID : number) : Promise<any[]> =>
         return [];
     }
 
-    return data;
+    return data.map((entry : any) => entry.entryID);
 }
 
 
@@ -174,6 +175,7 @@ export const getFieldID = async (catID : number, fieldName : string) : Promise<a
         .select("fieldID")
         .eq("categoryID", catID)
         .eq("fieldName", fieldName)
+        .single()
 
     if(error)
     {
@@ -181,7 +183,7 @@ export const getFieldID = async (catID : number, fieldName : string) : Promise<a
         return -1;
     }
 
-    return data;
+    return data.fieldID;
 }
 
 
@@ -193,6 +195,7 @@ export const getValue = async (entryID : number, fieldID : number) : Promise<any
         .select("value")
         .eq("entryID", entryID)
         .eq("fieldID", fieldID)
+        .single()
     
     if(error)
     {
@@ -200,7 +203,7 @@ export const getValue = async (entryID : number, fieldID : number) : Promise<any
         return -1;
     }
 
-    return data;
+    return data.value;
 }
 
 export const getValueID = async (entryID : number, fieldID : number) : Promise<any> =>
@@ -210,6 +213,7 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
         .select("valueID")
         .eq("entryID", entryID)
         .eq("fieldID", fieldID)
+        .single()
     
     if(error)
     {
@@ -217,7 +221,7 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
         return -1;
     }
 
-    return data;
+    return data.valueID;
 }
 
 // Update an entry
@@ -225,13 +229,14 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
 {
     const { error } = await supabase
         .from("FieldValues")
-        .update({value : result})
+        .update({value: result})
         .eq("valueID", valueID)
 
     if(error)
     {
         console.error("Error updating value: ", error);
+        return -1;
     }
 
-    return;
+    return 1;
 }
