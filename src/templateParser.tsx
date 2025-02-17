@@ -15,6 +15,7 @@ type CalculationType =
     name : string;
     expression : string;
     type : string;
+    output : string;
 };
 
 // main("template1.json");
@@ -54,10 +55,10 @@ type CalculationType =
 //     console.log(getCalcData(calcObs[0]));
 // } 
 
-async function readJsonFile(path : string) : Promise<any>
+export async function readJsonFile(path : string) : Promise<any>
 {
-    const file = await readFile(path, "utf8");
-    return await(JSON.parse(file));
+    const response = await fetch(path);
+    return await response.json();
 }
 
 // Gets the value in the "templateName" section of the JSON
@@ -68,13 +69,13 @@ function getTemplateName(template : any) : string
 }
 
 // Gets the whole Categories object from the JSON
-function getCategoriesSection(template : any) : any[]
+export function getCategoriesSection(template : any) : any[]
 {
     return template.Categories;
 }
 
 // Gets the names of the categories from the Categories object
-function getCategoryNames(categories : any) : string[]
+export function getCategoryNames(categories : any) : string[]
 {
     let catNames : string[] = [];
 
@@ -97,7 +98,7 @@ function getCatNamesFromTemplate(template : any) : string[]
 }
 
 // Bet the object of each individual category by name
-function getCategoryObject(categories : any, catName : string) : any
+export function getCategoryObject(categories : any, catName : string) : any
 {
     // Create a value to hold the return
     let ret : any = [];
@@ -121,7 +122,7 @@ function getCategoryObject(categories : any, catName : string) : any
     return ret;
 }
 
-function getCategoriesObjectsFromTemplate(template : any) : any[]
+export function getCategoriesObjectsFromTemplate(template : any) : any[]
 {
     // Gather the required names and categories object
     let catNames : string[] = getCatNamesFromTemplate(template);
@@ -145,12 +146,12 @@ function getCategoriesObjectsFromTemplate(template : any) : any[]
     return catObs;
 }
 
-function getFieldsSection(category : any) : any
+export function getFieldsSection(category : any) : any
 {
     return category.Fields;
 }
 
-function getFieldNames(fields : any) : string[]
+export function getFieldNames(fields : any) : string[]
 {
     let fieldNames : string[] = [];
 
@@ -276,7 +277,7 @@ function getCalculationObject(calculations : any, calcName : string) : Calculati
     return ret;
 }
 
-function getCalcObjectsFromCategory(category : any) : CalculationType[]
+export function getCalcObjectsFromCategory(category : any) : CalculationType[]
 {
     // Gather the required names and calc object
     let calcNames : string[] = getCalculationNames(getCalculationsSection(category));
@@ -307,7 +308,8 @@ function getCalcData(calc : any) : CalculationType
     {
         name : calc.Name,
         expression : calc.Expression,
-        type : calc.Type
+        type : calc.Type,
+        output : calc.Output
     };
 
     return ret;

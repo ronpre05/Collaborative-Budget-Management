@@ -52,6 +52,24 @@
 					"Postfix" : "",
 					"Type" : "Float",
 					"Visible" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "localTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
+				},
+				"Global Total" :
+				{
+					"Name" : "globalTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
 				}
 			},
 			"Calculations" :
@@ -60,19 +78,22 @@
 				{
 					"Name" : "Person_Months",
 					"Expression" : "(Personnel:F:endDate - Personnel:F:startDate) * Personnel:F:percentage",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "personMonth"
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Personnel:F:amount",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "localTotal"
 				},
 				"Total:Global" : 
 				{
 					"Name" : "Total",
 					"Expression" : "Personnel:C:Entry_Total",
-					"Type" : "Global"
+					"Type" : "Global",
+					"Output" : "globalTotal"
 				}
 			}
 		},
@@ -108,6 +129,24 @@
 					"Postfix" : "",
 					"Type" : "Int",
 					"Visible" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "localTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
+				},
+				"Global Total" :
+				{
+					"Name" : "globalTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
 				}
 			},
 			"Calculations" :
@@ -116,13 +155,15 @@
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Equipment:F:amount",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "localTotal"
 				},
 				"Total:Global" : 
 				{
 					"Name" : "Total",
 					"Expression" : "Equipment:C:Entry_Total",
-					"Type" : "Global"
+					"Type" : "Global",
+					"Output" : "globalTotal"
 				}
 			}
 		},
@@ -158,6 +199,24 @@
 					"Postfix" : "",
 					"Type" : "Int",
 					"Visible" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "localTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
+				},
+				"Global Total" :
+				{
+					"Name" : "globalTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
 				}
 			},
 			"Calculations" :
@@ -166,13 +225,15 @@
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Other_Goods_and_Services:F:amount",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "localTotal"
 				},
 				"Total:Global" : 
 				{
 					"Name" : "Total",
 					"Expression" : "Other_Goods_and_Services:C:Entry_Total",
-					"Type" : "Global"
+					"Type" : "Global",
+					"Output" : "globalTotal"
 				}
 			}
 		},
@@ -237,25 +298,29 @@
 				{
 					"Name" : "Base_Total",
 					"Expression" : "Travel_Costs:F:days*Travel_Costs:F:accomodation + Travel_Costs:F:says*Travel_Costs:F:sustinance",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : ""
 				},
 				"entryTotals" :
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Travel_Costs:F:amount",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : ""
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Trip_Total",
 					"Expression" : "Travel_Costs:C:Base_Total + Travel_Costs:C:Entry_Total",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : ""
 				},
 				"Total:Global"
 				{
 					"Name" : "Total",
 					"Expression" : "Travel_Costs:C:Trip_Total",
-					"Type" : "Global"
+					"Type" : "Global",
+					"Output" : ""
 				}
 			}
 			
@@ -292,6 +357,24 @@
 					"Postfix" : "",
 					"Type" : "Int",
 					"Visible" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "localTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
+				},
+				"Global Total" :
+				{
+					"Name" : "globalTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
 				}
 			},
 			"Calculations" :
@@ -300,13 +383,15 @@
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Subcontracting:F:amount",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "localTotal"
 				},
 				"Total:Global" : 
 				{
 					"Name" : "Total",
 					"Expression" : "Subcontracting:C:Entry_Total",
-					"Type" : "Global"
+					"Type" : "Global",
+					"Output" : "globalTotal"
 				}
 			}
 		},
@@ -342,6 +427,24 @@
 					"Postfix" : "",
 					"Type" : "Int",
 					"Visible" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "localTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
+				},
+				"Global Total" :
+				{
+					"Name" : "globalTotal",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"Visible" : true
 				}
 			},
 			"Calculations" :
@@ -350,13 +453,15 @@
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Internally_Invoiced_Services:F:amount",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "localTotal"
 				},
 				"Total:Global" : 
 				{
 					"Name" : "Total",
 					"Expression" : "Internally_Invoiced_Services:C:Entry_Total",
-					"Type" : "Global"
+					"Type" : "Global",
+					"Output" : "globalTotal"
 				}
 			}
 		},
@@ -382,7 +487,8 @@
 				{
 					"Name" : "Indirect_Cost",
 					"Expression" : "0.25 * (Personnel:C:Total + Equipment:C:Total + Other_Goods_and_Services:C:Total + Travel_Costs:C:Total)",
-					"Type" : "Local"
+					"Type" : "Local",
+					"Output" : "amount"
 				}
 			}
 		}

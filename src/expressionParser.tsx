@@ -1,8 +1,13 @@
+import { resourceUsage } from "process";
+import { getCalcObjectsFromCategory, getCategoriesObjectsFromTemplate, readJsonFile } from "./templateParser";
+import { getAllCategoryEntries, getCategoryID, getFieldID, getValue, getValueID, updateIndividualField } from "./database";
+
 type CalculationType =
 {
     name : string;
     expression : string;
     type : string;
+    output : string,
 };
 
 enum ValueType
@@ -33,8 +38,6 @@ const operators : Operator[] =
     {symbol : "^", precedence : 3, associativity : Associativity.Right},
 ]
 
-console.log(localEvaluator("b:C:e + b:F:d", 0, 0));
-console.log(globalEvaluator("b:C:e^2 + b:F:e^2", 0, 0));
 
 function isSpace(element : string) : boolean
 // Checks if an elements is a space or a blank string
@@ -293,17 +296,17 @@ function expressionToRPN(expression : string) : string[]
     return outQueue;
 }
 
-function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number) : number
+async function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number) : Promise<number>
 {
     let stack : string[] = []
 
     console.log(postfixExpr);
 
-    Object.values(postfixExpr).forEach(token =>
+    Object.values(postfixExpr).forEach(async token =>
     {
         if(isAlphabet(token[0]))
         {
-            let num = parseVariable(token, projectID, entryID);
+            let num : number = await parseVariable(token, projectID, entryID);
             stack.push(num.toString());
             
         }
@@ -397,7 +400,7 @@ function basicEvaluator(postfixExpr : string[], projectID : number, entryID : nu
 }
 
 
-function parseVariable(vari : string, projectID : number, entryID : number) : number
+async function parseVariable(vari : string, projectID : number, entryID : number) : Promise<number>
 {
     // Split the variable up into its constituent types
     const splitString : string[] = vari.split(":");
@@ -416,47 +419,142 @@ function parseVariable(vari : string, projectID : number, entryID : number) : nu
         valueType = ValueType.Calc;
     }
 
-    console.log(catName);
-    console.log(valueType);
-    console.log(valName);
-
     return getVariable(catName, valueType, valName, projectID, entryID);
 }
 
-function getVariable(catName : string, valueType : ValueType, valName : string, projectID : number, entryID : number) : number
+async function getVariable(catName : string, valueType : ValueType, fieldName : string, projectID : number, entryID : number) : Promise<number>
 {
     // Query the database to get the value, either in the field or calculation section
     // Can use the project and entry ids to do this
 
-    if(valueType == ValueType.Field)
+    // Get category id from name and projectid
+    const catId : number = await getCategoryID(catName, projectID);
+
+    // Use the catid and field name to get all matching field ids
+    const fieldID : number = await getFieldID(catId, fieldName);
+
+    // Get the value from field values with matching entry and field ids
+    const value : number = await getValue(entryID, fieldID);
+
+    // Return that value
+    return value;
+
+}
+
+
+
+async function addResultToDataBase(entryID : number, outputField : string, catId : number, result : number)
+{
+    // Will take the entry id, the name of the output field and the value and add it to the database
+
+    if(entryID == -1)
     {
-        return 100;
+        return;
     }
 
-    return 1;
+    // Check that the field exists so that it can be updated
+    // MIGHT NEED ANOTHER NEW QUERY
+
+    // Get the field ID
+    const fieldID : number = await getFieldID(catId, outputField);
+
+    // Run an update to change value (at field/entry) to be result
+    const valueID :  number = await getValueID(fieldID, entryID);
+
+    updateIndividualField(valueID, result);
+
+    return;
 }
 
 
-function localEvaluator(expr : string, projectID : number, entryID : number) : number
+
+async function localEvaluator(calc : CalculationType, projectID : number, entryID : number) : Promise<number>
 {
-    let RPN : string[] = expressionToRPN(expr);
+    let RPN : string[] = expressionToRPN(calc.expression);
 
-    return basicEvaluator(RPN, projectID, entryID);
+    let result : number = await basicEvaluator(RPN, projectID, entryID);
+
+    return result;
 }
 
-function globalEvaluator(expr : string, projectID : number, categoryID : number) : number
+async function globalEvaluator(calc : CalculationType, projectID : number, categoryID : number) : Promise<number>
 {
     // Get a list of entries in that category
     let entries : number[] = [categoryID]
     let total : number = 0;
 
-    let RPN : string[] = expressionToRPN(expr);
+    let RPN : string[] = expressionToRPN(calc.expression);
 
-    Object.values(entries).forEach(entry =>
+    Object.values(entries).forEach(async entry =>
     {
-        total += basicEvaluator(RPN, projectID, entry);
+        total += await basicEvaluator(RPN, projectID, entry);
     }
     );
 
     return total;
 }
+
+async function completeCalculations(projectID : number, template : any)
+{
+    // Get all category names
+    const cats : any[] = getCategoriesObjectsFromTemplate(template);
+
+    // For each one
+    Object.values(cats).forEach(async cat =>
+    {
+        // Get all calculations
+        const calculations : CalculationType[] = getCalcObjectsFromCategory(cat);
+
+        // Get the category id from the database somehow (use name and project id)
+        const catId : number = await getCategoryID(cat.Name, projectID);
+
+        // For each calculation
+        Object.values(calculations).forEach(async calc =>
+        {
+            let output : number = 0;
+
+            if(calc.type == "Local")
+            // If local
+            {
+                // Get a list of entries for the current category
+                    // Find the category id in category entries (get a list of entry ids)
+                    // Remove duplicates from that list
+                const entries = getAllCategoryEntries(catId);
+
+                Object.values(entries).forEach(async entry =>
+                // For each entry (in the current category cat)
+                {
+                    // do the calculation
+                    output = await localEvaluator(calc, projectID, entry.id);
+                    addResultToDataBase(entry, calc.output, catId, output);
+                }
+                )
+                
+                        
+            }
+            else
+            // If global
+            {
+                // Do the calculation
+                output = await globalEvaluator(calc, projectID, catId);
+                addResultToDataBase(-1, calc.output, catId, output);
+            }
+
+        }
+        );
+    }
+    );
+        
+           
+}
+
+
+main("template1.json");
+
+async function main(templateName : string)
+{
+    console.log(await readJsonFile(templateName));
+    await completeCalculations(99, await readJsonFile(templateName));
+}
+
+
