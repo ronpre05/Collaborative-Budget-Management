@@ -1,4 +1,3 @@
-import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_CREATE_ROOT_CONTAINERS } from "react-dom/client";
 import { supabase } from "./database";
 export async function getCategoryID(entryID: number): Promise<number> {
   const { data, error } = await supabase
