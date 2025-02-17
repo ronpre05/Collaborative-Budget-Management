@@ -38,7 +38,7 @@ const Projects: React.FC = () => {
       <p>FIRST Project ID: {projectId}</p>
       <p>ALL Project Entries: {projectEntries}</p>
       <p></p>
-      <CategoryDisplay data={formattedData}></CategoryDisplay>
+      <CategoryDisplay data={formattedData} />
       <ProjectsView userId={userId}></ProjectsView>
       <Link to="/create-project">
         <button className="create-project-btn">Create Project</button>

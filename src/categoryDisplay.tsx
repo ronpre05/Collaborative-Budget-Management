@@ -1,10 +1,24 @@
 /**
- * takes a 2D array of all data for a respective category within a project,
- * then displays said data into basic HTML table
- * CURRENTLY ASSUMES EVERY ITEM IS A STRING
+ * Dynamic table display for a 2D array.
+ * @component
+ *
+ * @param props Component props.
+ * @param {Array<Array<string>>} props.data 2D array of data.
+ * @returns {JSX.Element} Table displaying the provided data.
+ *
+ * @example
+ * const tableData = [
+ * ['Name', 'Age', 'Occupation'],
+ * ['Alice', '25', 'Engineer'],
+ * ['Bob', '30', 'Designer']
+ * ];
+ *
+ * return <CategoryDisplay data={tableData} />;
  */
-const CategoryDisplay: React.FC<{ data: string[][] }> = ({ data }) => {
-  /**
+const CategoryDisplay: React.FC<{ data: string[][] }> = ({
+  data,
+}): JSX.Element => {
+  /*
    * slices data into 2 arrays,
    * "headings" array, for category fields - 1D array
    * "tableItems" array, contents of every field - 2D array
