@@ -1,3 +1,4 @@
+import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_CREATE_ROOT_CONTAINERS } from "react-dom/client";
 import { supabase } from "./database";
 export async function getCategoryID(entryID: number): Promise<number> {
   const { data, error } = await supabase
@@ -72,4 +73,14 @@ export async function formatData(
   transposed.unshift(categoryHeaders);
 
   return transposed;
+}
+
+export async function getCategoryData(entryID: number): Promise<string[][]> {
+  const catID = await getCategoryID(entryID);
+  const fieldIDs = await getFieldIDs(catID);
+  const catHeaders = await getCategoryHeaders(catID);
+  const fieldData = await getFieldData(fieldIDs);
+  const result = await formatData(catHeaders, fieldData);
+
+  return result;
 }
