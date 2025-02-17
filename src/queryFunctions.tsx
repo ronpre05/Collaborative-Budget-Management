@@ -1,4 +1,3 @@
-import { buffer } from "stream/consumers";
 import { supabase } from "./database";
 export async function getCategoryID(entryID: number): Promise<number> {
   const { data, error } = await supabase
