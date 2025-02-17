@@ -126,16 +126,22 @@ function formatData(
 }
 
 /**
+ * Master function that takes an entryID and returns all relevant field data
+ * for said ID as a 2D array usable by [CategoryDisplay](./categoryDisplay.tsx).
+ * @param {number} entryID ID of the Category Entry that data is wanted for.
+ * @returns {string[][]} A 2D array of data containing [CategoryHeadings, ...fieldData].
  *
- * @param entryID
- * @returns
+ * @example
+ * const categoryData = await getCategoryData(entryID);
+ *
+ * @see {@link CategoryDisplay}
  */
 export async function getCategoryData(entryID: number): Promise<string[][]> {
   const catID = await getCategoryID(entryID);
   const fieldIDs = await getFieldIDs(catID);
   const catHeaders = await getCategoryHeaders(catID);
   const fieldData = await getFieldData(fieldIDs);
-  const result = await formatData(catHeaders, fieldData);
+  const result = formatData(catHeaders, fieldData);
 
   return result;
 }
