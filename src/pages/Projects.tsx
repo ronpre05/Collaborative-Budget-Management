@@ -5,31 +5,8 @@ import CategoryDisplay from "../categoryDisplay";
 import useProjectEntries from "../useProjectEntries";
 import * as testData from "../SampleCategoryData";
 import useProjectId from "../useProjectId";
-import {
-  getCategoryID,
-  getCategoryHeaders,
-  getFieldIDs,
-  getFieldData,
-  formatData,
-} from "../queryFunctions";
+import { getCategoryData } from "../queryFunctions";
 import { useEffect, useState } from "react";
-
-// testing in console
-(window as any).getCategoryID = getCategoryID;
-(window as any).getCategoryHeaders = getCategoryHeaders;
-(window as any).getFieldIDs = getFieldIDs;
-(window as any).getFieldData = getFieldData;
-(window as any).formatData = formatData;
-
-//testing purposes only
-(async () => {
-  const catID = await getCategoryID(49);
-  const fieldIDs = await getFieldIDs(catID);
-  const catHeaders = await getCategoryHeaders(catID);
-  const fieldData = await getFieldData(fieldIDs);
-  const result = await formatData(catHeaders, fieldData);
-  console.log(result);
-})();
 
 // Projects Page
 const Projects: React.FC = () => {
@@ -46,11 +23,7 @@ const Projects: React.FC = () => {
 
   useEffect(() => {
     async function getData() {
-      const catID = await getCategoryID(49);
-      const fieldIDs = await getFieldIDs(catID);
-      const catHeaders = await getCategoryHeaders(catID);
-      const fieldData = await getFieldData(fieldIDs);
-      const result = await formatData(catHeaders, fieldData);
+      const result = await getCategoryData(49);
       setFormattedData(result);
     }
     getData();
