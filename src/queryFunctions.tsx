@@ -1,4 +1,13 @@
 import { supabase } from "./database";
+
+/**
+ * Fetches categoryID off a given entryID.
+ * @param entryID The ID of the entry to fetch the categoryID for.
+ * @returns {Promise<number>} A promise that resolves to the categoryID linked to an entryID
+ *
+ * @example
+ * const categoryID = await getCategoryID(entryID);
+ */
 async function getCategoryID(entryID: number): Promise<number> {
   const { data, error } = await supabase
     .from("CategoryEntry")
@@ -14,6 +23,11 @@ async function getCategoryID(entryID: number): Promise<number> {
   return data?.categoryID;
 }
 
+/**
+ *
+ * @param categoryID
+ * @returns
+ */
 async function getCategoryHeaders(categoryID: number): Promise<string[]> {
   const { data, error } = await supabase
     .from("CategoryFields")
@@ -27,6 +41,11 @@ async function getCategoryHeaders(categoryID: number): Promise<string[]> {
   return data.map((item) => item.fieldName);
 }
 
+/**
+ *
+ * @param categoryID
+ * @returns
+ */
 async function getFieldIDs(categoryID: number): Promise<number[]> {
   const { data, error } = await supabase
     .from("CategoryFields")
@@ -39,6 +58,11 @@ async function getFieldIDs(categoryID: number): Promise<number[]> {
   return data.map((item) => item.fieldID);
 }
 
+/**
+ *
+ * @param fieldIDs
+ * @returns
+ */
 async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   const fieldData = [];
   for (const fieldID of fieldIDs) {
@@ -60,6 +84,12 @@ async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   return fieldData;
 }
 
+/**
+ *
+ * @param categoryHeaders
+ * @param fieldData
+ * @returns
+ */
 async function formatData(
   categoryHeaders: string[],
   fieldData: string[][]
@@ -72,6 +102,11 @@ async function formatData(
   return transposed;
 }
 
+/**
+ *
+ * @param entryID
+ * @returns
+ */
 export async function getCategoryData(entryID: number): Promise<string[][]> {
   const catID = await getCategoryID(entryID);
   const fieldIDs = await getFieldIDs(catID);
