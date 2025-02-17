@@ -265,7 +265,7 @@ export const getUsersProjects = async (): Promise<any[]> => {
         .eq("userID", userID); // Filtering to only retrieve projects belonging to the specified user
 
     // Debugging log to check the retrieved data
-    console.log("Successfully retrieved user institution projects: ", data);
+    // console.log("Successfully retrieved user institution projects: ", data);
 
     // Error handling: Log and throw an error if the query fails
     if (error) {
@@ -274,7 +274,7 @@ export const getUsersProjects = async (): Promise<any[]> => {
     }
 
     // Debugging log to confirm the fetched projects
-    console.log("Fetched user projects: ", data);
+    // console.log("Fetched user projects: ", data);
 
     // Return the retrieved data, or an empty array if no data is found
     return data || [];

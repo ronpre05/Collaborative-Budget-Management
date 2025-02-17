@@ -2,37 +2,62 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
 
-// Projects Page Component
+// Projects Page
 const Projects: React.FC = () => {
-  // State to store the user's ID
   const [userId, setUserId] = useState<number | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
 
   useEffect(() => {
-    // Retrieve the user ID from local storage
+    // Retrieve userID from local storage
     const storedUserId = localStorage.getItem("userID");
-
     if (storedUserId) {
-      // Convert the retrieved user ID to a number and set it in state
       setUserId(parseInt(storedUserId, 10));
     } else {
-      // Log an error message if no user ID is found
       console.error("No user ID found in localStorage.");
     }
-  }, []); // Runs only once when the component mounts
-  
+  }, []);
+
+  // Callback function to handle projects received from ProjectsView
+  const handleProjectsFetched = (fetchedProjects: any[]) => {
+    setProjects(fetchedProjects);
+  };
+
+  // Function to handle project selection
+  const handleProjectClick = (projectID: number) => {
+    localStorage.setItem("selectedProjectID", projectID.toString());
+    console.log("Selected project ID stored:", projectID);
+  };
 
   return (
     <div className="content">
       <h1>Projects Page</h1>
       <p>Manage your projects here.</p>
-
-      {/* Button to navigate to the Create Project page */}
       <Link to="/create-project">
-        <button className="create-project-btn">Create New Project</button>
+        <button className="create-project-btn">Create Project</button>
       </Link>
 
-      {/* Render the ProjectsView component if the user ID is available, otherwise display a loading message */}
-      {userId ? <ProjectsView /> : <p>Loading user...</p>}
+      {/* Render ProjectsView if userId is available */}
+      {userId ? (
+        <ProjectsView userId={userId} onProjectsFetched={handleProjectsFetched} />
+      ) : (
+        <p>Loading user...</p>
+      )}
+
+      {/* Display project buttons */}
+      {projects.length > 0 && (
+        <div className="project-list">
+          <h2>Your Projects</h2>
+          {projects.map((project) => (
+            <button
+              key={project.Project.projectID}
+              className="project-button"
+              onClick={() => handleProjectClick(project.Project.projectID)}
+            >
+              {project.Project.projectID}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
