@@ -2,7 +2,7 @@ import { supabase } from "./database";
 
 /**
  * Fetches categoryID off a given entryID.
- * @param entryID The ID of the entry to fetch the categoryID for.
+ * @param {number} entryID The ID of the entry to fetch the categoryID for.
  * @returns {Promise<number>} A promise that resolves to the categoryID linked to an entryID, as a number.
  *
  * @example
@@ -25,7 +25,7 @@ async function getCategoryID(entryID: number): Promise<number> {
 
 /**
  * Fetches all FieldNames for the Field of a given Category.
- * @param categoryID ID of category to fetch FieldNames for.
+ * @param {number} categoryID ID of category to fetch FieldNames for.
  * @returns {Promise<string[]>} A promise that resolves to a 2D array of FieldNames.
  *
  * @example
@@ -45,9 +45,12 @@ async function getCategoryHeaders(categoryID: number): Promise<string[]> {
 }
 
 /**
+ * Fetches all FieldIDs of the Fields linked to a given Category.
+ * @param {number} categoryID ID of category to fetch FieldIDs for.
+ * @returns {Promise<number[]>} A promise that resolves to an array of FieldIDs as numbers.
  *
- * @param categoryID
- * @returns
+ * @example
+ * const fieldIDs = await getFieldIDs(categoryID);
  */
 async function getFieldIDs(categoryID: number): Promise<number[]> {
   const { data, error } = await supabase
