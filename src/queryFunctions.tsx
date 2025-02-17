@@ -65,9 +65,17 @@ async function getFieldIDs(categoryID: number): Promise<number[]> {
 }
 
 /**
+ * Fetches all FieldValues linked to a given array of FieldIDs.
+ * Returns a 2D array of fieldValues. Each 1D array contains the fieldValues linked to the
+ * FieldID of that respective index.
  *
- * @param fieldIDs
- * @returns
+ * e.g., Given [[item1, item2], [item3, item4]], with paramter [fieldID1, fieldID2],
+ *
+ * [item1, item2] are the fieldValues for fieldID1, and [item3,item4], are the fieldValues for fieldID2.
+ * @param {number[]} fieldIDs Array of FieldIDs to fetch records for.
+ * @returns {Promise<string[][]>} Promise that resolves to 2D array, containing arrays of each FieldValue for a given fieldID.
+ * @example
+ * const fieldData = await getFieldData(arrayOfFieldIDs);
  */
 async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   const fieldData = [];
