@@ -1,5 +1,5 @@
 import { supabase } from "./database";
-export async function getCategoryID(entryID: number): Promise<number> {
+async function getCategoryID(entryID: number): Promise<number> {
   const { data, error } = await supabase
     .from("CategoryEntry")
     .select("categoryID")
@@ -14,9 +14,7 @@ export async function getCategoryID(entryID: number): Promise<number> {
   return data?.categoryID;
 }
 
-export async function getCategoryHeaders(
-  categoryID: number
-): Promise<string[]> {
+async function getCategoryHeaders(categoryID: number): Promise<string[]> {
   const { data, error } = await supabase
     .from("CategoryFields")
     .select("fieldName")
@@ -29,7 +27,7 @@ export async function getCategoryHeaders(
   return data.map((item) => item.fieldName);
 }
 
-export async function getFieldIDs(categoryID: number): Promise<number[]> {
+async function getFieldIDs(categoryID: number): Promise<number[]> {
   const { data, error } = await supabase
     .from("CategoryFields")
     .select("fieldID")
@@ -41,7 +39,7 @@ export async function getFieldIDs(categoryID: number): Promise<number[]> {
   return data.map((item) => item.fieldID);
 }
 
-export async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
+async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   const fieldData = [];
   for (const fieldID of fieldIDs) {
     console.log("fetching data for fieldID:", fieldID);
@@ -62,7 +60,7 @@ export async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   return fieldData;
 }
 
-export async function formatData(
+async function formatData(
   categoryHeaders: string[],
   fieldData: string[][]
 ): Promise<string[][]> {
