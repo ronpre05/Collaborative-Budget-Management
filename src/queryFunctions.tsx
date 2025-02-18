@@ -171,7 +171,9 @@ function formatData(
  *
  * @see {@link CategoryDisplay}
  */
-export async function getCategoryDataE(entryID: number): Promise<string[][]> {
+export async function getCategoryDataEntryOnly(
+  entryID: number
+): Promise<string[][]> {
   const catID = await getCategoryID(entryID);
   const fieldIDs = await getFieldIDs(catID);
   const catHeaders = await getCategoryHeaders(catID);
@@ -181,7 +183,8 @@ export async function getCategoryDataE(entryID: number): Promise<string[][]> {
   return result;
 }
 
-export async function getCategoryDataC(
+// CALL THIS ONE IF YOU ONLY HAVE CATEGORY ID
+export async function getCategoryDataCatOnly(
   categoryID: number
 ): Promise<string[][]> {
   // const projectID = await getprojectID(categoryID);
