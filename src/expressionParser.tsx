@@ -406,17 +406,6 @@ async function parseVariable(vari : string, projectID : number, entryID : number
     let catName : string = splitString[0];
     let valName : string = splitString[2];
 
-    let valueType : ValueType;
-
-    if(splitString[1] == "F")
-    {
-        valueType = ValueType.Field;
-    }
-    else
-    {
-        valueType = ValueType.Calc;
-    }
-
     return getVariable(catName, valName, projectID, entryID);
 }
 
