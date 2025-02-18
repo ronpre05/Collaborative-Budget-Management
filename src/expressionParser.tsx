@@ -1,5 +1,4 @@
-import { resourceUsage } from "process";
-import { getCalcObjectsFromCategory, getCategoriesObjectsFromTemplate, readJsonFile } from "./templateParser";
+import { getCalcObjectsFromCategory, getCategoriesObjectsFromTemplate, getCategoriesSection, getCategoryNames, getCategoryObject, getCatNamesFromTemplate, readJsonFile } from "./templateParser";
 import { getAllCategoryEntries, getCategoryID, getFieldID, getValue, getValueID, updateIndividualField } from "./database";
 
 type CalculationType =
@@ -300,95 +299,94 @@ async function basicEvaluator(postfixExpr : string[], projectID : number, entryI
 {
     let stack : string[] = []
 
-    console.log(postfixExpr);
-
-    Object.values(postfixExpr).forEach(async token =>
+    for(const token of postfixExpr)
     {
         if(isAlphabet(token[0]))
-        {
-            let num : number = await parseVariable(token, projectID, entryID);
-            stack.push(num.toString());
-            
-        }
-        else if(isOperator(token)) // is operator
-        {
-            let sOp1 = stack.pop();
-            let sOp2 = stack.pop();
-            let op1 : number = 0;
-            let op2 : number = 0;
-
-            // pop two more from stack
-            if(sOp1 != undefined)
             {
-                op1 = Number.parseFloat(sOp1);
-
+                let num : number = await parseVariable(token, projectID, entryID);
+                stack.push(num.toString());
+                
+            }
+            else if(isOperator(token)) // is operator
+            {
+                let sOp1 = stack.pop();
+                let sOp2 = stack.pop();
+                let op1 : number = 0;
+                let op2 : number = 0;
+    
+                // pop two more from stack
+                if(sOp1 != undefined)
+                {
+                    op1 = Number.parseFloat(sOp1);
+    
+                }
+                else
+                {   
+                    op1 = 1;
+                }
+    
+                if(sOp2 != undefined)
+                {
+                    op2 = Number.parseFloat(sOp2);
+                }
+                else
+                {
+                    op2 = 1;
+                }
+    
+                let val : number = 0;
+    
+                // evaluate the thing
+                switch (token)
+                {
+                    case "+":
+                    {
+                        val = op2 + op1;
+                        break;
+                    }
+    
+                    case "-":
+                    {
+                        val = op2- op1;
+                        break;
+                    }
+    
+                    case "*":
+                    {
+                        val = op2 * op1;
+                        break;
+                    }
+    
+                    case "/":
+                    {
+                        if(op2 == 0)
+                        {
+                            val = 0;
+                        }
+                        else
+                        {
+                            val = op2 / op1;
+                        }
+    
+                        break;
+                    }
+    
+                    case "^":
+                    {
+                        val = op2 ** op1;
+                        break;
+                    }
+                }
+                
+                // push to stack
+                stack.push(val.toString());            
             }
             else
-            {   
-                op1 = 1;
-            }
-
-            if(sOp2 != undefined)
             {
-                op2 = Number.parseFloat(sOp2);
+                stack.push(token); // is a number
             }
-            else
-            {
-                op2 = 1;
-            }
-
-            let val : number = 0;
-
-            // evaluate the thing
-            switch (token)
-            {
-                case "+":
-                {
-                    val = op2 + op1;
-                    break;
-                }
-
-                case "-":
-                {
-                    val = op2- op1;
-                    break;
-                }
-
-                case "*":
-                {
-                    val = op2 * op1;
-                    break;
-                }
-
-                case "/":
-                {
-                    if(op2 == 0)
-                    {
-                        val = 0;
-                    }
-                    else
-                    {
-                        val = op2 / op1;
-                    }
-
-                    break;
-                }
-
-                case "^":
-                {
-                    val = op2 ** op1;
-                }
-            }
-            
-            // push to stack
-            stack.push(val.toString());            
-        }
-        else
-        {
-            stack.push(token); // is a number
-        }
     }
-    );
+
 
     let val = stack.pop();
     if(val != undefined)
@@ -419,19 +417,19 @@ async function parseVariable(vari : string, projectID : number, entryID : number
         valueType = ValueType.Calc;
     }
 
-    return getVariable(catName, valueType, valName, projectID, entryID);
+    return getVariable(catName, valName, projectID, entryID);
 }
 
-async function getVariable(catName : string, valueType : ValueType, fieldName : string, projectID : number, entryID : number) : Promise<number>
+async function getVariable(catName : string, fieldName : string, projectID : number, entryID : number) : Promise<number>
 {
     // Query the database to get the value, either in the field or calculation section
     // Can use the project and entry ids to do this
 
     // Get category id from name and projectid
-    const catId : number = await getCategoryID(catName, projectID);
+    const catId : number = await getCategoryID(cleanString(catName), projectID);
 
     // Use the catid and field name to get all matching field ids
-    const fieldID : number = await getFieldID(catId, fieldName);
+    const fieldID : number = await getFieldID(catId, cleanString(fieldName));
 
     // Get the value from field values with matching entry and field ids
     const value : number = await getValue(entryID, fieldID);
@@ -456,7 +454,7 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     // MIGHT NEED ANOTHER NEW QUERY
 
     // Get the field ID
-    const fieldID : number = await getFieldID(catId, outputField);
+    const fieldID : number = await getFieldID(catId, cleanString(outputField));
 
     // Run an update to change value (at field/entry) to be result
     const valueID :  number = await getValueID(fieldID, entryID);
@@ -480,7 +478,7 @@ async function localEvaluator(calc : CalculationType, projectID : number, entryI
 async function globalEvaluator(calc : CalculationType, projectID : number, categoryID : number) : Promise<number>
 {
     // Get a list of entries in that category
-    let entries : number[] = [categoryID]
+    let entries : number[] = await getAllCategoryEntries(categoryID);
     let total : number = 0;
 
     let RPN : string[] = expressionToRPN(calc.expression);
@@ -494,24 +492,33 @@ async function globalEvaluator(calc : CalculationType, projectID : number, categ
     return total;
 }
 
+function cleanString(str : string) : string
+{
+    return str.split("_").join(" ");
+}
+
 export async function completeCalculations(projectID : number, template : any)
 {
     // Get all category names
-    const cats : any[] = getCategoriesObjectsFromTemplate(template);
+    const catNames : string[] = getCatNamesFromTemplate(template);
 
     // For each one
-    Object.values(cats).forEach(async cat =>
+    Object.values(catNames).forEach(async catName =>
     {
+        const cat : any = getCategoryObject(getCategoriesSection(template), catName);
+
         // Get all calculations
         const calculations : CalculationType[] = getCalcObjectsFromCategory(cat);
 
+        //console.log(projectID, cleanString(catName));
+
         // Get the category id from the database somehow (use name and project id)
-        const catId : number = await getCategoryID(cat.Name, projectID);
+        const catId : number = await(getCategoryID(cleanString(catName), projectID));
 
         // For each calculation
         Object.values(calculations).forEach(async calc =>
         {
-            let output : number = 0;
+            let result : number = 0;
 
             if(calc.type == "Local")
             // If local
@@ -525,8 +532,8 @@ export async function completeCalculations(projectID : number, template : any)
                 // For each entry (in the current category cat)
                 {
                     // do the calculation
-                    output = await localEvaluator(calc, projectID, entry.id);
-                    addResultToDataBase(entry, calc.output, catId, output);
+                    result = await localEvaluator(calc, projectID, entry);
+                    addResultToDataBase(entry, calc.output, catId, result);
                 }
                 )
                 
@@ -536,8 +543,8 @@ export async function completeCalculations(projectID : number, template : any)
             // If global
             {
                 // Do the calculation
-                output = await globalEvaluator(calc, projectID, catId);
-                addResultToDataBase(-1, calc.output, catId, output);
+                result = await globalEvaluator(calc, projectID, catId);
+                addResultToDataBase(-1, calc.output, catId, result);
             }
 
         }
@@ -558,7 +565,21 @@ async function main(templateName : string)
     console.log(await getFieldID(28, "personMonth")); // 64
     console.log(await getValue(46, 57)) // Gives 100
     console.log(await getValueID(46, 57)); // Gives 89
-    console.log(await updateIndividualField(105, 10000));
+    console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
+
+    console.log("");
+
+    // Some tests for get variable, global and local evaluator
+
+    console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
+
+    const template : any = await readJsonFile("./template1.json");
+
+    const cats = getCategoriesObjectsFromTemplate(template);
+    
+    console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
+
+    console.log(await(completeCalculations(99, template)));
 }
 
 

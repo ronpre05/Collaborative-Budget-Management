@@ -140,7 +140,7 @@ export const getCategoryID = async (catName : string, projectID : number): Promi
 
     if(error)
     {
-        console.error("Error fetching category ids: ", error);
+        console.error("Error fetching category ids: ", error, catName);
         return -1;
     }
 
@@ -179,7 +179,7 @@ export const getFieldID = async (catID : number, fieldName : string) : Promise<a
 
     if(error)
     {
-        console.error("Error fetching field id: ", error)
+        console.error("Error fetching field id: ", error, fieldName);
         return -1;
     }
 

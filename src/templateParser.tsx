@@ -57,8 +57,8 @@ type CalculationType =
 
 export async function readJsonFile(path : string) : Promise<any>
 {
-    const response = await fetch(path);
-    return await response.json();
+    const file = await readFile(path, "utf8");
+    return await(JSON.parse(file));
 }
 
 // Gets the value in the "templateName" section of the JSON
@@ -91,7 +91,7 @@ export function getCategoryNames(categories : any) : string[]
 }
 
 // Gets an array of categoru names from the template directly
-function getCatNamesFromTemplate(template : any) : string[]
+export function getCatNamesFromTemplate(template : any) : string[]
 {
     // Return the categories names after gathering the categories section
     return getCategoryNames(getCategoriesSection(template));
@@ -208,7 +208,7 @@ function getFieldObjectsFromCategory(category : any) : FieldType[]
         let field : any = getFieldObject(fields, value)
 
         // Add the object to an array
-        fieldObs.push(field);
+        fieldObs.push(getFieldData(field));
     }
     )
 
@@ -293,7 +293,7 @@ export function getCalcObjectsFromCategory(category : any) : CalculationType[]
         let calc : CalculationType = getCalculationObject(calcs, value)
 
         // Add the object to an array
-        calcObs.push(calc);
+        calcObs.push(getCalcData(calc));
     }
     )
 

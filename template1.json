@@ -315,7 +315,7 @@
 					"Type" : "Local",
 					"Output" : ""
 				},
-				"Total:Global"
+				"Total:Global" :
 				{
 					"Name" : "Total",
 					"Expression" : "Travel_Costs:C:Trip_Total",
