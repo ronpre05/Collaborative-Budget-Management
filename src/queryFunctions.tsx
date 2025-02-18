@@ -1,5 +1,5 @@
 import { supabase } from "./database";
-
+/*
 async function getprojectID(categoryID: number): Promise<number> {
   const { data, error } = await supabase
     .from("Categories")
@@ -33,6 +33,7 @@ async function getEntryID(
   }
   return data?.entryID;
 }
+*/
 
 /**
  * Fetches categoryID off a given entryID.
@@ -183,8 +184,8 @@ export async function getCategoryDataE(entryID: number): Promise<string[][]> {
 export async function getCategoryDataC(
   categoryID: number
 ): Promise<string[][]> {
-  const projectID = await getprojectID(categoryID);
-  const entryID = await getEntryID(projectID, categoryID);
+  // const projectID = await getprojectID(categoryID);
+  // const entryID = await getEntryID(projectID, categoryID);
   const fieldIDs = await getFieldIDs(categoryID);
   const catHeaders = await getCategoryHeaders(categoryID);
   const fieldData = await getFieldData(fieldIDs);
