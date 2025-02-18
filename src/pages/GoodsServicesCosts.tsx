@@ -10,7 +10,7 @@ const GoodsServicesCosts: React.FC = () => {
   const [items, setItems] = useState<Array<Record<string, string>>>([]);
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   const [totalCost, setTotalCost] = useState(0);
-  const projectID = 94; // Replace with dynamic value if needed
+  const projectID = 94; // Will be Replace with dynamic value 
 
   const handleFieldChange = (fieldKey: string, value: string) => {
     setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));

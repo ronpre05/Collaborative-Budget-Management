@@ -62,8 +62,9 @@ function App() {
               <Route path="/create-project/personnel-costs" element={<ProjectView />} />
               <Route path="/create-project/equipment-costs" element={<ProjectView />} />
               <Route path="/create-project/travel-costs" element={<ProjectView />} />
+              <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
               <Route path="/create-project/goods-services-costs" element={<ProjectView />} />
-              <Route path="/create-project/manage-collaborators" element={<ManageCollaborators />} />
+              
             </Routes>
           </main>
         </div>
