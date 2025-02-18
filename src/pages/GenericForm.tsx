@@ -2,24 +2,30 @@ import React, { useState } from "react";
 import { CategoryType, FieldType } from "../types";
 import { flattenFields } from "../templateParser";
 
+//GenericForm.tsx is a fully dynamic form  generator that can be later re-used.
+//It renders input fields, validates user input and performs calculations based on the selected budget category
+
+// How DynamicBudgetForm and GenericForm work together:
+// 1. DynamicBudgetForm manages category selection and passes the correct category to GenericForm.
+// 2. GenericForm renders and processes the form dynamically for the selected category.
 interface GenericFormProps {
   category: CategoryType;
 }
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
-  // Flatten the fields for easier handling.
+  // Flatten the fields for easy handling.
   const flatFields = flattenFields(category.Fields);
 
-  // State for the current item’s field values (flat structure)
+  // State for the current (new) item’s field values (stored in a flat structure)
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   // State for the list of submitted items
   const [items, setItems] = useState<Array<Record<string, string | number>>>([]);
-  // Running total calculated from user-entered values (assumes "Amount" field)
+  // Running total (using the “Total” calculation if available)
   const [runningTotal, setRunningTotal] = useState(0);
 
   // Update field value
   const handleFieldChange = (fieldKey: string, value: string) => {
-    setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));
+    setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
   };
 
   // Map our field “Type” from the JSON to an appropriate input type.
@@ -35,36 +41,60 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     }
   };
 
-  // Helper to determine if a field is a calculated field (i.e. its key exists in category.Calculations)
-  const isCalculatedField = (fieldKey: string): boolean => {
-    return category.Calculations && Object.keys(category.Calculations).includes(fieldKey);
+  /**
+   * Evaluate the calculation expressions using the current field values.
+   * This function:
+   *  - Converts each field value to a number (or, if the key includes "date", converts it to a timestamp).
+   *  - Pre-processes expressions (e.g. removes any “.Value” suffix).
+   *  - Uses a Function constructor to evaluate the expression in a safe context.
+   */
+  const evaluateCalculations = (values: Record<string, string>): Record<string, number> => {
+    const calcResults: Record<string, number> = {};
+    // Create a context of numeric values from our input.
+    const context: Record<string, number> = {};
+    for (const key in values) {
+      // If the field key looks like a date (by name), convert it to a timestamp.
+      if (key.toLowerCase().includes("date")) {
+        const date = new Date(values[key]);
+        context[key] = isNaN(date.getTime()) ? 0 : date.getTime();
+      } else {
+        context[key] = parseFloat(values[key]) || 0;
+      }
+    }
+    // Loop over each calculation defined in the category.
+    for (const calcKey in category.Calculations) {
+      let expression = category.Calculations[calcKey].Expression;
+      // Pre‑process: remove occurrences of “.Value” (so “Amount.Value” becomes “Amount”)
+      expression = expression.replace(/\.Value/g, "");
+      try {
+        // Create a new function whose parameters are the keys in our context.
+        const func = new Function(...Object.keys(context), "return " + expression + ";");
+        const result = func(...Object.values(context));
+        // Save the result both in our calculation results and in our context (for later calculations that might depend on it)
+        calcResults[calcKey] = result;
+        context[calcKey] = result;
+      } catch (error) {
+        console.error("Error evaluating expression:", expression, error);
+        calcResults[calcKey] = 0;
+        context[calcKey] = 0;
+      }
+    }
+    return calcResults;
   };
 
   // Render all (flattened) fields.
   const renderFields = () => {
     return Object.entries(flatFields).map(([key, field]) => {
-      if (!field.visible) return null;
-
-      // If this field is also defined in Calculations, render it as read‑only (or omit it)
-      if (isCalculatedField(key)) {
-        return (
-          <div key={key} style={{ marginBottom: "0.5rem" }}>
-            <label>
-              {key}: <span>{/* You can display the computed value here if available */}</span>
-            </label>
-          </div>
-        );
-      }
-
+      if (!field.Visible) return null;
       return (
         <div key={key} style={{ marginBottom: "0.5rem" }}>
           <label>
             {key}:
             <input
-              type={mapFieldType(field.type)}
+              type={mapFieldType(field.Type)}
               value={newItemValues[key] || ""}
               onChange={(e) => handleFieldChange(key, e.target.value)}
-              placeholder={field.name}
+              placeholder={field.Name}
               style={{ marginLeft: "0.5rem" }}
             />
           </label>
@@ -76,19 +106,21 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Handle form submission.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Basic validation: ensure every visible (non-calculated) field has a value.
+    // Basic validation: check that every visible field has a value.
     for (const key in flatFields) {
-      if (flatFields[key].visible && !newItemValues[key] && !isCalculatedField(key)) {
+      if (flatFields[key].Visible && !newItemValues[key]) {
         alert(`Please fill out the field: ${key}`);
         return;
       }
     }
-
-    // Instead of evaluating an expression, simply use the value of the "Amount" field.
-    const amount = parseFloat(newItemValues["Amount"]) || 0;
-    setItems((prev) => [...prev, newItemValues]);
-    setRunningTotal((prev) => prev + amount);
+    // Evaluate calculations using the current field values.
+    const calcResults = evaluateCalculations(newItemValues);
+    // If a “Total” calculation exists, use it for the running total.
+    const itemTotal = calcResults["Total"] || 0;
+    // Combine the field values and the calculated results into one record.
+    const newItem = { ...newItemValues, ...calcResults };
+    setItems(prev => [...prev, newItem]);
+    setRunningTotal(prev => prev + itemTotal);
     // Reset the form.
     setNewItemValues({});
   };
@@ -113,21 +145,16 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
             }}
           >
             {Object.entries(flatFields).map(([key, field]) => {
-              if (!field.visible) return null;
-              // Render only non‑calculated (user‑entered) fields here.
-              if (!isCalculatedField(key)) {
-                return (
-                  <div key={key}>
-                    <strong>{key}:</strong> {item[key] || ""}
-                  </div>
-                );
-              }
-              return null;
+              if (!field.Visible) return null;
+              return (
+                <div key={key}>
+                  <strong>{key}:</strong> {item[key] || ""}
+                </div>
+              );
             })}
-            {/* Optionally, if you want to display calculated values from category.Calculations */}
             {Object.entries(category.Calculations).map(([calcKey, calcDef]) => (
               <div key={calcKey}>
-                <strong>{calcDef.Name}:</strong> {/* Display a computed value if available */}
+                <strong>{calcDef.Name}:</strong> {item[calcKey] !== undefined ? item[calcKey] : ""}
               </div>
             ))}
           </li>

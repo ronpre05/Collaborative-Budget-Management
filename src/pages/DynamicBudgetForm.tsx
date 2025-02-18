@@ -3,7 +3,7 @@ import templateDataJson from "../../template1.json";
 import { getCategoriesObjectsFromTemplate, getTemplateName } from "../templateParser";
 import GenericForm from "./GenericForm";
 
-// Manages the tab layout and dynamically displays the appropriate budget category form.
+//manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
 const DynamicBudgetForm: React.FC = () => {
   const templateData = templateDataJson;
   const categories = getCategoriesObjectsFromTemplate(templateData);
