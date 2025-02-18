@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
+import CategoryDisplay from "../categoryDisplay";
+import { getCategoryData } from "../queryFunctions";
 
 // Projects Page
 const Projects: React.FC = () => {
