@@ -556,30 +556,30 @@ export async function completeCalculations(projectID : number, template : any)
 }
 
 
-main("template1.json");
+// main("template1.json");
 
-async function main(templateName : string)
-{
-    console.log(await getCategoryID("Personnel", 88)); // Gives 35
-    console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
-    console.log(await getFieldID(28, "personMonth")); // 64
-    console.log(await getValue(46, 57)) // Gives 100
-    console.log(await getValueID(46, 57)); // Gives 89
-    console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
+// async function main(templateName : string)
+// {
+//     console.log(await getCategoryID("Personnel", 88)); // Gives 35
+//     console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
+//     console.log(await getFieldID(28, "personMonth")); // 64
+//     console.log(await getValue(46, 57)) // Gives 100
+//     console.log(await getValueID(46, 57)); // Gives 89
+//     console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
 
-    console.log("");
+//     console.log("");
 
-    // Some tests for get variable, global and local evaluator
+//     // Some tests for get variable, global and local evaluator
 
-    console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
+//     console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
 
-    const template : any = await readJsonFile("./template1.json");
+//     const template : any = await readJsonFile("./template1.json");
 
-    const cats = getCategoriesObjectsFromTemplate(template);
+//     const cats = getCategoriesObjectsFromTemplate(template);
     
-    console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
+//     console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
 
-    console.log(await(completeCalculations(99, template)));
-}
+//     console.log(await(completeCalculations(99, template)));
+// }
 
 
