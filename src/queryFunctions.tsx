@@ -1,5 +1,39 @@
 import { supabase } from "./database";
 
+async function getprojectID(categoryID: number): Promise<number> {
+  const { data, error } = await supabase
+    .from("Categories")
+    .select("projectID")
+    .eq("categoryID", categoryID)
+    .single();
+
+  if (error) {
+    console.error("Unable to fetch projectID for categoryID:", categoryID);
+  }
+
+  return data?.projectID;
+}
+
+async function getEntryID(
+  projectID: number,
+  categoryID: number
+): Promise<number> {
+  const { data, error } = await supabase
+    .from("CategoryEntry")
+    .select("entryID")
+    .eq("projectID, categoryID", [projectID, categoryID])
+    .single();
+
+  if (error) {
+    console.error(
+      "Unable to fetch entry ID for projectID, categoryID:",
+      projectID,
+      categoryID
+    );
+  }
+  return data?.entryID;
+}
+
 /**
  * Fetches categoryID off a given entryID.
  * @param {number} entryID The ID of the entry to fetch the categoryID for.
@@ -136,10 +170,23 @@ function formatData(
  *
  * @see {@link CategoryDisplay}
  */
-export async function getCategoryData(entryID: number): Promise<string[][]> {
+export async function getCategoryDataE(entryID: number): Promise<string[][]> {
   const catID = await getCategoryID(entryID);
   const fieldIDs = await getFieldIDs(catID);
   const catHeaders = await getCategoryHeaders(catID);
+  const fieldData = await getFieldData(fieldIDs);
+  const result = formatData(catHeaders, fieldData);
+
+  return result;
+}
+
+export async function getCategoryDataC(
+  categoryID: number
+): Promise<string[][]> {
+  const projectID = await getprojectID(categoryID);
+  const entryID = await getEntryID(projectID, categoryID);
+  const fieldIDs = await getFieldIDs(categoryID);
+  const catHeaders = await getCategoryHeaders(categoryID);
   const fieldData = await getFieldData(fieldIDs);
   const result = formatData(catHeaders, fieldData);
 
