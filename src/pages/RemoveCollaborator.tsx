@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../database"; // Ensure Supabase imported
+import { supabase } from "../database"; 
 
 interface RemoveCollaboratorProps {
   projectID: number;
