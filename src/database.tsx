@@ -434,3 +434,117 @@ export const getRoles = async () => {
     console.log("Roles from database:", data); // Debugging log
     return data || [];
 };
+
+
+// Get category id using category name and project id
+export const getCategoryID = async (catName : string, projectID : number): Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("Categories")
+        .select("categoryID")
+        .eq("categoryName", catName)
+        .eq("projectID", projectID)
+        .single()
+
+    if(error)
+    {
+        console.error("Error fetching category ids: ", error, catName);
+        return -1;
+    }
+
+    return data.categoryID;
+}
+
+
+// Get all entry ids using category id
+export const getAllCategoryEntries = async (catID : number) : Promise<any[]> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .select("entryID")
+        .eq("categoryID", catID)
+    
+    if(error)
+    {
+        console.error("Error fetching entry ids: ", error);
+        return [];
+    }
+
+    return data.map((entry : any) => entry.entryID);
+}
+
+
+
+// Get field id from catid and field name
+export const getFieldID = async (catID : number, fieldName : string) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryFields")
+        .select("fieldID")
+        .eq("categoryID", catID)
+        .eq("fieldName", fieldName)
+        .single()
+
+    if(error)
+    {
+        console.error("Error fetching field id: ", error, fieldName);
+        return -1;
+    }
+
+    return data.fieldID;
+}
+
+
+// Get value from matching entry and field ids
+export const getValue = async (entryID : number, fieldID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("FieldValues")
+        .select("value")
+        .eq("entryID", entryID)
+        .eq("fieldID", fieldID)
+        .single()
+    
+    if(error)
+    {
+        console.error("Error fecthing value: ", error)
+        return -1;
+    }
+
+    return data.value;
+}
+
+export const getValueID = async (entryID : number, fieldID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("FieldValues")
+        .select("valueID")
+        .eq("entryID", entryID)
+        .eq("fieldID", fieldID)
+        .single()
+    
+    if(error)
+    {
+        console.error("Error fecthing value ID: ", error)
+        return -1;
+    }
+
+    return data.valueID;
+}
+
+// Update an entry
+export const updateIndividualField = async (valueID : number, result : any) : Promise<any> =>
+{
+    const { error } = await supabase
+        .from("FieldValues")
+        .update({value: result})
+        .eq("valueID", valueID)
+
+    if(error)
+    {
+        console.error("Error updating value: ", error);
+        return -1;
+    }
+
+    return 1;
+}

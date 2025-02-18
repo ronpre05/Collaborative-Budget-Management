@@ -1,9 +1,65 @@
-import { TemplateData, FieldType, CalculationType, CategoryType } from "./types";
+import { readFile } from "fs/promises";
+
+type FieldType =
+{
+    name : string;
+    prefix : string;
+    value : string;
+    postfix : string;
+    type : string;
+    visible : boolean;
+};
+
+type CalculationType =
+{
+    name : string;
+    expression : string;
+    type : string;
+    output : string;
+};
+
+// main("template1.json");
+
+// async function main(templateName : string)
+// {
+//     const template : any = await(readJsonFile(templateName));
+
+//     // Get the Name of the template
+//     console.log(getTemplateName(template));
+//     console.log("");
+
+//     // List all category names
+//     console.log(getCatNamesFromTemplate(template));
+//     console.log("");
+
+//     // List all category objects
+//     let catObs : any[] = getCategoriesObjectsFromTemplate(template);
+//     console.log(catObs);
+//     console.log("");
+
+//     // List all of the fields in personnel costs
+//     let fieldObs : FieldType[] = getFieldObjectsFromCategory(catObs[0]);
+//     console.log(fieldObs);
+//     console.log("");
+
+//     // List the field data for amount in personnel costs
+//     console.log(getFieldData(fieldObs[0]));
+//     console.log("");
+
+//     // List the calculations for travel costs
+//     let calcObs : CalculationType[] = getCalcObjectsFromCategory(catObs[3]);
+//     console.log(calcObs);
+//     console.log("");
+
+//     // List the calculation data for the base total of travel costs
+//     console.log(getCalcData(calcObs[0]));
+// } 
 
 export async function readJsonFile(path: string): Promise<any> {
     const response = await fetch(path);
     return await response.json();
 }
+
 
 // Gets the value in the "templateName" section of the JSON
 export function getTemplateName(template : any) : string
@@ -12,50 +68,72 @@ export function getTemplateName(template : any) : string
     return template.templateName;
 }
 
-/**
- * Gets the whole Categories object from the JSON.
- */
-export function getCategoriesSection(template: any): any[] {
+// Gets the whole Categories object from the JSON
+export function getCategoriesSection(template : any) : any[]
+{
     return template.Categories;
 }
 
+// Gets the names of the categories from the Categories object
+export function getCategoryNames(categories : any) : string[]
+{
+    let catNames : string[] = [];
 
-//Gets the names of the categories from the Categories object.
-export function getCategoryNames(categories: any): string[] {
-    let catNames: string[] = [];
-    Object.values(categories).forEach(value => {
+    Object.values(categories).forEach(value => 
+    // Loop through the categories
+    {
+        // Add each category name to the array
         catNames.push((value as any).Name);
     });
     return catNames;
 }
 
-
-//Gets an array of category names from the template directly.
-export function getCatNamesFromTemplate(template: any): string[] {
+// Gets an array of categoru names from the template directly
+export function getCatNamesFromTemplate(template : any) : string[]
+{
+    // Return the categories names after gathering the categories section
     return getCategoryNames(getCategoriesSection(template));
 }
 
+// Bet the object of each individual category by name
+export function getCategoryObject(categories : any, catName : string) : any
+{
+    // Create a value to hold the return
+    let ret : any = [];
 
-//Gets the object of an individual category by name.
-export function getCategoryObject(categories: any, catName: string): any {
-    let ret: any = [];
-    Object.values(categories).forEach(value => {
-        let cat: any = value;
-        if (cat.Name == catName) {
+    Object.values(categories).forEach(value =>
+    // Loop through the categories object
+    {
+        // Take each entry
+        let cat : any = value;
+
+        // Check if the name matches the goal
+        if(cat.Name == catName)
+        {
+            // If so set the return value
             ret = cat;
         }
     });
     return ret;
 }
 
-
  //Gets an array of category objects from the template.
-export function getCategoriesObjectsFromTemplate(template: any): any[] {
-    let catNames: string[] = getCatNamesFromTemplate(template);
-    let categories: any = getCategoriesSection(template);
-    let catObs: any[] = [];
-    Object.values(catNames).forEach(value => {
-        let cat: any = getCategoryObject(categories, value);
+export function getCategoriesObjectsFromTemplate(template : any) : any[]
+{
+    // Gather the required names and categories object
+    let catNames : string[] = getCatNamesFromTemplate(template);
+    let categories : any = getCategoriesSection(template);
+
+    // Create a return array
+    let catObs : any[] = [];
+
+    Object.values(catNames).forEach(value =>
+    // Loop through each of the names
+    {
+        // Get the object for that name
+        let cat : any = getCategoryObject(categories, value)
+
+        // Add the object to an array
         catObs.push(cat);
     });
     return catObs;
@@ -90,16 +168,28 @@ export function getFieldObject(fields: any, fieldName: string): any {
     return ret;
 }
 
-
 //Gets an array of field objects from a category.
-export function getFieldObjectsFromCategory(category: any): any[] {
-    let fieldNames: string[] = getFieldNames(getFieldsSection(category));
-    let fields: any = getFieldsSection(category);
-    let fieldObs: any[] = [];
-    Object.values(fieldNames).forEach(value => {
-        let field: any = getFieldObject(fields, value);
-        fieldObs.push(field);
-    });
+function getFieldObjectsFromCategory(category : any) : FieldType[]
+{
+    // Gather the required names and fields object
+    let fieldNames : string[] = getFieldNames(getFieldsSection(category));
+    let fields : any = getFieldsSection(category);
+
+    // Create a return array
+    let fieldObs : FieldType[] = [];
+
+    Object.values(fieldNames).forEach(value =>
+    // Loop through each of the names
+    {
+        // Get the object for that name
+        let field : any = getFieldObject(fields, value)
+
+        // Add the object to an array
+        fieldObs.push(getFieldData(field));
+    }
+    )
+
+    // Return the array
     return fieldObs;
 }
 
@@ -107,12 +197,12 @@ export function getFieldObjectsFromCategory(category: any): any[] {
 //Converts a field object into a FieldType structure.
 export function getFieldData(field: any): FieldType {
     let ret: FieldType = {
-        Name: field.Name,
-        Prefix: field.Prefix,
-        Value: field.Value,
-        Postfix: field.Postfix,
-        Type: field.Type,
-        Visible: field.Visible
+        name: field.Name,
+        prefix: field.Prefix,
+        value: field.Value,
+        postfix: field.Postfix,
+        type: field.Type,
+        visible: field.Visible
     };
     return ret;
 }
@@ -127,37 +217,6 @@ export function getAllFieldData(category: any): FieldType[] {
     });
     return fieldData;
 }
-
-
-//Returns the Prefix property of a field.
-export function getFieldPrefix(field: any): string {
-    return field.Prefix;
-}
-
-
-//Returns the Value property of a field.
-export function getFieldValue(field: any): string {
-    return field.Value;
-}
-
-
-//Returns the Postfix property of a field.
-export function getFieldPostfix(field: any): string {
-    return field.Postfix;
-}
-
-
-//Returns the Type property of a field.
-export function getFieldType(field: any): string {
-    return field.Type;
-}
-
-
-//Returns the Visible property of a field.
-export function getFieldVisible(field: any): boolean {
-    return field.Visible;
-}
-
 
 //Gets the Calculations section from a category.
 export function getCalculationsSection(category: any): any {
@@ -187,25 +246,38 @@ export function getCalculationNames(calculations: any): string[] {
     return ret;
 }
 
+export function getCalcObjectsFromCategory(category : any) : CalculationType[]
+{
+    // Gather the required names and calc object
+    let calcNames : string[] = getCalculationNames(getCalculationsSection(category));
+    let calcs : any = getCalculationsSection(category);
 
-//Gets an array of calculation objects from a category.
-export function getCalcObjectsFromCategory(category: any): any[] {
-    let calcNames: string[] = getCalculationNames(getCalculationsSection(category));
-    let calcs: any = getCalculationsSection(category);
-    let calcObs: any[] = [];
-    Object.values(calcNames).forEach(value => {
-        let calc: any = getCalculationObject(calcs, value);
-        calcObs.push(calc);
-    });
+    // Create a return array
+    let calcObs : CalculationType[] = [];
+
+    Object.values(calcNames).forEach(value =>
+    // Loop through each of the names
+    {
+        // Get the object for that name
+        let calc : CalculationType = getCalculationObject(calcs, value)
+
+        // Add the object to an array
+        calcObs.push(getCalcData(calc));
+    }
+    )
+
+    // Return the array
     return calcObs;
 }
 
-
- //Converts a calculation object into a CalculationType structure.
-export function getCalcData(calc: any): CalculationType {
-    let ret: CalculationType = {
-        name: calc.Name,
-        expression: calc.Expression
+function getCalcData(calc : any) : CalculationType
+{
+    let ret : CalculationType = 
+    {
+        name : calc.Name,
+        expression : calc.Expression,
+        type : calc.Type,
+        output : calc.Output
     };
     return ret;
 }
