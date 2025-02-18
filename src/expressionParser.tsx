@@ -527,87 +527,30 @@ export async function categoryCalculation(catName : string, projectID : number, 
         }
 }
 
-// export async function completeCalculations(projectID : number, template : any)
+// main();
+
+// async function main()
 // {
-//     // Get all category names
-//     const catNames : string[] = getCatNamesFromTemplate(template);
+//     console.log(await getCategoryID("Personnel", 88)); // Gives 35
+//     console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
+//     console.log(await getFieldID(28, "personMonth")); // 64
+//     console.log(await getValue(46, 57)) // Gives 100
+//     console.log(await getValueID(46, 57)); // Gives 89
+//     console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
 
-//     // For each one
-//     for(const catName of catNames)
-//     {
-//         const cat : any = getCategoryObject(getCategoriesSection(template), catName);
+//     console.log("");
 
-//         // Get all calculations
-//         const calculations : CalculationType[] = getCalcObjectsFromCategory(cat);
+//     // Some tests for get variable, global and local evaluator
 
-//         //console.log(projectID, cleanString(catName));
+//     console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
 
-//         // Get the category id from the database somehow (use name and project id)
-//         const catId : number = await(getCategoryID(cleanString(catName), projectID));
+//     const template : any = await readJsonFile("./template1.json");
 
-//         // For each calculation
-//         for(const calc of calculations)
-//         {
-//             let result : number = 0;
-
-//             if(calc.type == "Local")
-//             // If local
-//             {
-//                 // Get a list of entries for the current category
-//                     // Find the category id in category entries (get a list of entry ids)
-//                     // Remove duplicates from that list
-//                 const entries = await getAllCategoryEntries(catId);
-
-//                 for(const entry of entries)
-//                 // For each entry (in the current category cat)
-//                 {
-//                     // do the calculation
-//                     result = await localEvaluator(calc, projectID, entry);
-//                     addResultToDataBase(entry, calc.output, catId, result);
-//                 }
-                
-                
-                        
-//             }
-//             else
-//             // If global
-//             {
-//                 // Do the calculation
-//                 result = await globalEvaluator(calc, projectID, catId);
-//                 addResultToDataBase(-1, calc.output, catId, result);
-//             }
-
-//         }
-//     }
-        
-           
-// }
-
-
-main("template1.json");
-
-async function main(templateName : string)
-{
-    console.log(await getCategoryID("Personnel", 88)); // Gives 35
-    console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
-    console.log(await getFieldID(28, "personMonth")); // 64
-    console.log(await getValue(46, 57)) // Gives 100
-    console.log(await getValueID(46, 57)); // Gives 89
-    console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
-
-    console.log("");
-
-    // Some tests for get variable, global and local evaluator
-
-    console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
-
-    const template : any = await readJsonFile("./template1.json");
-
-    const cats = getCategoriesObjectsFromTemplate(template);
+//     const cats = getCategoriesObjectsFromTemplate(template);
     
-    console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
+//     console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
 
-    console.log(await(categoryCalculation("Internally Invoiced Services", 99, template)));
-}
+//     console.log(await(categoryCalculation("Internally Invoiced Services", 99, template)));
+// }
 
 
