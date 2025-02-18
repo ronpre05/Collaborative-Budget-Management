@@ -52,6 +52,13 @@ const ProjectView: React.FC = () => {
         >
           Goods/Services Costs
         </Link>
+        <Link
+          to="/create-project/manage-collaborators"
+          className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
+        >
+          Manage Collaborators
+        </Link>
+        
       </div>
 
       <div className="tab-content">

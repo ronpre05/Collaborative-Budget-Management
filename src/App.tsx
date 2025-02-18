@@ -9,6 +9,7 @@ import Projects from "./pages/Projects"
 import ProjectView from "./pages/ProjectView";
 import Login from "./pages/Login";
 import ProjectConfig from './pages/ProjectConfig';
+import ManageCollaborators from "./pages/ManageCollaborators";
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
               <Route path="/create-project/equipment-costs" element={<ProjectView />} />
               <Route path="/create-project/travel-costs" element={<ProjectView />} />
               <Route path="/create-project/goods-services-costs" element={<ProjectView />} />
+              <Route path="/create-project/manage-collaborators" element={<ManageCollaborators />} />
             </Routes>
           </main>
         </div>
