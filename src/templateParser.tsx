@@ -116,12 +116,12 @@ export function getFieldObjectsFromCategory(category: any): any[] {
 //Converts a field object into a FieldType structure.
 export function getFieldData(field: any): FieldType {
     let ret: FieldType = {
-        name: field.Name,
-        prefix: field.Prefix,
-        value: field.Value,
-        postfix: field.Postfix,
-        type: field.Type,
-        visible: field.Visible
+        Name: field.Name,
+        Prefix: field.Prefix,
+        Value: field.Value,
+        Postfix: field.Postfix,
+        Type: field.Type,
+        Visible: field.Visible
     };
     return ret;
 }
