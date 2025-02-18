@@ -7,7 +7,7 @@ import Home from "./pages/HomePage";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
 // We keep the route for create-project, but it won't be linked from the sidebar.
-import CreateProject from "./pages/CreateProjects";
+import CreateProject from "./pages/CreateProject";
 import Login from "./pages/Login";
 import ProjectConfig from './pages/ProjectConfig';
 

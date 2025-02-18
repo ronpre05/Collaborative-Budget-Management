@@ -1,67 +1,12 @@
 import { TemplateData, FieldType, CalculationType, CategoryType } from "./types";
 
-/* --- Node-specific code (commented out for browser usage) ---
- import { readFile } from "fs/promises";
- import { validateHeaderName } from "http";.
-
- main("template1.json");
- async function main(templateName: string) {
-     const template: any = await readJsonFile(templateName);
- }
-
- async function readJsonFile(path: string): Promise<any> {
-     const file = await readFile(path, "utf8");
-     return JSON.parse(file);
- }
-*/
-
-
-//Gets the value in the "templateName" section of the JSON.
-export function getTemplateName(template: any): string {
-// main("template1.json");
-
-// async function main(templateName : string)
-// {
-//     const template : any = await(readJsonFile(templateName));
-
-//     // Get the Name of the template
-//     console.log(getTemplateName(template));
-//     console.log("");
-
-//     // List all category names
-//     console.log(getCatNamesFromTemplate(template));
-//     console.log("");
-
-//     // List all category objects
-//     let catObs : any[] = getCategoriesObjectsFromTemplate(template);
-//     console.log(catObs);
-//     console.log("");
-
-//     // List all of the fields in personnel costs
-//     let fieldObs : FieldType[] = getFieldObjectsFromCategory(catObs[0]);
-//     console.log(fieldObs);
-//     console.log("");
-
-//     // List the field data for amount in personnel costs
-//     console.log(getFieldData(fieldObs[0]));
-//     console.log("");
-
-//     // List the calculations for travel costs
-//     let calcObs : CalculationType[] = getCalcObjectsFromCategory(catObs[3]);
-//     console.log(calcObs);
-//     console.log("");
-
-//     // List the calculation data for the base total of travel costs
-//     console.log(getCalcData(calcObs[0]));
-// } 
-
 export async function readJsonFile(path: string): Promise<any> {
     const response = await fetch(path);
     return await response.json();
 }
 
 // Gets the value in the "templateName" section of the JSON
-function getTemplateName(template : any) : string
+export function getTemplateName(template : any) : string
 {
     // Returns the name
     return template.templateName;

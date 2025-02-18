@@ -11,4 +11,4 @@ const CreateProject: React.FC = () => {
   );
 };
 
-export default ProjectView;
+export default CreateProject;
