@@ -27,7 +27,6 @@ const CategoryDisplay: React.FC<{ data: string[][] }> = ({
 
   return (
     <div className="dymcTable">
-      <h2>dynamic table display</h2>
       <table>
         <thead>
           <tr>
