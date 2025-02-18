@@ -1,53 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
-import GoodsServicesCosts from "./GoodsServicesCosts";
-import PersonnelCosts from "./PersonnelCosts";
-import EquipmentCosts from "./EquipmentCosts";
-import TravelCosts from "./TravelCosts";
+import React from "react";
+import DynamicBudgetForm from "./DynamicBudgetForm";
 
 const CreateProject: React.FC = () => {
-  const location = useLocation();
-
   return (
     <div className="create-project-content">
       <h1>Create Project</h1>
-
-      <div className="tab-container">
-        <Link
-          to="/create-project/personnel-costs"
-          className={`tab ${location.pathname === "/create-project/personnel-costs" ? "active-tab" : ""}`}
-        >
-          Personnel Costs
-        </Link>
-        <Link
-          to="/create-project/equipment-costs"
-          className={`tab ${location.pathname === "/create-project/equipment-costs" ? "active-tab" : ""}`}
-        >
-          Equipment Costs
-        </Link>
-        <Link
-          to="/create-project/travel-costs"
-          className={`tab ${location.pathname === "/create-project/travel-costs" ? "active-tab" : ""}`}
-        >
-          Travel Costs
-        </Link>
-        <Link
-          to="/create-project/goods-services-costs"
-          className={`tab ${location.pathname === "/create-project/goods-services-costs" ? "active-tab" : ""}`}
-        >
-          Goods/Services Costs
-        </Link>
-      </div>
-
-      <div className="tab-content">
-        {location.pathname === "/create-project/personnel-costs" && <PersonnelCosts />}
-        {location.pathname === "/create-project/equipment-costs" && <EquipmentCosts />}
-        {location.pathname === "/create-project/travel-costs" && <TravelCosts />}
-        {location.pathname === "/create-project/goods-services-costs" && <GoodsServicesCosts />}
-
-        {location.pathname === "/create-project" && (
-          <p>Select a cost category using the tabs above.</p>
-        )}
-      </div>
+      {/* Render the new generic cost management page */}
+      <DynamicBudgetForm />
     </div>
   );
 };

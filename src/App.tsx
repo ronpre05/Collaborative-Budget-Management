@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { useEffect } from 'react';
 import "./App.css";
-import Home from "./pages/HomePage"
-import About from "./pages/About"
-import Projects from "./pages/Projects"
+import Home from "./pages/HomePage";
+import About from "./pages/About";
+import Projects from "./pages/Projects";
+// We keep the route for create-project, but it won't be linked from the sidebar.
 import CreateProject from "./pages/CreateProjects";
 import Login from "./pages/Login";
 
@@ -23,11 +24,11 @@ function App() {
 
   return (
     <Router>
-      {/* Signed out View*/}
+      {/* Signed out View */}
       <SignedOut>
         <Login/>
       </SignedOut>
-      {/* Signed in View*/}
+      {/* Signed in View */}
       <SignedIn>
         <div className="app-container">
           <aside className="sidebar">
@@ -47,6 +48,7 @@ function App() {
               <Link to="/support">
                 <button>Support</button>
               </Link>
+              {/* Removed the Create Project link here */}
             </nav>
           </aside>
           <main className="main-content">
@@ -56,10 +58,6 @@ function App() {
               <Route path="/projects" element={<Projects />} />
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
               <Route path="/create-project" element={<CreateProject />} />
-              <Route path="/create-project/personnel-costs" element={<CreateProject />} />
-              <Route path="/create-project/equipment-costs" element={<CreateProject />} />
-              <Route path="/create-project/travel-costs" element={<CreateProject />} />
-              <Route path="/create-project/goods-services-costs" element={<CreateProject />} />
             </Routes>
           </main>
         </div>
