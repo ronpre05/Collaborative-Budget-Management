@@ -96,6 +96,8 @@ They have been roughly split up into sections so that they are kept with like st
 
 | Number | Title | Priority | Story Points | Story | Crtieria |
 | ------ | ----- | -------- | ------------ | ----- | -------- |
-| 6.1    |       | ?        | ?            |       |          |
+| 6.1    |Row Level Security       | 1        | 2            | As a user, I want to only be able to access project data that I have permission to view, so that sensitive information remains protected and I only interact with relevant content.     | Given that I am logged into the software,
+When I attempt to access project data,
+Then I should only be able to retrieve and view data for projects that I am authorized to see.         |
 
 [To top](#user-stories)
