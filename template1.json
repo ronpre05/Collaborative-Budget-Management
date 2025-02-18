@@ -468,7 +468,7 @@
 
 		"IC" : 
 		{
-			"Name" : "Indirect Costs",
+			"Name" : "Indirect_Costs",
 			"Fields" :
 			{
 				"Amount" : 
