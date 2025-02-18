@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { getFieldsSection, getCategoryObject, getFieldNames } from "./templateParser";
-
+import { cleanString } from "./expressionParser"; 
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -31,7 +31,7 @@ export const checkAndAddCategories = async (categoryList: string[], categoryName
     const existingCategoryNames = new Set((data ?? []).map(category => category.categoryName));
 
     // Filter out for any categories which are missing from the db
-    const missingCategories = categoryNames.filter(categoryName => !existingCategoryNames.has(categoryName));
+    const missingCategories = categoryNames.map(cleanString).filter(categoryName => !existingCategoryNames.has(categoryName));
 
     // No missing categories
     if (missingCategories.length === 0) {

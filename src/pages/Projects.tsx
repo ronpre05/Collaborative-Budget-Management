@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
 import CategoryDisplay from "../categoryDisplay";
@@ -8,6 +8,7 @@ import { getCategoryData } from "../queryFunctions";
 const Projects: React.FC = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [projects, setProjects] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Retrieve userID from local storage
@@ -27,6 +28,7 @@ const Projects: React.FC = () => {
   // Function to handle project selection
   const handleProjectClick = (projectID: number) => {
     localStorage.setItem("selectedProjectID", projectID.toString());
+    navigate(`/project-view/`);
     console.log("Selected project ID stored:", projectID);
   };
 
