@@ -2,7 +2,7 @@ import { TemplateData, FieldType, CalculationType, CategoryType } from "./types"
 
 /* --- Node-specific code (commented out for browser usage) ---
  import { readFile } from "fs/promises";
- import { validateHeaderName } from "http";
+ import { validateHeaderName } from "http";.
 
  main("template1.json");
  async function main(templateName: string) {
