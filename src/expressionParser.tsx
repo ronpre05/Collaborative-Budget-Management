@@ -503,7 +503,7 @@ export async function completeCalculations(projectID : number, template : any)
     const catNames : string[] = getCatNamesFromTemplate(template);
 
     // For each one
-    Object.values(catNames).forEach(async catName =>
+    for(const catName of catNames)
     {
         const cat : any = getCategoryObject(getCategoriesSection(template), catName);
 
@@ -516,7 +516,7 @@ export async function completeCalculations(projectID : number, template : any)
         const catId : number = await(getCategoryID(cleanString(catName), projectID));
 
         // For each calculation
-        Object.values(calculations).forEach(async calc =>
+        for(const calc of calculations)
         {
             let result : number = 0;
 
@@ -526,16 +526,16 @@ export async function completeCalculations(projectID : number, template : any)
                 // Get a list of entries for the current category
                     // Find the category id in category entries (get a list of entry ids)
                     // Remove duplicates from that list
-                const entries = getAllCategoryEntries(catId);
+                const entries = await getAllCategoryEntries(catId);
 
-                Object.values(entries).forEach(async entry =>
+                for(const entry of entries)
                 // For each entry (in the current category cat)
                 {
                     // do the calculation
                     result = await localEvaluator(calc, projectID, entry);
                     addResultToDataBase(entry, calc.output, catId, result);
                 }
-                )
+                
                 
                         
             }
@@ -548,9 +548,7 @@ export async function completeCalculations(projectID : number, template : any)
             }
 
         }
-        );
     }
-    );
         
            
 }
