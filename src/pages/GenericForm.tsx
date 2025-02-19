@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CategoryType } from "../types";
 import { flattenFields } from "../templateParser";
+import { cleanString } from "../expressionParser";
 
 interface GenericFormProps {
   category: CategoryType;
@@ -73,7 +74,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   return (
     <div>
-      <h2>{category.Name} Costs</h2>
+      <h2>{cleanString(category.Name)} Costs</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
         {renderFields()}
         <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>

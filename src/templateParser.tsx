@@ -29,7 +29,7 @@ export async function readJsonFile(path: string): Promise<any>
 
 
 // Gets the value in the "templateName" section of the JSON
-function getTemplateName(template : any) : string
+export function getTemplateName(template : any) : string
 {
     // Returns the name
     return template.templateName;
