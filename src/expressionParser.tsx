@@ -1,4 +1,4 @@
-import { getCategoriesObjectsFromTemplate, getCategoriesSection, getCategoryNames, getCategoryObject, getCatNamesFromTemplate, readJsonFile } from "./templateParser";
+import { getCalcObjectsFromCategory, getCalculationNames, getCalculationsSection, getCategoriesObjectsFromTemplate, getCategoriesSection, getCategoryNames, getCategoryObject, getCatNamesFromTemplate, readJsonFile } from "./templateParser";
 import { getAllCategoryEntries, getCategoryID, getFieldID, getValue, getValueID, updateIndividualField } from "./database";
 
 type CalculationType =
@@ -472,10 +472,11 @@ async function globalEvaluator(calc : CalculationType, projectID : number, categ
 
     let RPN : string[] = expressionToRPN(calc.expression);
 
-    for(const entry of entries)
+    Object.values(entries).forEach(async entry =>
     {
         total += await basicEvaluator(RPN, projectID, entry);
     }
+    );
 
     return total;
 }
@@ -489,7 +490,7 @@ export async function categoryCalculation(catName : string, projectID : number, 
 {
     const cat : any = getCategoryObject(getCategoriesSection(template), catName);
     const catId : number = await(getCategoryID(cleanString(catName), projectID));
-    const calculations : CalculationType[] = Object.values(cat.Calculations);
+    const calculations : CalculationType[] = getCalcObjectsFromCategory(cat);
 
     // For each calculation
     for(const calc of calculations)
@@ -509,15 +510,17 @@ export async function categoryCalculation(catName : string, projectID : number, 
                 {
                     // do the calculation
                     result = await localEvaluator(calc, projectID, entry);
+                    console.log(result);
                     addResultToDataBase(entry, calc.output, catId, result);
                 }
-                        
+                    
             }
             else
             // If global
             {
                 // Do the calculation
                 result = await globalEvaluator(calc, projectID, catId);
+                console.log(result);
                 addResultToDataBase(-1, calc.output, catId, result);
             }
 
@@ -528,24 +531,26 @@ export async function categoryCalculation(catName : string, projectID : number, 
 
 // async function main()
 // {
-//     console.log(await getCategoryID("Personnel", 88)); // Gives 35
-//     console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
-//     console.log(await getFieldID(28, "personMonth")); // 64
-//     console.log(await getValue(46, 57)) // Gives 100
-//     console.log(await getValueID(46, 57)); // Gives 89
-//     console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
+//     // console.log(await getCategoryID("Personnel", 88)); // Gives 35
+//     // console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
+//     // console.log(await getFieldID(28, "personMonth")); // 64
+//     // console.log(await getValue(46, 57)) // Gives 100
+//     // console.log(await getValueID(46, 57)); // Gives 89
+//     // console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
 
-//     console.log("");
+//     // console.log("");
 
-//     // Some tests for get variable, global and local evaluator
+//     // // Some tests for get variable, global and local evaluator
 
-//     console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
+//     // console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
 
 //     const template : any = await readJsonFile("./template1.json");
 
-//     const cats = getCategoriesObjectsFromTemplate(template);
-    
-//     console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
+//     //const cats = getCategoriesObjectsFromTemplate(template);
 
-//     console.log(await(categoryCalculation("Internally Invoiced Services", 99, template)));
+//     //console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
+
+//     await(categoryCalculation("Internally_Invoiced_Services", 99, template));
 // }
+
+
