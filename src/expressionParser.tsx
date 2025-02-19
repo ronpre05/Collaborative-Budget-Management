@@ -1,4 +1,4 @@
-import { getCalcObjectsFromCategory, getCategoriesObjectsFromTemplate, getCategoriesSection, getCategoryNames, getCategoryObject, getCatNamesFromTemplate, readJsonFile } from "./templateParser";
+import { getCategoriesObjectsFromTemplate, getCategoriesSection, getCategoryNames, getCategoryObject, getCatNamesFromTemplate, readJsonFile } from "./templateParser";
 import { getAllCategoryEntries, getCategoryID, getFieldID, getValue, getValueID, updateIndividualField } from "./database";
 
 type CalculationType =
@@ -472,11 +472,10 @@ async function globalEvaluator(calc : CalculationType, projectID : number, categ
 
     let RPN : string[] = expressionToRPN(calc.expression);
 
-    Object.values(entries).forEach(async entry =>
+    for(const entry of entries)
     {
         total += await basicEvaluator(RPN, projectID, entry);
     }
-    );
 
     return total;
 }
@@ -490,7 +489,7 @@ export async function categoryCalculation(catName : string, projectID : number, 
 {
     const cat : any = getCategoryObject(getCategoriesSection(template), catName);
     const catId : number = await(getCategoryID(cleanString(catName), projectID));
-    const calculations : CalculationType[] = getCalcObjectsFromCategory(cat);
+    const calculations : CalculationType[] = Object.values(cat.Calculations);
 
     // For each calculation
     for(const calc of calculations)
@@ -512,8 +511,6 @@ export async function categoryCalculation(catName : string, projectID : number, 
                     result = await localEvaluator(calc, projectID, entry);
                     addResultToDataBase(entry, calc.output, catId, result);
                 }
-                
-                
                         
             }
             else
@@ -552,5 +549,3 @@ export async function categoryCalculation(catName : string, projectID : number, 
 
 //     console.log(await(categoryCalculation("Internally Invoiced Services", 99, template)));
 // }
-
-
