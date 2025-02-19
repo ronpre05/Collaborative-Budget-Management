@@ -101,9 +101,9 @@ const GoodsServicesCosts: React.FC = () => {
         ))}
       </ul>
 
-      {/* Remove Collaborator Section */}
+      {/* Remove Collaborator Section
       <h3>Manage Collaborators</h3>
-      <RemoveCollaborator projectID={projectID} />
+      <RemoveCollaborator projectID={projectID} /> */}
     </div>
   );
 };
