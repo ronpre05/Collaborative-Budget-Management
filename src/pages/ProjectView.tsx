@@ -62,8 +62,7 @@ const ProjectView: React.FC = () => {
         {location.pathname === "/create-project" && <p>Select a cost category using the tabs above.</p>}
       </div>
 
-      {/* Show InviteUser only when projectID is available */}
-      {projectID && <InviteUser projectID={projectID} />}
+      
     </div>
   );
 };

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CategoryType, TemplateData } from "../types";
 import templateDataJson from "../../template1.json";
 import RemoveCollaborator from "./RemoveCollaborator"; // Import RemoveCollaborator
+import InviteUser from "./InviteUser"; // Import the InviteUser component
 
 const GoodsServicesCosts: React.FC = () => {
   const templateData = templateDataJson as TemplateData;
@@ -10,7 +11,18 @@ const GoodsServicesCosts: React.FC = () => {
   const [items, setItems] = useState<Array<Record<string, string>>>([]);
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   const [totalCost, setTotalCost] = useState(0);
-  const projectID = 94; // Replace with dynamic value if needed
+  const [projectID, setProjectID] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Retrieve the project ID from localStorage
+    const storedProjectID = localStorage.getItem("projectID");
+
+    if (storedProjectID) {
+      setProjectID(parseInt(storedProjectID, 10));
+    } else {
+      console.error("No project ID found in localStorage.");
+    }
+  }, []);
 
   const handleFieldChange = (fieldKey: string, value: string) => {
     setNewItemValues((prev) => ({ ...prev, [fieldKey]: value }));
@@ -104,6 +116,10 @@ const GoodsServicesCosts: React.FC = () => {
       {/* Remove Collaborator Section */}
       <h3>Manage Collaborators</h3>
       <RemoveCollaborator projectID={projectID} />
+
+      {/* Show InviteUser only when projectID is available */}
+      {projectID && <InviteUser projectID={projectID} />} 
+            
     </div>
   );
 };
