@@ -5,6 +5,7 @@ import PersonnelCosts from "./PersonnelCosts";
 import EquipmentCosts from "./EquipmentCosts";
 import TravelCosts from "./TravelCosts";
 import InviteUser from "./InviteUser"; // Import the InviteUser component
+import ManageCollaborators from "./ManageCollaborators";
 import { inviteUserToProject } from "../database"; // Adjust if needed
 
 
@@ -52,6 +53,13 @@ const ProjectView: React.FC = () => {
         >
           Goods/Services Costs
         </Link>
+        <Link
+          to="/create-project/manage-collaborators"
+          className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
+        >
+          Manage Collaborators
+        </Link>
+        
       </div>
 
       <div className="tab-content">
@@ -59,6 +67,7 @@ const ProjectView: React.FC = () => {
         {location.pathname === "/create-project/equipment-costs" && <EquipmentCosts />}
         {location.pathname === "/create-project/travel-costs" && <TravelCosts />}
         {location.pathname === "/create-project/goods-services-costs" && <GoodsServicesCosts />}
+        {location.pathname === "/create-project/manage-collaborators" && <ManageCollaborators />}
         {location.pathname === "/create-project" && <p>Select a cost category using the tabs above.</p>}
       </div>
 
