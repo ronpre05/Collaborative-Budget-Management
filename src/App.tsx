@@ -9,6 +9,7 @@ import Projects from "./pages/Projects";
 // We keep the route for create-project, but it won't be linked from the sidebar.
 import CreateProject from "./pages/CreateProject";
 import Login from "./pages/Login";
+import ManageCollaborators from "./pages/ManageCollaborators";
 import ProjectView from './pages/ProjectView';
 
 
@@ -60,6 +61,7 @@ function App() {
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
               <Route path="/create-project" element={<CreateProject/>} />
               <Route path="/project-view" element={<ProjectView/>} />
+              <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
             </Routes>
           </main>
         </div>
