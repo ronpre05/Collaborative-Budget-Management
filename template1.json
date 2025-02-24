@@ -15,7 +15,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Start Date" : 
 				{
@@ -24,7 +25,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"End Date" : 
 				{
@@ -33,7 +35,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Percentage" : 
 				{
@@ -42,7 +45,8 @@
 					"Value" : "",
 					"Postfix" : "%",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Person Month" : 
 				{
@@ -51,7 +55,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				},
 				"Local Total" :
 				{
@@ -60,7 +65,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				},
 				"Global Total" :
 				{
@@ -69,7 +75,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -110,7 +117,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Why" : 
 				{
@@ -119,7 +127,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Amount" : 
 				{
@@ -128,7 +137,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Local Total" :
 				{
@@ -137,7 +147,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				},
 				"Global Total" :
 				{
@@ -146,7 +157,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -180,7 +192,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Why" : 
 				{
@@ -189,7 +202,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Amount" : 
 				{
@@ -198,7 +212,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Local Total" :
 				{
@@ -207,7 +222,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				},
 				"Global Total" :
 				{
@@ -216,7 +232,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -250,7 +267,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Accomodation" : 
 				{
@@ -259,7 +277,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Currency",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Sustinance" : 
 				{
@@ -268,7 +287,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Entry" : 
 				{
@@ -279,7 +299,8 @@
 						"Value" : "",
 						"Postfix" : "",
 						"Type" : "String",
-						"Visible" : true
+						"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 					},
 					"Amount" : 
 					{
@@ -288,7 +309,8 @@
 						"Value" : "",
 						"Postfix" : "",
 						"Type" : "Int",
-						"Visible" : true
+						"DisplayVisiblity" : true,
+						"EntryVisibility" : true
 					}
 				}
 			},
@@ -338,7 +360,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Why" : 
 				{
@@ -347,7 +370,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Amount" : 
 				{
@@ -356,7 +380,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Local Total" :
 				{
@@ -365,7 +390,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				},
 				"Global Total" :
 				{
@@ -374,7 +400,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -408,7 +435,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Why" : 
 				{
@@ -417,7 +445,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "String",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Amount" : 
 				{
@@ -426,7 +455,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				},
 				"Local Total" :
 				{
@@ -435,7 +465,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				},
 				"Global Total" :
 				{
@@ -444,7 +475,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Float",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -478,7 +510,8 @@
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
-					"Visible" : true
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"Calculations" : 
