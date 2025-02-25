@@ -27,7 +27,7 @@ const Projects: React.FC = () => {
 
   // Function to handle project selection
   const handleProjectClick = (projectID: number) => {
-    localStorage.setItem("selectedProjectID", projectID.toString());
+    localStorage.setItem("projectID", projectID.toString());
     navigate(`/project-view/`);
     console.log("Selected project ID stored:", projectID);
   };
