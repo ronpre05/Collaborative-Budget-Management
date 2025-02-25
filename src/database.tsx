@@ -280,7 +280,6 @@ export const getUsersProjects = async (): Promise<any[]> => {
     return data || [];
 };
 
-
 export const removeCollaborator = async (userID: number, projectID: number) => {
     const { error } = await supabase
         .from("UserInstitutionProject")
@@ -296,16 +295,6 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
         return true;
     }
 };
-
-
-
-
-
-
-
-
-
-
 
 // Create a new CategoryEntry and return entryID
 // TODO:  Modify projectID
@@ -570,4 +559,58 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
     }
 
     return 1;
+}
+
+export const checkExisitingInstitution = async (institutionName : String) : Promise<void> =>
+{
+    const { data, error } = await supabase
+        .from("Institutions")
+        .select("institutionID")
+        .eq("institutionName", institutionName)
+        .single();
+    if(error)
+    {
+        // No institution found in db, create new entry
+        addInstitution(institutionName);
+    }
+    console.log(data);
+}
+
+export const addInstitution = async (institutionName : String) : Promise<void> =>
+{
+    const { data, error } = await supabase
+    .from("Institutions")
+    .insert({institutionName})
+
+    if(error){
+        console.error("Error inserting institution into db: ", error);
+    }
+
+    console.log(data);
+}
+
+export const getInstitutions = async (inputValue: string) => {
+    if (!inputValue) return [];
+  
+    const { data, error } = await supabase
+      .from("Institutions")
+      .select("institutionName")
+      .ilike("institutionName", `%${inputValue}%`) // Case-insensitive partial match
+      .limit(10);
+  
+    if (error) {
+      console.error("Error fetching institutions:", error);
+      return [];
+    }
+  
+    return data.map((institution) => ({
+      label: institution.institutionName,
+      value: institution.institutionName,
+    }));
+  };
+
+export const addUserInstitution = async (institutionName : String) : Promise<void> =>
+{
+    const { data, error } = await supabase
+    .from("Institution")
 }
