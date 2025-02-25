@@ -12,8 +12,10 @@ const RemoveCollaborator: React.FC<RemoveCollaboratorProps> = ({ projectID }) =>
     const fetchCollaborators = async () => {
       const { data, error } = await supabase
         .from("UserInstitutionProject")
-        .select("userID, Users(firstName, lastName, email)")
-        .eq("projectID", projectID);
+        .select("userID, roleID, Users(firstName, lastName, email), Roles(roleName)")
+        .eq("projectID", projectID)
+        .select("userID, roleID, Users(firstName, lastName, email), Roles(roleName)")
+
 
       if (error) {
         console.error("Error fetching collaborators:", error.message);
@@ -27,19 +29,17 @@ const RemoveCollaborator: React.FC<RemoveCollaboratorProps> = ({ projectID }) =>
 
   const removeCollaborator = async (userID: number) => {
     const { error } = await supabase
-    .from("UserInstitutionProject")  
-    .delete()
-    .eq("userID", userID)
-    .eq("projectID", projectID);
+      .from("UserInstitutionProject")  
+      .delete()
+      .eq("userID", userID)
+      .eq("projectID", projectID);
   
-
-  if (error) {
-    console.error("Error removing collaborator:", error.message);
-  } else {
-    setCollaborators((prev) => prev.filter((user) => user.userID !== userID));
-  }
-};
-
+    if (error) {
+      console.error("Error removing collaborator:", error.message);
+    } else {
+      setCollaborators((prev) => prev.filter((user) => user.userID !== userID));
+    }
+  };
 
   return (
     <div>
@@ -47,7 +47,7 @@ const RemoveCollaborator: React.FC<RemoveCollaboratorProps> = ({ projectID }) =>
       <ul>
         {collaborators.map((user) => (
           <li key={user.userID}>
-            {user.Users.firstName} {user.Users.lastName} ({user.Users.email})
+            {user.Users.firstName} {user.Users.lastName} ({user.Users.email}) - {user.Roles?.roleName || "Unknown Role"}
             <button onClick={() => removeCollaborator(user.userID)}>Remove</button>
           </li>
         ))}
