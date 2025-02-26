@@ -44,12 +44,6 @@ const SettingsPage = () => {
         isClearable
       />
 
-      {selectedInstitution ? (
-        <p>Selected Institution: {selectedInstitution.label}</p>
-      ) : (
-        <p>Custom Institution: {newInstitution}</p>  // Show the custom typed value
-      )}
-
       <button type="button" onClick={handleAddInstitution}>Add Institution</button>
     </div>
   );
