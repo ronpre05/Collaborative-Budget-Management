@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Creatable from "react-select/async-creatable";
-import { getInstitutions, addInstitution } from "../database";
+import { getInstitutions, addInstitution, addUserInstitution } from "../database";
 
 const SettingsPage = () => {
   const [selectedInstitution, setSelectedInstitution] = useState<any | null>(null);
@@ -19,9 +19,14 @@ const SettingsPage = () => {
     setNewInstitution(inputValue); // Update input as user types
   };
 
-  const handleAddInstitution = () => {
+  const handleAddInstitution = async () => {
     console.log(selectedInstitution.value);
-    addInstitution(selectedInstitution.value);
+    const institutionID = await addInstitution(selectedInstitution.value);
+
+    // Add user institution pairing in database
+    if(institutionID !== null){
+      await addUserInstitution(institutionID);
+    }
   }
 
   return (

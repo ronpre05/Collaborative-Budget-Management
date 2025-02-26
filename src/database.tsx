@@ -561,33 +561,46 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
     return 1;
 }
 
-export const checkExisitingInstitution = async (institutionName : String) : Promise<void> =>
+// Add an institution tot he database and reutn its ID
+export const addInstitution = async (institutionName : String) : Promise<number | null> =>
 {
-    const { data, error } = await supabase
-        .from("Institutions")
-        .select("institutionID")
-        .eq("institutionName", institutionName)
-        .single();
-    if(error)
-    {
-        // No institution found in db, create new entry
-        addInstitution(institutionName);
-    }
-    console.log(data);
-}
+    const existsInstitution = await checkExisitingInstitution(institutionName);
 
-export const addInstitution = async (institutionName : String) : Promise<void> =>
-{
+    // If institution exists in db, return ID found
+    if(existsInstitution !== null){
+        return existsInstitution;
+    }
+
     const { data, error } = await supabase
     .from("Institutions")
     .insert({institutionName})
+    .select("institutionID")
+    .single();
 
-    if(error){
+    if(error || !data){
         console.error("Error inserting institution into db: ", error);
     }
 
-    console.log(data);
+    return data?.institutionID;
 }
+
+// Returns 1 if institution exists or 0 if institution does not exist
+export const checkExisitingInstitution = async (institutionName : String) : Promise<number | null> =>
+{
+    const { data, error } = await supabase
+    .from("Institutions")
+    .select("institutionID")
+    .eq("institutionName", institutionName)
+    .single();
+
+    if(error || !data){
+        // No institution found
+        return null;
+    }
+    // Institution found return ID
+    return data.institutionID;
+}
+    
 
 export const getInstitutions = async (inputValue: string) => {
     if (!inputValue) return [];
@@ -595,7 +608,7 @@ export const getInstitutions = async (inputValue: string) => {
     const { data, error } = await supabase
       .from("Institutions")
       .select("institutionName")
-      .ilike("institutionName", `%${inputValue}%`) // Case-insensitive partial match
+      .ilike("institutionName", `%${inputValue}%`)
       .limit(10);
   
     if (error) {
@@ -607,10 +620,26 @@ export const getInstitutions = async (inputValue: string) => {
       label: institution.institutionName,
       value: institution.institutionName,
     }));
-  };
+};
 
-export const addUserInstitution = async (institutionName : String) : Promise<void> =>
-{
+export const addUserInstitution = async (institutionID : number) : Promise<void> =>
+{    
+    // Retrieve the user ID from localStorage
+    const userID = localStorage.getItem("userID");
+
+    if (!userID) {
+        console.error("No user ID found in localStorage.");
+        // Return if no user logged in
+        return;
+    }
+
+    console.log("Inserting userid = " + userID + "institutionID + " + institutionID);
     const { data, error } = await supabase
-    .from("Institution")
+    .from("UserInstitutions")
+    .insert({userID : userID, institutionID: institutionID});
+
+    if(error){
+        // No institution found
+        console.error("Error adding user institution: ", error);
+    }
 }
