@@ -2,13 +2,15 @@ import { useState } from "react";
 import Creatable from "react-select/async-creatable";
 import { getInstitutions, addInstitution, addUserInstitution } from "../database";
 
+// Account settings page, allows for institutions to be added to a users account
 const SettingsPage = () => {
   const [selectedInstitution, setSelectedInstitution] = useState<any | null>(null);
   const [newInstitution, setNewInstitution] = useState<string>("");
 
   const handleChange = (option: any) => {
     if (option) {
-      setSelectedInstitution(option); // Set the selected institution if any
+      // Set the selected institution
+      setSelectedInstitution(option);
     } else {
       // If the user typed a custom institution, save it as a new institution
       setSelectedInstitution({ label: newInstitution, value: newInstitution });
@@ -16,7 +18,8 @@ const SettingsPage = () => {
   };
 
   const handleInputChange = (inputValue: string) => {
-    setNewInstitution(inputValue); // Update input as user types
+    // Update input as user types
+    setNewInstitution(inputValue); 
   };
 
   const handleAddInstitution = async () => {
@@ -38,8 +41,8 @@ const SettingsPage = () => {
         defaultOptions
         onChange={handleChange}
         onInputChange={handleInputChange}
-        value={selectedInstitution} // Sync the selected institution
-        inputValue={newInstitution} // Sync the input field value
+        value={selectedInstitution}
+        inputValue={newInstitution}
         placeholder="Start typing an institution name..."
         isClearable
       />

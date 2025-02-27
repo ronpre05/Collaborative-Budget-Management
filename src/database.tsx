@@ -601,9 +601,11 @@ export const checkExisitingInstitution = async (institutionName : String) : Prom
     return data.institutionID;
 }
     
-
+// Gets all institutions stored in database
 export const getInstitutions = async (inputValue: string) => {
-    if (!inputValue) return [];
+    if (!inputValue){
+        return [];
+    }
   
     const { data, error } = await supabase
       .from("Institutions")
@@ -622,6 +624,7 @@ export const getInstitutions = async (inputValue: string) => {
     }));
 };
 
+// Inserts the relation between a user and an institution into the db
 export const addUserInstitution = async (institutionID : number) : Promise<void> =>
 {    
     // Retrieve the user ID from localStorage
@@ -633,7 +636,6 @@ export const addUserInstitution = async (institutionID : number) : Promise<void>
         return;
     }
 
-    console.log("Inserting userid = " + userID + "institutionID + " + institutionID);
     const { data, error } = await supabase
     .from("UserInstitutions")
     .insert({userID : userID, institutionID: institutionID});
