@@ -31,7 +31,7 @@ export const checkAndAddCategories = async (categoryList: string[], categoryName
     const existingCategoryNames = new Set((data ?? []).map(category => category.categoryName));
 
     // Filter out for any categories which are missing from the db
-    const missingCategories = categoryNames.map(cleanString).filter(categoryName => !existingCategoryNames.has(categoryName));
+    const missingCategories = categoryNames.filter(categoryName => !existingCategoryNames.has(categoryName));
 
     // No missing categories
     if (missingCategories.length === 0) {
