@@ -11,7 +11,7 @@ import CreateProject from "./pages/CreateProject";
 import Login from "./pages/Login";
 import ManageCollaborators from "./pages/ManageCollaborators";
 import ProjectView from './pages/ProjectView';
-
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   // Get currently logged in user from Clerk
@@ -47,6 +47,9 @@ function App() {
               <Link to="/projects">
                 <button>Projects</button>
               </Link>
+              <Link to="/settings">
+                <button>Account Settings</button>
+              </Link>
               <Link to="/support">
                 <button>Support</button>
               </Link>
@@ -59,6 +62,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
+              <Route path="/settings" element={<SettingsPage/>} />
               <Route path="/create-project" element={<CreateProject/>} />
               <Route path="/project-view" element={<ProjectView/>} />
               <Route path="/create-project/manage-collaborators" element={<ProjectView />} />

@@ -280,7 +280,6 @@ export const getUsersProjects = async (): Promise<any[]> => {
     return data || [];
 };
 
-
 export const removeCollaborator = async (userID: number, projectID: number) => {
     const { error } = await supabase
         .from("UserInstitutionProject")
@@ -296,16 +295,6 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
         return true;
     }
 };
-
-
-
-
-
-
-
-
-
-
 
 // Create a new CategoryEntry and return entryID
 // TODO:  Modify projectID
@@ -570,4 +559,89 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
     }
 
     return 1;
+}
+
+// Add an institution tot he database and reutn its ID
+export const addInstitution = async (institutionName : String) : Promise<number | null> =>
+{
+    const existsInstitution = await checkExisitingInstitution(institutionName);
+
+    // If institution exists in db, return ID found
+    if(existsInstitution !== null){
+        return existsInstitution;
+    }
+
+    const { data, error } = await supabase
+    .from("Institutions")
+    .insert({institutionName})
+    .select("institutionID")
+    .single();
+
+    if(error || !data){
+        console.error("Error inserting institution into db: ", error);
+    }
+
+    return data?.institutionID;
+}
+
+// Returns 1 if institution exists or 0 if institution does not exist
+export const checkExisitingInstitution = async (institutionName : String) : Promise<number | null> =>
+{
+    const { data, error } = await supabase
+    .from("Institutions")
+    .select("institutionID")
+    .eq("institutionName", institutionName)
+    .single();
+
+    if(error || !data){
+        // No institution found
+        return null;
+    }
+    // Institution found return ID
+    return data.institutionID;
+}
+    
+// Gets all institutions stored in database
+export const getInstitutions = async (inputValue: string) => {
+    if (!inputValue){
+        return [];
+    }
+  
+    const { data, error } = await supabase
+      .from("Institutions")
+      .select("institutionName")
+      .ilike("institutionName", `%${inputValue}%`)
+      .limit(10);
+  
+    if (error) {
+      console.error("Error fetching institutions:", error);
+      return [];
+    }
+  
+    return data.map((institution) => ({
+      label: institution.institutionName,
+      value: institution.institutionName,
+    }));
+};
+
+// Inserts the relation between a user and an institution into the db
+export const addUserInstitution = async (institutionID : number) : Promise<void> =>
+{    
+    // Retrieve the user ID from localStorage
+    const userID = localStorage.getItem("userID");
+
+    if (!userID) {
+        console.error("No user ID found in localStorage.");
+        // Return if no user logged in
+        return;
+    }
+
+    const { data, error } = await supabase
+    .from("UserInstitutions")
+    .insert({userID : userID, institutionID: institutionID});
+
+    if(error){
+        // No institution found
+        console.error("Error adding user institution: ", error);
+    }
 }
