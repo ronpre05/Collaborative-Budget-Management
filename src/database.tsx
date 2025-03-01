@@ -365,14 +365,16 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
     }
 };
 
+export const getInstitutions = async () => {
+    const { data, error } = await supabase.from("Institutions").select("*");
 
+    if (error) {
+        console.error("Error fetching institutions:", error.message);
+        return [];
+    }
 
-
-
-
-
-
-
+    return data;
+};
 
 
 // Create a new CategoryEntry and return entryID
