@@ -248,12 +248,13 @@ export const inviteUserToProject = async (email: string, projectID: number, role
     return data;
 };
 
+// Fetch pending invitations for a user
 export const getPendingInvites = async (userEmail: string) => {
     const { data, error } = await supabase
         .from("Invites")
         .select("*")
         .eq("email", userEmail)
-        .eq("status", "pending");
+        .eq("status", "pending"); // Get only pending invites
 
     if (error) {
         console.error("Error fetching invites:", error.message);
@@ -263,8 +264,9 @@ export const getPendingInvites = async (userEmail: string) => {
     return data;
 };
 
+// Accept an invite and add the user to the project
 export const acceptInvite = async (invitedID: number, projectID: number, roleID: number, userEmail: string, institutionID: number) => {
-    // Get user ID from email
+    // Fetch user ID from email
     const { data: user, error: userError } = await supabase
         .from("Users")
         .select("userID")
@@ -278,7 +280,7 @@ export const acceptInvite = async (invitedID: number, projectID: number, roleID:
 
     const userID = user.userID;
 
-    // Add user to UserInstitutionProject
+    // Insert user into UserInstitutionProject table (links user to project)
     const { error: insertError } = await supabase
         .from("UserInstitutionProject")
         .insert({ userID, institutionID, roleID, projectID });
@@ -288,17 +290,17 @@ export const acceptInvite = async (invitedID: number, projectID: number, roleID:
         return false;
     }
 
-    // Mark invite as accepted
+    // Update invite status to 'accepted'
     await supabase
         .from("Invites")
         .update({ status: "accepted" })
         .eq("invitedID", invitedID);
-        
 
     console.log("Invite accepted successfully.");
     return true;
 };
 
+// Reject an invite by updating its status
 export const rejectInvite = async (invitedID: number) => {
     const { error } = await supabase
         .from("Invites")
@@ -365,16 +367,6 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
     }
 };
 
-export const getInstitutions = async () => {
-    const { data, error } = await supabase.from("Institutions").select("*");
-
-    if (error) {
-        console.error("Error fetching institutions:", error.message);
-        return [];
-    }
-
-    return data;
-};
 
 
 // Create a new CategoryEntry and return entryID
