@@ -213,38 +213,106 @@ export const getUsersInstitutions = async (): Promise<any[]> => {
 };
 
 export const inviteUserToProject = async (email: string, projectID: number, roleID: number) => {
-    // Find the userID from the email
+    // Check if the user exists
     const { data: user, error: userError } = await supabase
         .from("Users")
         .select("userID")
         .eq("email", email)
         .single();
-   
+
     if (userError || !user) {
         console.error("User not found:", userError?.message);
         return null;
     }
-   
+
     const userID = user.userID;
-   
-    // Insert into UserInstitutionProject to associate the user with the project and their role
+    const invitedBy = localStorage.getItem("userID"); // Get inviter's ID
+
+    if (!invitedBy) {
+        console.error("Inviter ID not found in localStorage.");
+        return null;
+    }
+
+    // Store the invite in the database
     const { data, error } = await supabase
-        .from("UserInstitutionProject")
-        .insert({ userID, projectID, roleID })
+        .from("Invites")
+        .insert({ email, projectID, roleID, invitedBy, status: "pending" })
         .select("*");
 
-        console.log("Insert data:", data);
-        console.log("Insert error:", error);
-   
-    if (error && !null) {
-        console.error("Error inviting user:", error.message);
+    if (error) {
+        console.error("Error sending invite:", error.message);
     } else {
-        console.log("User invited successfully:", data); // Log the actual response data
+        console.log("Invite sent successfully:", data);
     }
     
-    return data; // Ensure this is returning the inserted data or null
-   };
-   
+    return data;
+};
+
+export const getPendingInvites = async (userEmail: string) => {
+    const { data, error } = await supabase
+        .from("Invites")
+        .select("*")
+        .eq("email", userEmail)
+        .eq("status", "pending");
+
+    if (error) {
+        console.error("Error fetching invites:", error.message);
+        return [];
+    }
+
+    return data;
+};
+
+export const acceptInvite = async (invitedID: number, projectID: number, roleID: number, userEmail: string, institutionID: number) => {
+    // Get user ID from email
+    const { data: user, error: userError } = await supabase
+        .from("Users")
+        .select("userID")
+        .eq("email", userEmail)
+        .single();
+
+    if (userError || !user) {
+        console.error("User not found:", userError?.message);
+        return false;
+    }
+
+    const userID = user.userID;
+
+    // Add user to UserInstitutionProject
+    const { error: insertError } = await supabase
+        .from("UserInstitutionProject")
+        .insert({ userID, institutionID, roleID, projectID });
+
+    if (insertError) {
+        console.error("Error adding user to project:", insertError.message);
+        return false;
+    }
+
+    // Mark invite as accepted
+    await supabase
+        .from("Invites")
+        .update({ status: "accepted" })
+        .eq("invitedID", invitedID);
+        
+
+    console.log("Invite accepted successfully.");
+    return true;
+};
+
+export const rejectInvite = async (invitedID: number) => {
+    const { error } = await supabase
+        .from("Invites")
+        .update({ status: "rejected" })
+        .eq("invitedID", invitedID); 
+
+    if (error) {
+        console.error("Error rejecting invite:", error.message);
+        return false;
+    }
+
+    console.log("Invite rejected successfully.");
+    return true;
+};
 
 
 // Function to fetch all projects associated with a given user ID

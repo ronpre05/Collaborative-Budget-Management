@@ -1,7 +1,7 @@
 import { supabase } from './database';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import "./App.css";
 import Home from "./pages/HomePage";
 import About from "./pages/About";
@@ -11,11 +11,34 @@ import CreateProject from "./pages/CreateProject";
 import Login from "./pages/Login";
 import ManageCollaborators from "./pages/ManageCollaborators";
 import ProjectView from './pages/ProjectView';
+import Invitations from "./pages/Invitations";
+
 
 
 function App() {
   // Get currently logged in user from Clerk
   const { user } = useUser();
+
+  type Invitation = {
+    inviteID: number;
+    projectID: number;
+    roleID: number;
+  };
+  
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
+
+  const fetchInvitations = async (email: string) => {
+    const { data, error } = await supabase
+      .from("Invitations")
+      .select("*")
+      .eq("email", email);
+
+    if (error) {
+      console.error("Error fetching invitations:", error.message);
+    } else {
+      setInvitations(data);
+    }
+  };
 
   // Hook to handle user login once user state is set from Clerk
   useEffect(() => {
@@ -50,6 +73,9 @@ function App() {
               <Link to="/support">
                 <button>Support</button>
               </Link>
+              <Link to="/Invitations">  
+                <button>Pending Invites</button>
+              </Link>
               {/* Removed the Create Project link here */}
             </nav>
           </aside>
@@ -62,6 +88,7 @@ function App() {
               <Route path="/create-project" element={<CreateProject/>} />
               <Route path="/project-view" element={<ProjectView/>} />
               <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
+              <Route path="/invitations" element={<Invitations userEmail={user?.primaryEmailAddress?.emailAddress || ""} invitations={invitations} />} />
             </Routes>
           </main>
         </div>
@@ -131,7 +158,7 @@ const HandleUserLogin = async (user: any) => {
     console.log(`User session stored with ID: ${userId}`);
     return userId;
   } catch (err) {
-    console.error(`Error handling user login (userID ${userId}): ${err.message}`);
+    console.error(`Error handling user login (userID ${user}): ${err.message}`);
   }
 };
 
