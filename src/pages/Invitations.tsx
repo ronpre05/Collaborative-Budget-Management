@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { getPendingInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID } from "../database";
+import { getPendingInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID, getRoles } from "../database";
 
 interface Invite {
   invitedID: number;
   projectID: number;
   roleID: number;
+}
+
+interface Role {
+  roleID: number;
+  roleName: string;
 }
 
 interface InvitationsProps {
@@ -16,6 +21,7 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
   const [invites, setInvites] = useState<Invite[]>(invitations);
   const [institutions, setInstitutions] = useState<string[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
+  const [roles, setRoles] = useState<Role[]>([]); // Store role data
 
   // Fetch institutions linked to the user
   useEffect(() => {
@@ -31,6 +37,21 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
     fetchInstitutions();
   }, []);
 
+  // Fetch roles
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const fetchedRoles = await getRoles();
+        setRoles(fetchedRoles);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
+
+
   useEffect(() => {
     const loadInvites = async () => {
       if (invitations.length === 0) {
@@ -40,6 +61,12 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
     };
     loadInvites();
   }, [userEmail, invitations]);
+
+  // Get role name from roleID
+  const getRoleName = (roleID: number) => {
+    const role = roles.find((r) => r.roleID === roleID);
+    return role ? role.roleName : "Unknown Role";
+  };
 
   const handleAccept = async (invitedID: number, projectID: number, roleID: number) => {
     if (!selectedInstitution) {
@@ -57,7 +84,7 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
     const success = await acceptInvite(invitedID, projectID, roleID, userEmail, institutionID);
     if (success) {
       alert("Invite accepted!");
-      setInvites(invites.filter(inv => inv.invitedID !== invitedID));
+      setInvites(invites.filter((inv) => inv.invitedID !== invitedID));
     } else {
       alert("Error accepting invite.");
     }
@@ -67,7 +94,7 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
     const success = await rejectInvite(invitedID);
     if (success) {
       alert("Invite rejected.");
-      setInvites(invites.filter(inv => inv.invitedID !== invitedID));
+      setInvites(invites.filter((inv) => inv.invitedID !== invitedID));
     }
   };
 
@@ -77,14 +104,18 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
       {invites.length === 0 ? (
         <p>No pending invites.</p>
       ) : (
-        invites.map(invite => (
+        invites.map((invite) => (
           <div key={`${invite.invitedID}-${invite.projectID}`}>
-            <p>Project ID: {invite.projectID} | Role: {invite.roleID}</p>
+            <p>
+              Project ID: {invite.projectID} | Role: <strong>{getRoleName(invite.roleID)}</strong>
+            </p>
 
             {/* Dropdown for Institution Selection */}
             <label>Select Institution:</label>
             <select value={selectedInstitution} onChange={(e) => setSelectedInstitution(e.target.value)}>
-              <option value="" disabled>Select an institution</option>
+              <option value="" disabled>
+                Select an institution
+              </option>
               {institutions.map((institution, index) => (
                 <option key={index} value={institution}>
                   {institution}
@@ -92,9 +123,7 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
               ))}
             </select>
 
-            <button onClick={() => handleAccept(invite.invitedID, invite.projectID, invite.roleID)}>
-              Accept
-            </button>
+            <button onClick={() => handleAccept(invite.invitedID, invite.projectID, invite.roleID)}>Accept</button>
             <button onClick={() => handleReject(invite.invitedID)}>Reject</button>
           </div>
         ))
