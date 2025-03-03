@@ -4,6 +4,7 @@ import { createProjectQuery, getUsersInstitutions, getInstitutionID } from "../d
 import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
 import { checkAndAddCategories } from "../database";
 
+//test rahy branch
 // Inserts new categories for a project into the database
 async function categoryCheck(){
   // Get template data
