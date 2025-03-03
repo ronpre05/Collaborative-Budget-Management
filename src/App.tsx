@@ -12,7 +12,6 @@ import Login from "./pages/Login";
 import ProjectView from './pages/ProjectView';
 import Invitations from "./pages/Invitations";
 
-
 type Invitation = {
   invitedID: number;
   inviteID: number;
@@ -28,7 +27,6 @@ function App() {
   const [userID, setUserID] = useState<number | null>(null);
   const [invitations] = useState<Invitation[]>([]);
 
-  
   // Hook to handle user login once user state is set from Clerk
   useEffect(() => {
     if (user) {
@@ -39,6 +37,8 @@ function App() {
       fetchUserID();
     }
   }, [user]);
+
+  const userEmail = user?.primaryEmailAddress?.emailAddress || "";
 
   return (
     <Router>
@@ -74,7 +74,7 @@ function App() {
           </aside>
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home userEmail={userEmail} />} />
               <Route path="/about" element={<About />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
@@ -83,7 +83,7 @@ function App() {
               <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
               <Route
                 path="/invitations"
-                element={userID ? <Invitations userEmail={user?.primaryEmailAddress?.emailAddress || ""} userID={userID} invitations={invitations} /> : <p>Loading...</p>}
+                element={userID ? <Invitations userEmail={userEmail} userID={userID} invitations={invitations} /> : <p>Loading...</p>}
               />
              </Routes>
           </main>

@@ -630,6 +630,7 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
     return data.valueID;
 }
 
+
 // Update an entry
 export const updateIndividualField = async (valueID : number, result : any) : Promise<any> =>
 {
