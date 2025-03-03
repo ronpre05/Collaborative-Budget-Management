@@ -122,7 +122,11 @@ export const createCategoryFields = async (categoryList: string[], categoryNames
     }
 }
 
-export const createProjectQuery = async (institutionID: number): Promise<string | null> => {
+export const createProjectQuery = async (
+    institutionID: number, 
+    projectName: string, 
+    projectAcronym: string
+): Promise<string | null> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem("userID");
 
@@ -130,24 +134,30 @@ export const createProjectQuery = async (institutionID: number): Promise<string 
         console.error("No user ID found in localStorage");
         return null;
     }
-    
-    const {data, error} = await supabase
+
+    const { data, error } = await supabase
         .from("Project")
-        .insert({principalInvestigatorID: userID})
+        .insert({
+            principalInvestigatorID: userID,
+            projectName: projectName, 
+            projectAcronym: projectAcronym
+        })
         .select("projectID");
-    if(error){
-        console.log("Error creating project: ", error.message);
+
+    if (error) {
+        console.error("Error creating project:", error.message);
         return null;
     }
 
-    if(data && data.length > 0){
+    if (data && data.length > 0) {
         const projectID = data[0].projectID;
         await createUserInstitutionProjectQuery(institutionID, projectID);
         return projectID;
     }
 
     return null;
-}
+};
+
 
     
 export const createUserInstitutionProjectQuery = async (institutionID: number, projectID: number): Promise<void> => {
