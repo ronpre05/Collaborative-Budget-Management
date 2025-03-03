@@ -248,6 +248,19 @@ export const inviteUserToProject = async (email: string, projectID: number, role
     return data;
 };
 
+export const getSentInvites = async (userID: number) => {
+    const { data, error } = await supabase
+        .from("Invites")
+        .select("invitedID, email, projectID, roleID, status") // Added invitedID
+        .eq("invitedBy", userID);
+
+    if (error) {
+        console.error("Error fetching sent invites:", error.message);
+        return [];
+    }
+    return data;
+};
+
 // Fetch pending invitations for a user
 export const getPendingInvites = async (userEmail: string) => {
     const { data, error } = await supabase

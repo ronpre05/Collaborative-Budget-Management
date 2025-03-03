@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getPendingInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID, getRoles } from "../database";
+import { getPendingInvites, getSentInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID, getRoles } from "../database";
 
 interface Invite {
   invitedID: number;
   projectID: number;
   roleID: number;
+  status?: string; 
+  email?: string;  
 }
 
 interface Role {
@@ -14,16 +16,17 @@ interface Role {
 
 interface InvitationsProps {
   userEmail: string;
+  userID: number;
   invitations: Invite[];
 }
 
-const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => {
+const Invitations: React.FC<InvitationsProps> = ({ userEmail, userID, invitations }) => {
   const [invites, setInvites] = useState<Invite[]>(invitations);
+  const [sentInvites, setSentInvites] = useState<Invite[]>([]);
   const [institutions, setInstitutions] = useState<string[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
-  const [roles, setRoles] = useState<Role[]>([]); // Store role data
+  const [roles, setRoles] = useState<Role[]>([]);
 
-  // Fetch institutions linked to the user
   useEffect(() => {
     const fetchInstitutions = async () => {
       try {
@@ -33,11 +36,9 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
         console.error("Error fetching institutions:", error);
       }
     };
-
     fetchInstitutions();
   }, []);
 
-  // Fetch roles
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -47,10 +48,8 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
         console.error("Error fetching roles:", error);
       }
     };
-
     fetchRoles();
   }, []);
-
 
   useEffect(() => {
     const loadInvites = async () => {
@@ -62,7 +61,14 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
     loadInvites();
   }, [userEmail, invitations]);
 
-  // Get role name from roleID
+  useEffect(() => {
+    const loadSentInvites = async () => {
+      const data = await getSentInvites(userID);
+      setSentInvites(data);
+    };
+    loadSentInvites();
+  }, [userID]);
+
   const getRoleName = (roleID: number) => {
     const role = roles.find((r) => r.roleID === roleID);
     return role ? role.roleName : "Unknown Role";
@@ -74,7 +80,6 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
       return;
     }
 
-    // Convert institution name to its ID
     const institutionID = await getInstitutionID(selectedInstitution);
     if (!institutionID) {
       alert("Invalid institution selection.");
@@ -109,8 +114,6 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
             <p>
               Project ID: {invite.projectID} | Role: <strong>{getRoleName(invite.roleID)}</strong>
             </p>
-
-            {/* Dropdown for Institution Selection */}
             <label>Select Institution:</label>
             <select value={selectedInstitution} onChange={(e) => setSelectedInstitution(e.target.value)}>
               <option value="" disabled>
@@ -125,6 +128,21 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, invitations }) => 
 
             <button onClick={() => handleAccept(invite.invitedID, invite.projectID, invite.roleID)}>Accept</button>
             <button onClick={() => handleReject(invite.invitedID)}>Reject</button>
+          </div>
+        ))
+      )}
+
+      <h3>Sent Invitations</h3>
+      {sentInvites.length === 0 ? (
+        <p>No invites sent.</p>
+      ) : (
+        sentInvites.map((invite) => (
+          <div key={`${invite.invitedID}-${invite.projectID}`}>
+            <p>
+              Invited <strong>{invite.email}</strong> to Project ID: {invite.projectID} <br />
+              Role: <strong>{getRoleName(invite.roleID)}</strong> | Status:{" "}
+              <strong>{invite.status}</strong>
+            </p>
           </div>
         ))
       )}

@@ -9,41 +9,34 @@ import Projects from "./pages/Projects";
 // We keep the route for create-project, but it won't be linked from the sidebar.
 import CreateProject from "./pages/CreateProject";
 import Login from "./pages/Login";
-import ManageCollaborators from "./pages/ManageCollaborators";
 import ProjectView from './pages/ProjectView';
 import Invitations from "./pages/Invitations";
 
 
+type Invitation = {
+  invitedID: number;
+  inviteID: number;
+  projectID: number;
+  roleID: number;
+  status?: string;
+  email?: string;
+};
 
 function App() {
   // Get currently logged in user from Clerk
   const { user } = useUser();
+  const [userID, setUserID] = useState<number | null>(null);
+  const [invitations] = useState<Invitation[]>([]);
 
-  type Invitation = {
-    inviteID: number;
-    projectID: number;
-    roleID: number;
-  };
   
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
-
-  const fetchInvitations = async (email: string) => {
-    const { data, error } = await supabase
-      .from("Invitations")
-      .select("*")
-      .eq("email", email);
-
-    if (error) {
-      console.error("Error fetching invitations:", error.message);
-    } else {
-      setInvitations(data);
-    }
-  };
-
   // Hook to handle user login once user state is set from Clerk
   useEffect(() => {
     if (user) {
-      HandleUserLogin(user);
+      const fetchUserID = async () => {
+        const storedUserID = await HandleUserLogin(user);
+        setUserID(storedUserID);
+      };
+      fetchUserID();
     }
   }, [user]);
 
@@ -88,8 +81,11 @@ function App() {
               <Route path="/create-project" element={<CreateProject/>} />
               <Route path="/project-view" element={<ProjectView/>} />
               <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
-              <Route path="/invitations" element={<Invitations userEmail={user?.primaryEmailAddress?.emailAddress || ""} invitations={invitations} />} />
-            </Routes>
+              <Route
+                path="/invitations"
+                element={userID ? <Invitations userEmail={user?.primaryEmailAddress?.emailAddress || ""} userID={userID} invitations={invitations} /> : <p>Loading...</p>}
+              />
+             </Routes>
           </main>
         </div>
       </SignedIn>
