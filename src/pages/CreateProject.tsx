@@ -4,6 +4,7 @@ import { createProjectQuery, getUsersInstitutions, getInstitutionID } from "../d
 import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
 import { checkAndAddCategories } from "../database";
 
+//test rahy branch
 // Inserts new categories for a project into the database
 async function categoryCheck(){
   // Get template data
@@ -21,6 +22,8 @@ async function categoryCheck(){
 const CreateProject: React.FC = () => {
   const [institutions, setInstitutions] = useState<string[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
+  const [projectName, setProjectName] = useState<string>("");
+  const [projectAcronym, setProjectAcronym] = useState<string>("");
   
   // Create project button call
   const handleCreateProject = async () => {
@@ -28,7 +31,7 @@ const CreateProject: React.FC = () => {
         let institutionID = await getInstitutionID(selectedInstitution);
 
         if(institutionID !== null){
-          let projectID =  await createProjectQuery(institutionID);
+          let projectID =  await createProjectQuery(institutionID, projectName, projectAcronym);
           
           // Set projectID in localstorage
           if(projectID !== null){
@@ -83,7 +86,26 @@ const CreateProject: React.FC = () => {
             ))}
       </select>
 
-      {selectedInstitution && <p>Institution selected: {selectedInstitution}</p>}
+      {selectedInstitution && <p>Institution selected: {selectedInstitution}</p>} {/* Project Name Input */}
+      <label>Project Name:</label>
+      <input
+          type="text"
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
+          placeholder="Enter project name"
+          required
+      />
+
+      {/* Project Acronym Input */}
+      <label>Project Acronym:</label>
+      <input
+          type="text"
+          value={projectAcronym}
+          onChange={(e) => setProjectAcronym(e.target.value)}
+          placeholder="Enter acronym (e.g., AI-2024)"
+          maxLength={10}
+          required
+      />
 
       <Link to="/project-view">
       <button onClick={handleCreateProject} className="create-project-btn">Create Project</button>
