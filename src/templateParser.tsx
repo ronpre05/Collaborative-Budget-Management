@@ -318,4 +318,3 @@ function getCalcData(calc : any) : CalculationType
         }
         return result;
       }
-    
