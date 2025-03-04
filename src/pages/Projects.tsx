@@ -59,7 +59,7 @@ const Projects: React.FC = () => {
               className="project-button"
               onClick={() => handleProjectClick(project.Project.projectID)}
             >
-              {project.Project.projectID}
+              {project.Project.projectName} ({project.Project.projectAcronym})
             </button>
           ))}
         </div>
