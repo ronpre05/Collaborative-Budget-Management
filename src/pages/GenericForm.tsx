@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CategoryType } from "../types";
 import { flattenFields } from "../templateParser";
 import { cleanString } from "../expressionParser";
+import { createEntry } from "../database";
 
 interface GenericFormProps {
   category: CategoryType;
@@ -56,7 +57,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   };
 
   // Handle form submission.
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Basic validation: ensure every visible field has a value.
     for (const key in flatFields) {
@@ -65,11 +66,20 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
         return;
       }
     }
-    // Create a new item from the current field values.
-    const newItem = { ...newItemValues };
+
+    try {
+      // Call createEntry to store the data in the database
+      await createEntry(category.Name, newItemValues);
+  
+      const newItem = { ...newItemValues };
     setItems(prev => [...prev, newItem]);
-    // Reset the form.
-    setNewItemValues({});
+      setNewItemValues({});
+  
+      console.log("Entry successfully added to the database.");
+    } catch (error) {
+      console.error("Failed to create entry:", error);
+      alert("Error saving entry. Please try again.");
+    }
   };
 
   return (
