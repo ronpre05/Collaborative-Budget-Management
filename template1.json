@@ -268,14 +268,14 @@
 				"baseTotal" : 
 				{
 					"Name" : "Base_Total",
-					"Expression" : "Travel_Costs:days*Travel_Costs:accomodation + Travel_Costs:says*Travel_Costs:sustinance",
+					"Expression" : "Travel_Costs:days*Travel_Costs:accomodation + Travel_Costs:days*Travel_Costs:sustinance",
 					"Type" : "Local",
 					"Output" : ""
 				},
 				"entryTotals" :
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Travel_Costs:F:amount",
+					"Expression" : "Travel_Costs:amount",
 					"Type" : "Local",
 					"Output" : ""
 				},
