@@ -74,14 +74,14 @@
 				"PersonMonths" : 
 				{
 					"Name" : "Person_Months",
-					"Expression" : "(Personnel:F:endDate - Personnel:F:startDate) * Personnel:F:percentage",
+					"Expression" : "(Personnel:endDate - Personnel:startDate) * Personnel:percentage",
 					"Type" : "Local",
 					"Output" : "personMonth"
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Personnel:F:amount",
+					"Expression" : "Personnel:amount",
 					"Type" : "Local",
 					"Output" : "localTotal"
 				}
@@ -139,7 +139,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Equipment:F:amount",
+					"Expression" : "Equipment:amount",
 					"Type" : "Local",
 					"Output" : "localTotal"
 				}
@@ -197,7 +197,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Other_Goods_and_Services:F:amount",
+					"Expression" : "Other_Goods_and_Services:amount",
 					"Type" : "Local",
 					"Output" : "localTotal"
 				}
@@ -268,7 +268,7 @@
 				"baseTotal" : 
 				{
 					"Name" : "Base_Total",
-					"Expression" : "Travel_Costs:F:days*Travel_Costs:F:accomodation + Travel_Costs:F:says*Travel_Costs:F:sustinance",
+					"Expression" : "Travel_Costs:days*Travel_Costs:accomodation + Travel_Costs:says*Travel_Costs:sustinance",
 					"Type" : "Local",
 					"Output" : ""
 				},
@@ -282,7 +282,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Trip_Total",
-					"Expression" : "Travel_Costs:C:Base_Total + Travel_Costs:C:Entry_Total",
+					"Expression" : "Travel_Costs:Base_Total + Travel_Costs:Entry_Total",
 					"Type" : "Local",
 					"Output" : ""
 				}
@@ -341,7 +341,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Subcontracting:F:amount",
+					"Expression" : "Subcontracting:amount",
 					"Type" : "Local",
 					"Output" : "localTotal"
 				}
@@ -399,7 +399,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Internally_Invoiced_Services:F:amount",
+					"Expression" : "Internally_Invoiced_Services:amount",
 					"Type" : "Local",
 					"Output" : "localTotal"
 				}
@@ -497,56 +497,56 @@
 				"Indirect Costs" : 
 				{
 					"Name" : "Indirect_Cost",
-					"Expression" : "0.25 * (Totals:C:Personnel_Total + Totals:C:Equipment_Total + Totals:C:Other_Goods_and_Services_Total + Totals:C:Travel_Total)",
+					"Expression" : "0.25 * (Totals:Personnel_Total + Totals:Equipment_Total + Totals:Other_Goods_and_Services_Total + Totals:Travel_Total)",
 					"Type" : "Local",
 					"Output" : "Indirect_Costs"
 				},
 				"Personnel Total" : 
 				{
 					"Name" : "Personnel_Total",
-					"Expression" : "Personnel:C:Entry_Total",
+					"Expression" : "Personnel:Entry_Total",
 					"Type" : "Global",
 					"Output" : "Personnel_Total"
 				},
 				"Equipment Total" : 
 				{
 					"Name" : "Equipment_Total",
-					"Expression" : "Equipment:C:Entry_Total",
+					"Expression" : "Equipment:Entry_Total",
 					"Type" : "Global",
 					"Output" : "Equipment_Total"
 				},
 				"OGC Total" : 
 				{
 					"Name" : "Other_Goods_and_Services_Total",
-					"Expression" : "Other_Goods_and_Services:C:Entry_Total",
+					"Expression" : "Other_Goods_and_Services:Entry_Total",
 					"Type" : "Global",
 					"Output" : "Other_Goods_and_Services_Total"
 				},
 				"Subcontracting Total" : 
 				{
 					"Name" : "Subcontracting_Total",
-					"Expression" : "Subcontracting:C:Entry_Total",
+					"Expression" : "Subcontracting:Entry_Total",
 					"Type" : "Global",
 					"Output" : "Subcontracting_Total"
 				},
 				"Internal Invoice Total" : 
 				{
 					"Name" : "Internally_Invoiced_Services_Total",
-					"Expression" : "Internally_Invoiced_Services:C:Entry_Total",
+					"Expression" : "Internally_Invoiced_Services:Entry_Total",
 					"Type" : "Global",
 					"Output" : "Internally_Invoiced_Services_Total"
 				},
 				"Travel Totals" :
 				{
 					"Name" : "Travel_Total",
-					"Expression" : "Travel_Costs:C:Trip_Total",
+					"Expression" : "Travel_Costs:Trip_Total",
 					"Type" : "Global",
 					"Output" : "Travel_Total"
 				},
 				"Grand Total" :
 				{
 					"Name" : "Grand_Total",
-					"Expression" : "Totals:C:Personnel_Total + Totals:C:Equipment_Total + Totals:C:Other_Goods_and_Services_Total + Totals:C:Subcontracting_Total + Totals:C:Internally_Invoiced_Services_Total + Totals:C:Travel_Total",
+					"Expression" : "Totals:Personnel_Total + Totals:Equipment_Total + Totals:Other_Goods_and_Services_Total + Totals:Subcontracting_Total + Totals:Internally_Invoiced_Services_Total + Totals:Travel_Total",
 					"Type" : "Local",
 					"Output" : "Grand_Total"
 				}
