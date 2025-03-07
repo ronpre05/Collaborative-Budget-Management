@@ -299,40 +299,53 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
 
 
 /*
-In 'Categories':
--Generates a new CategoryID for each use (automatically)
--Enters new categoryName (for example Personnel Costs)
--Enters projectID from local storage
 
-In 'CategoryEntry':
--Generates a new entryID (automatically)
--Enters CategoryID that was just generated
--InstitutionID is currently null, may need to change that later
-
-returns categoryID and entryID
 */
 export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
-    const { data: categoryData, error: categoryError } = await supabase
-        .from("Categories")
-        .insert({ categoryName, projectID: localStorage.getItem("projectID") })
-        .select("categoryID")
-        .single();
-
-    if (categoryError) {
-        console.error("Error creating category:", categoryError.message);
+    const projectID = localStorage.getItem("projectID");
+    
+    if (!projectID) {
+        console.error("Project ID not found in local storage.");
         return null;
     }
 
-    console.log("Successfully created Category:", categoryData);
+    // Check if the category already exists for the current project
+    let { data: existingCategory, error: categoryError } = await supabase
+        .from("Categories")
+        .select("categoryID")
+        .eq("categoryName", categoryName)
+        .eq("projectID", projectID)
+        .single();
 
-    // create an entry in CategoryEntry using the new categoryID
+    if (categoryError && categoryError.code !== "PGRST116") { 
+        console.error("Error checking existing category:", categoryError.message);
+        return null;
+    }
+
+    let categoryID;
+    if (existingCategory) {
+        categoryID = existingCategory.categoryID;
+    } else {
+        // Insert new category
+        const { data: newCategory, error: newCategoryError } = await supabase
+            .from("Categories")
+            .insert({ categoryName, projectID })
+            .select("categoryID")
+            .single();
+
+        if (newCategoryError) {
+            console.error("Error creating category:", newCategoryError.message);
+            return null;
+        }
+        categoryID = newCategory.categoryID;
+    }
+
+    console.log("Using Category ID:", categoryID);
+
+    // Create a new entry in CategoryEntry
     const { data: entryData, error: entryError } = await supabase
         .from("CategoryEntry")
-        .insert({
-            projectID: localStorage.getItem("projectID"),
-            categoryID: categoryData.categoryID,
-            institutionID: null
-        })
+        .insert({ projectID, categoryID, institutionID: null })
         .select("entryID")
         .single();
 
@@ -341,39 +354,43 @@ export const createCategoryEntry = async (categoryName: string): Promise<{ categ
         return null;
     }
 
-    console.log("Successfully created CategoryEntry:", entryData);
-    return { categoryID: categoryData.categoryID, entryID: entryData.entryID };
+    return { categoryID, entryID: entryData.entryID };
 };
 
-
-/*
-In 'CategoryFields':
--Generates a new fieldID (automatically)
--Enters the same categoryID for each fieldName 
-(for example if there was 5 fields then there will be 5 rows, each with the same categoryID but different fieldName)
-
-In 'FieldValues':
--Each loop pushes the entryID, generated fieldID from CategoryFields, as well as the value of that field to an array
--Once the loop has finished, the data held in the array is inserted into 'FieldValues'
--Generates a new valueID (automatically)
-
-*/
 export const insertFieldValues = async (entryID: number, categoryID: number, data: Record<string, string>) => {
     const fieldValues = [];
 
     for (const [fieldName, value] of Object.entries(data)) {
-        const { data: newField, error: fieldError } = await supabase
+        let { data: existingField, error: fieldError } = await supabase
             .from("CategoryFields")
-            .insert({ categoryID, fieldName })
             .select("fieldID")
+            .eq("categoryID", categoryID)
+            .eq("fieldName", fieldName)
             .single();
 
-        if (fieldError) {
-            console.error(`Error inserting new field ${fieldName}:`, fieldError.message);
+        if (fieldError && fieldError.code !== "PGRST116") {
+            console.error(`Error checking field ${fieldName}:`, fieldError.message);
             continue;
         }
 
-        fieldValues.push({ entryID, fieldID: newField.fieldID, value });
+        let fieldID;
+        if (existingField) {
+            fieldID = existingField.fieldID;
+        } else {
+            const { data: newField, error: insertError } = await supabase
+                .from("CategoryFields")
+                .insert({ categoryID, fieldName })
+                .select("fieldID")
+                .single();
+
+            if (insertError) {
+                console.error(`Error inserting field ${fieldName}:`, insertError.message);
+                continue;
+            }
+            fieldID = newField.fieldID;
+        }
+
+        fieldValues.push({ entryID, fieldID, value });
     }
 
     if (fieldValues.length === 0) {
@@ -390,11 +407,13 @@ export const insertFieldValues = async (entryID: number, categoryID: number, dat
     }
 };
 
+
 /*
 Main function to insert forms into database.
 Example usage:
 createEntry("Personnel Costs", { Name: "John Pork", Role: admin, StartDate: 01/01,2025, EndDate: 01/01/2030})
 */
+
 export const createEntry = async (categoryName: string, fieldData: Record<string, string>) => {
     const categoryEntry = await createCategoryEntry(categoryName);
     if (!categoryEntry) return;
