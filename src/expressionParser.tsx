@@ -402,10 +402,10 @@ async function getVariable(catName : string, fieldName : string, projectID : num
     // Can use the project and entry ids to do this
 
     // Get category id from name and projectid
-    const catId : number = await getCategoryID(cleanString(catName), projectID);
+    const catId : number = await getCategoryID(catName, projectID);
 
     // Use the catid and field name to get all matching field ids
-    const fieldID : number = await getFieldID(catId, cleanString(fieldName));
+    const fieldID : number = await getFieldID(catId, fieldName);
 
     // Get the value from field values with matching entry and field ids
     const value : number = await getValue(entryID, fieldID);
@@ -430,7 +430,7 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     // MIGHT NEED ANOTHER NEW QUERY
 
     // Get the field ID
-    const fieldID : number = await getFieldID(catId, cleanString(outputField));
+    const fieldID : number = await getFieldID(catId, outputField);
 
     // Run an update to change value (at field/entry) to be result
     const valueID :  number = await getValueID(fieldID, entryID);
@@ -476,7 +476,7 @@ export function cleanString(str : string) : string
 export async function categoryCalculation(catName : string, projectID : number, template : TemplateData)
 {
     const cat : CategoryType = findCatObject(catName, template.categories);
-    const catId : number = await(getCategoryID(cleanString(catName), projectID));
+    const catId : number = await(getCategoryID(catName, projectID));
     const calculations : CalculationType[] = cat.calculations;
 
     // For each calculation
