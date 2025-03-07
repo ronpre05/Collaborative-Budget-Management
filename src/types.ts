@@ -1,25 +1,32 @@
-export interface FieldType {
-  Name: string;
-  Prefix: string;
-  Value: string;
-  Postfix: string;
-  Type: string; 
-  Visible: boolean;
+export interface FieldType 
+{
+    name : string;
+    prefix : string;
+    value : string;
+    postfix : string;
+    type : string;
+    displayvisible : boolean;
+    entryvisible : boolean;
 }
 
-export interface CalculationType {
-  Name: string;
-  Expression: string;
+export interface CalculationType 
+{
+    name : string;
+    expression : string;
+    type : string;
+    output : string;
 }
 
-export interface CategoryType {
-  Name: string;
+export interface CategoryType 
+{
+  name: string;
   //I used `any` for Fields so that nested fields (like "Entry") are allowed.
-  Fields: Record<string, any>;
-  Calculations: Record<string, CalculationType>;
+  fields: FieldType[];
+  calculations: CalculationType[];
 }
 
-export interface TemplateData {
+export interface TemplateData
+{
   templateName: string;
-  Categories: Record<string, CategoryType>;
+  categories: CategoryType[];
 }
