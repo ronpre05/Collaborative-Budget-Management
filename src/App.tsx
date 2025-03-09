@@ -1,5 +1,3 @@
-"use client"
-
 import { supabase } from "./database"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react"

@@ -1,3 +1,35 @@
+.main-content {
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+:root {
+  --sidebar-background: 270 100% 98%; /* Light purple background */
+  --sidebar-foreground: 270 80% 30%; /* Dark purple text */
+  --sidebar-primary: 270 90% 50%; /* Medium purple for primary elements */
+  --sidebar-primary-foreground: 0 0% 100%; /* White text on primary elements */
+  --sidebar-accent: 270 90% 90%; /* Very light purple for hover/active states */
+  --sidebar-accent-foreground: 270 90% 30%; /* Dark purple text for hover/active states */
+  --sidebar-border: 270 20% 85%; /* Light purple-gray border */
+  --sidebar-ring: 270 90% 60%; /* Medium-bright purple for focus rings */
+}
+
+.dark {
+  --sidebar-background: 270 50% 15%; /* Dark purple background */
+  --sidebar-foreground: 270 30% 90%; /* Light purple-white text */
+  --sidebar-primary: 270 90% 50%; /* Medium purple for primary elements */
+  --sidebar-primary-foreground: 0 0% 100%; /* White text on primary elements */
+  --sidebar-accent: 270 50% 25%; /* Slightly lighter purple for hover/active states */
+  --sidebar-accent-foreground: 270 30% 90%; /* Light purple-white text for hover/active states */
+  --sidebar-border: 270 30% 25%; /* Dark purple border */
+  --sidebar-ring: 270 90% 60%; /* Medium-bright purple for focus rings */
+}
+
 html, body {
   margin: 0;
   padding: 0;
