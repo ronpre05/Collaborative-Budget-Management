@@ -8,10 +8,10 @@ async function main()
     const template : TemplateData = await readJsonFile("./template1.json");
     console.log(template);
     console.log(getCatNames(template));
-    console.log(getFieldsNames(template.categories[0]));
-    console.log(findCatObject("Personnel", template.categories));
-    console.log(findFieldObject("amount", template.categories[0]));
-    console.log(findCalcObject("Total", template.categories[0]));
+    console.log(getFieldsNames(template.categories[3]));
+    console.log(findCatObject("Travel_Costs", template.categories));
+    console.log(findFieldObject("days", template.categories[3]));
+    console.log(findCalcObject("Trip_Total", template.categories[3]));
 }
 
 /**
@@ -48,7 +48,7 @@ function getTemplate(template : any) : TemplateData
 }
 
 /**
- * Gets the raw categoires section from a template, loop through each category and creates a CategoryType out of it in order
+ * Gets the raw categories section from a template, loop through each category and creates a CategoryType out of it in order
  * to populate the TemplateData type requested by the user for a project.
  * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
  * @param template the raw template file to extract the categories from
@@ -77,7 +77,7 @@ function getCategoriesFromRaw(template : any) : CategoryType[]
 
 /**
  * Generates a type safe category with its fields and calculations ready to form a list for the category list in the
- * TemplateData structure
+ * TemplateData structure. Also handles getting the sub entries from the template if that category has sub entries
  * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
  * @param category a raw category from the template
  * @returns a correctly populated CategoryType object which has fields and calculations read in
@@ -87,9 +87,16 @@ function getCategoryData(category : any) : CategoryType
     let cat : CategoryType = 
     {
         name : category.Name,
+        hassubentry : category.HasSubEntry,
         fields : getFieldsFromRaw(category),
-        calculations : getCalculationsFromRaw(category)
+        calculations : getCalculationsFromRaw(category),
+        subentries : [],
     };
+
+    if(cat.hassubentry == true)
+    {
+        cat.subentries = getSubEntryFromRaw(category);
+    }
 
     return cat;
 }
@@ -113,6 +120,26 @@ function getFieldsFromRaw(category : any) : FieldType[]
     );
 
     return fields;
+}
+
+/**
+ * A function to construct a list of FieldType from a raw category i order to populate the CategoryType object of the raw category
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * @param category the category to get sub entries from
+ * @returns the list of fields that make up the sub entries of the category
+ */
+function getSubEntryFromRaw(category : any) : FieldType[]
+{
+    const rawSubEntry : any = category.SubEntries;
+    let subEntries : FieldType[] = [];
+
+    Object.values(rawSubEntry).forEach(subEntry =>
+    {
+        subEntries.push(getFieldData(subEntry));
+    }
+    );
+
+    return subEntries;
 }
 
 /**
@@ -236,7 +263,7 @@ export function getFieldsNames(category : CategoryType) : string[]
  */
 export function findCatObject(catName : string, categories : CategoryType[]) : CategoryType
 {
-    let ret : CategoryType = {name : "", fields : [], calculations : []};
+    let ret : CategoryType = {name : "", fields : [], calculations : [], hassubentry : false, subentries : []};
 
     if(categories == undefined)
     {
@@ -309,3 +336,6 @@ export function findCalcObject(calcName : string, category : CategoryType) : Cal
 
     return ret;
 }
+
+// From a sun entry name, get the sub entry
+// Get sub entry names

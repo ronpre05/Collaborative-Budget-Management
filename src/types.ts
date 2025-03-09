@@ -19,14 +19,15 @@ export interface CalculationType
 
 export interface CategoryType 
 {
-  name: string;
-  //I used `any` for Fields so that nested fields (like "Entry") are allowed.
-  fields: FieldType[];
-  calculations: CalculationType[];
+  name : string;
+  hassubentry : boolean;
+  fields : FieldType[];
+  calculations : CalculationType[];
+  subentries : FieldType[];
 }
 
 export interface TemplateData
 {
-  templateName: string;
-  categories: CategoryType[];
+  templateName : string;
+  categories : CategoryType[];
 }

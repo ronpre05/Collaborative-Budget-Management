@@ -6,6 +6,7 @@
 		"PC": 
 		{
 			"Name" : "Personnel",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"Amount" : 
@@ -91,6 +92,7 @@
 		"EC" : 
 		{
 			"Name" : "Equipment",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -149,6 +151,7 @@
 		"OGC" : 
 		{
 			"Name" : "Other_Goods_and_Services",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -207,6 +210,7 @@
 		"TC" : 
 		{
 			"Name" : "Travel_Costs",
+			"HasSubEntry" : true,
 			"Fields" : 
 			{
 				"Days"  : 
@@ -238,29 +242,29 @@
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Entry" : 
+				}
+			},
+			"SubEntries" : 
+			{
+				"What" : 
 				{
-					"What" : 
-					{
-						"Name" : "what",
-						"Prefix" : "",
-						"Value" : "",
-						"Postfix" : "",
-						"Type" : "String",
-						"DisplayVisiblity" : true,
-						"EntryVisibility" : true
-					},
-					"Amount" : 
-					{
-						"Name" : "amount",
-						"Prefix" : "€",
-						"Value" : "",
-						"Postfix" : "",
-						"Type" : "Int",
-						"DisplayVisiblity" : true,
-						"EntryVisibility" : true
-					}
+					"Name" : "what",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				}
 			},
 			"Calculations" :
@@ -287,12 +291,12 @@
 					"Output" : ""
 				}
 			}
-			
 		},
 
 		"SC" : 
 		{
 			"Name" : "Subcontracting",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -351,6 +355,7 @@
 		"IIC" : 
 		{
 			"Name" : "Internally_Invoiced_Services",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -409,6 +414,7 @@
 		"Totals" : 
 		{
 			"Name" : "Totals",
+			"HasSubEntry" : false,
 			"Fields" :
 			{
 				"Indirect Costs" : 
