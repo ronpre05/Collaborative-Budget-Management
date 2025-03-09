@@ -12,6 +12,9 @@ async function main()
     console.log(findCatObject("Travel_Costs", template.categories));
     console.log(findFieldObject("days", template.categories[3]));
     console.log(findCalcObject("Trip_Total", template.categories[3]));
+    console.log(getSubEntryNames(template.categories[3]));
+    console.log(findSubEntryObject("amount", template.categories[3]));
+    console.log(findSubEntryObject("amount", template.categories[0]));
 }
 
 /**
@@ -337,5 +340,54 @@ export function findCalcObject(calcName : string, category : CategoryType) : Cal
     return ret;
 }
 
-// From a sun entry name, get the sub entry
 // Get sub entry names
+/**
+ * Returns a list of the subentries from a given CategoryType object
+ * @param category the chosen CategoryType object
+ * @returns a list of sub entry names, [] if has no subentries
+ */
+export function getSubEntryNames(category : CategoryType) : string[]
+{
+    const subEntries : FieldType[] = category.subentries;
+    let subEntryNames : string[] = [];
+
+    if(subEntries == undefined || category.hassubentry == false)
+    {
+        return subEntryNames;
+    }
+
+    for(let subEntry of subEntries)
+    {
+        subEntryNames.push(subEntry.name);
+    }
+
+    return subEntryNames;
+}
+
+// From a sub entry name, get the sub entry
+/**
+ * From a given sub entry name, find the sub entryobject
+ * @param subEntryName the sub entry name that you are searching for
+ * @param category the category you are searching the sub entries of
+ * @returns the FieldType object with that name
+ */
+export function findSubEntryObject(subEntryName : string, category : CategoryType) : FieldType
+{
+    const subEntries : FieldType[] = category.subentries;
+    let ret : FieldType = {name : "", prefix : "", value : "", postfix : "", type : "", displayvisible : false, entryvisible : false};
+
+    if(subEntries == undefined || category.hassubentry == false)
+    {
+        return ret;
+    }
+
+    for(let subEntry of subEntries)
+    {
+        if(subEntry.name == subEntryName)
+        {
+            return subEntry;
+        }
+    }
+
+    return ret;
+}
