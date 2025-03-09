@@ -122,6 +122,29 @@ export const createCategoryFields = async (categoryList: string[], categoryNames
     }
 }
 
+export const getProjectName = async (): Promise<string | null> => {
+    
+    const projectID = localStorage.getItem("projectID");
+    
+    if (!projectID) {
+        console.error("Project ID not found in local storage.");
+        return null;
+    }
+
+    const {data, error} = await supabase
+        .from("Project")
+        .select("projectName")
+        .eq("projectID", projectID)
+        .single();
+
+    if(error){
+        console.error("Error finding project name: ", error.message);
+        return null;
+    }
+
+    return data?.projectName || null;
+}
+
 export const createProjectQuery = async (
     institutionID: number, 
     projectName: string, 
@@ -145,7 +168,7 @@ export const createProjectQuery = async (
         .select("projectID");
 
     if (error) {
-        console.error("Error creating project:", error.message);
+        console.error("Error creating project: ", error.message);
         return null;
     }
 
@@ -423,7 +446,6 @@ Main function to insert forms into database.
 Example usage:
 createEntry("Personnel Costs", { Name: "John Pork", Role: admin, StartDate: 01/01,2025, EndDate: 01/01/2030})
 */
-
 export const createEntry = async (categoryName: string, fieldData: Record<string, string>) => {
     const categoryEntry = await createCategoryEntry(categoryName);
     if (!categoryEntry) return;

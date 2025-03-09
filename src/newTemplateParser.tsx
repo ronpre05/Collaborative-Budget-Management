@@ -23,11 +23,11 @@ async function main()
  */
 export async function readJsonFile(path: string): Promise<TemplateData> 
 {
-    const file = await readFile(path, "utf8");
-    return getTemplate(await(JSON.parse(file)));
+    // const file = await readFile(path, "utf8");
+    // return getTemplate(await(JSON.parse(file)));
 
-    // const response = await fetch(path);
-    // return getTemplate(await response.json());
+    const response = await fetch(path);
+    return getTemplate(await response.json());
 }
 
 /**
