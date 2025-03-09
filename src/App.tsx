@@ -13,6 +13,8 @@ import ManageCollaborators from "./pages/ManageCollaborators";
 import ProjectView from './pages/ProjectView';
 import SettingsPage from './pages/SettingsPage';
 
+import { Button } from "./components/ui/button.tsx";
+
 function App() {
   // Get currently logged in user from Clerk
   const { user } = useUser();
@@ -42,16 +44,16 @@ function App() {
             </div>
             <nav>
               <Link to="/">
-                <button>Home</button>
+                <Button>Home</Button>
               </Link>
               <Link to="/projects">
-                <button>Projects</button>
+                <Button>Projects</Button>
               </Link>
               <Link to="/settings">
-                <button>Account Settings</button>
+                <Button>Account Settings</Button>
               </Link>
               <Link to="/support">
-                <button>Support</button>
+                <Button>Support</Button>
               </Link>
               {/* Removed the Create Project link here */}
             </nav>
