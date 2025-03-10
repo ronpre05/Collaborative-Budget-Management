@@ -514,34 +514,34 @@ export async function categoryCalculation(catName : string, projectID : number, 
         }
 }
 
-main();
+// main();
 
-async function main()
-{
-    // console.log(await getCategoryID("Personnel", 88)); // Gives 35
-    // console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
-    // console.log(await getFieldID(28, "personMonth")); // 64
-    // console.log(await getValue(46, 57)) // Gives 100 
-    // console.log(await getValueID(46, 57)); // Gives 89
-    // console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
+// async function main()
+// {
+//     // console.log(await getCategoryID("Personnel", 88)); // Gives 35
+//     // console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
+//     // console.log(await getFieldID(28, "personMonth")); // 64
+//     // console.log(await getValue(46, 57)) // Gives 100 
+//     // console.log(await getValueID(46, 57)); // Gives 89
+//     // console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
 
-    // console.log("");
+//     // console.log("");
 
-    // Some tests for get variable, global and local evaluator
+//     // Some tests for get variable, global and local evaluator
 
-    console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
+//     console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
 
-    const template : TemplateData = await readJsonFile("./template1.json");
+//     const template : TemplateData = await readJsonFile("./template1.json");
 
-    const cats = template.categories;
+//     const cats = template.categories;
 
-    console.log(cats[5].calculations[0]);
+//     console.log(cats[5].calculations[0]);
 
-    console.log(await localEvaluator(cats[5].calculations[0], 99, 58)) // Gives 100
+//     console.log(await localEvaluator(cats[5].calculations[0], 99, 58)) // Gives 100
 
-    console.log(await basicEvaluator(expressionToRPN("10 +Internally_Invoiced_Services:F:amount"), 99, 58));
+//     console.log(await basicEvaluator(expressionToRPN("10 +Internally_Invoiced_Services:F:amount"), 99, 58));
 
-    //await(categoryCalculation("Internally_Invoiced_Services", 99, template));
-}
+//     //await(categoryCalculation("Internally_Invoiced_Services", 99, template));
+// }
 
 
