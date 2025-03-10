@@ -121,8 +121,8 @@ h1 {
   text-align: center;
 }
 
-.create-project-btn {
-  background-color: #800020;
+button {
+  background-color: #73057f;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -132,10 +132,11 @@ h1 {
   margin-top: 20px;
 }
 
-.create-project-btn:hover {
+button:hover {
   background-color: #d3d3d3;
-  color: #800020;
+  color: #730080;
 }
+
 
 .create-project-content {
   padding: 20px;
