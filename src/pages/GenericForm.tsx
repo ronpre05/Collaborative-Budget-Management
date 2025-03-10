@@ -5,12 +5,12 @@ import { cleanString } from "../expressionParser";
 import { createEntry } from "../database";
 
 interface GenericFormProps {
-  category: CategoryType;
+  category: any; // TEMP changed to any
 }
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Flatten the fields for easier handling.
-  const flatFields = flattenFields(category.fields);
+  const flatFields = flattenFields(category.Fields); //TEMP changed to Fields instead
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
