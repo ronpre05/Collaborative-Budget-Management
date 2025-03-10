@@ -1,19 +1,6 @@
-import { getCalcObjectsFromCategory, getCalculationNames, getCalculationsSection, getCategoriesObjectsFromTemplate, getCategoriesSection, getCategoryNames, getCategoryObject, getCatNamesFromTemplate, readJsonFile } from "./templateParser";
 import { getAllCategoryEntries, getCategoryID, getFieldID, getValue, getValueID, updateIndividualField } from "./database";
-
-type CalculationType =
-{
-    name : string;
-    expression : string;
-    type : string;
-    output : string,
-};
-
-enum ValueType
-{
-    Calc,
-    Field,
-};
+import { readJsonFile, findCatObject } from "./newTemplateParser";
+import { CalculationType, TemplateData, CategoryType } from "./types";
 
 enum Associativity
 {
@@ -404,7 +391,7 @@ async function parseVariable(vari : string, projectID : number, entryID : number
     const splitString : string[] = vari.split(":");
 
     let catName : string = splitString[0];
-    let valName : string = splitString[2];
+    let valName : string = splitString[1];
 
     return getVariable(catName, valName, projectID, entryID);
 }
@@ -415,10 +402,10 @@ async function getVariable(catName : string, fieldName : string, projectID : num
     // Can use the project and entry ids to do this
 
     // Get category id from name and projectid
-    const catId : number = await getCategoryID(cleanString(catName), projectID);
+    const catId : number = await getCategoryID(catName, projectID);
 
     // Use the catid and field name to get all matching field ids
-    const fieldID : number = await getFieldID(catId, cleanString(fieldName));
+    const fieldID : number = await getFieldID(catId, fieldName);
 
     // Get the value from field values with matching entry and field ids
     const value : number = await getValue(entryID, fieldID);
@@ -443,7 +430,7 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     // MIGHT NEED ANOTHER NEW QUERY
 
     // Get the field ID
-    const fieldID : number = await getFieldID(catId, cleanString(outputField));
+    const fieldID : number = await getFieldID(catId, outputField);
 
     // Run an update to change value (at field/entry) to be result
     const valueID :  number = await getValueID(fieldID, entryID);
@@ -481,16 +468,19 @@ async function globalEvaluator(calc : CalculationType, projectID : number, categ
     return total;
 }
 
-export function cleanString(str : string) : string
+export function cleanString(str? : string) : string
 {
+    if(!str){
+        return "";
+    }
     return str.split("_").join(" ");
 }
 
-export async function categoryCalculation(catName : string, projectID : number, template : any)
+export async function categoryCalculation(catName : string, projectID : number, template : TemplateData)
 {
-    const cat : any = getCategoryObject(getCategoriesSection(template), catName);
-    const catId : number = await(getCategoryID(cleanString(catName), projectID));
-    const calculations : CalculationType[] = getCalcObjectsFromCategory(cat);
+    const cat : CategoryType = findCatObject(catName, template.categories);
+    const catId : number = await(getCategoryID(catName, projectID));
+    const calculations : CalculationType[] = cat.calculations;
 
     // For each calculation
     for(const calc of calculations)
@@ -534,23 +524,27 @@ export async function categoryCalculation(catName : string, projectID : number, 
 //     // console.log(await getCategoryID("Personnel", 88)); // Gives 35
 //     // console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
 //     // console.log(await getFieldID(28, "personMonth")); // 64
-//     // console.log(await getValue(46, 57)) // Gives 100
+//     // console.log(await getValue(46, 57)) // Gives 100 
 //     // console.log(await getValueID(46, 57)); // Gives 89
 //     // console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
 
 //     // console.log("");
 
-//     // // Some tests for get variable, global and local evaluator
+//     // Some tests for get variable, global and local evaluator
 
-//     // console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
+//     console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
 
-//     const template : any = await readJsonFile("./template1.json");
+//     const template : TemplateData = await readJsonFile("./template1.json");
 
-//     //const cats = getCategoriesObjectsFromTemplate(template);
+//     const cats = template.categories;
 
-//     //console.log(await localEvaluator(getCalcObjectsFromCategory(cats[5])[0], 99, 58)) // Gives 100
+//     console.log(cats[5].calculations[0]);
 
-//     await(categoryCalculation("Internally_Invoiced_Services", 99, template));
+//     console.log(await localEvaluator(cats[5].calculations[0], 99, 58)) // Gives 100
+
+//     console.log(await basicEvaluator(expressionToRPN("10 +Internally_Invoiced_Services:F:amount"), 99, 58));
+
+//     //await(categoryCalculation("Internally_Invoiced_Services", 99, template));
 // }
 
 

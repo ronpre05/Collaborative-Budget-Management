@@ -11,7 +11,7 @@ const DynamicBudgetForm: React.FC = () => {
 
   return (
     <div>
-      <h1>{getTemplateName(templateData)} - Budget Management</h1>
+      <h2>{getTemplateName(templateData)} - Budget Management</h2>
       <div className="tab-container">
         {categories.map((category, index) => (
           <div

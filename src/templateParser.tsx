@@ -1,4 +1,4 @@
-import { readFile } from "fs/promises";
+// import { readFile } from "fs/promises";
 
 type FieldType =
 {
@@ -7,7 +7,8 @@ type FieldType =
     value : string;
     postfix : string;
     type : string;
-    visible : boolean;
+    displayvisible : boolean;
+    entryvisible : boolean;
 };
 
 type CalculationType =
@@ -193,7 +194,8 @@ function getFieldData(field : any) : FieldType
         value : field.Value,
         postfix : field.Postfix,
         type : field.Type,
-        visible : field.Visible
+        displayvisible : field.DisplayVisiblity,
+        entryvisible : field.EntryVisibility
     };
 
     return ret;
@@ -316,4 +318,3 @@ function getCalcData(calc : any) : CalculationType
         }
         return result;
       }
-    
