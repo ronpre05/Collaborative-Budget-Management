@@ -468,8 +468,11 @@ async function globalEvaluator(calc : CalculationType, projectID : number, categ
     return total;
 }
 
-export function cleanString(str : string) : string
+export function cleanString(str? : string) : string
 {
+    if(!str){
+        return "";
+    }
     return str.split("_").join(" ");
 }
 
