@@ -1,7 +1,7 @@
 import { supabase } from './database';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import "./App.css";
 import Home from "./pages/HomePage";
 import About from "./pages/About";
@@ -9,20 +9,36 @@ import Projects from "./pages/Projects";
 // We keep the route for create-project, but it won't be linked from the sidebar.
 import CreateProject from "./pages/CreateProject";
 import Login from "./pages/Login";
-import ManageCollaborators from "./pages/ManageCollaborators";
 import ProjectView from './pages/ProjectView';
-import SettingsPage from './pages/SettingsPage';
+import Invitations from "./pages/Invitations";
+
+type Invitation = {
+  invitedID: number;
+  inviteID: number;
+  projectID: number;
+  roleID: number;
+  status?: string;
+  email?: string;
+};import SettingsPage from './pages/SettingsPage';
 
 function App() {
   // Get currently logged in user from Clerk
   const { user } = useUser();
+  const [userID, setUserID] = useState<number | null>(null);
+  const [invitations] = useState<Invitation[]>([]);
 
   // Hook to handle user login once user state is set from Clerk
   useEffect(() => {
     if (user) {
-      HandleUserLogin(user);
+      const fetchUserID = async () => {
+        const storedUserID = await HandleUserLogin(user);
+        setUserID(storedUserID);
+      };
+      fetchUserID();
     }
   }, [user]);
+
+  const userEmail = user?.primaryEmailAddress?.emailAddress || "";
 
   return (
     <Router>
@@ -53,12 +69,15 @@ function App() {
               <Link to="/support">
                 <button>Support</button>
               </Link>
+              <Link to="/Invitations">  
+                <button>Pending Invites</button>
+              </Link>
               {/* Removed the Create Project link here */}
             </nav>
           </aside>
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home userEmail={userEmail} />} />
               <Route path="/about" element={<About />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/support" element={<div className="content"><h1>Support Page</h1></div>} />
@@ -66,7 +85,11 @@ function App() {
               <Route path="/create-project" element={<CreateProject/>} />
               <Route path="/project-view" element={<ProjectView/>} />
               <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
-            </Routes>
+              <Route
+                path="/invitations"
+                element={userID ? <Invitations userEmail={userEmail} userID={userID} invitations={invitations} /> : <p>Loading...</p>}
+              />
+             </Routes>
           </main>
         </div>
       </SignedIn>
@@ -135,7 +158,7 @@ const HandleUserLogin = async (user: any) => {
     console.log(`User session stored with ID: ${userId}`);
     return userId;
   } catch (err) {
-    console.error(`Error handling user login (userID ${userId}): ${err.message}`);
+    console.error(`Error handling user login (userID ${user}): ${err.message}`);
   }
 };
 
