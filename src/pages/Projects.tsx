@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
 import CategoryDisplay from "../categoryDisplay";
-import { getCategoryData } from "../queryFunctions";
+import { getCategoryDataCatOnly } from "../queryFunctions";
 
 // Projects Page
 const Projects: React.FC = () => {
@@ -44,7 +44,10 @@ const Projects: React.FC = () => {
 
       {/* Render ProjectsView if userId is available */}
       {userId ? (
-        <ProjectsView userId={userId} onProjectsFetched={handleProjectsFetched} />
+        <ProjectsView
+          userId={userId}
+          onProjectsFetched={handleProjectsFetched}
+        />
       ) : (
         <p>Loading user...</p>
       )}
