@@ -192,6 +192,12 @@ export async function getCategoryDataCatOnly(
   const fieldIDs = await getFieldIDs(categoryID);
   const catHeaders = await getCategoryHeaders(categoryID);
   const fieldData = await getFieldData(fieldIDs);
+
+  // Check if fieldData is empty or its first element is undefined.
+  if (!fieldData || fieldData.length === 0 || !fieldData[0]) {
+    return [catHeaders]; // Return only the headers if there's no data.
+  }
+
   const result = formatData(catHeaders, fieldData);
 
   return result;
