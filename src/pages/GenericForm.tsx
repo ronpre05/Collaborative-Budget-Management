@@ -10,7 +10,7 @@ interface GenericFormProps {
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Flatten the fields for easier handling.
-  const flatFields = flattenFields(category.Fields);
+  const flatFields = flattenFields(category.fields);
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
@@ -38,7 +38,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Render all (flattened) fields.
   const renderFields = () => {
     return Object.entries(flatFields).map(([key, field]) => {
-      if (!field.visible) return null;
+      if (!field.entryvisible) return null;
       return (
         <div key={key} style={{ marginBottom: "0.5rem" }}>
           <label>
@@ -61,7 +61,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     e.preventDefault();
     // Basic validation: ensure every visible field has a value.
     for (const key in flatFields) {
-      if (flatFields[key].visible && !newItemValues[key]) {
+      if (flatFields[key].entryvisible && !newItemValues[key]) {
         alert(`Please fill out the field: ${key}`);
         return;
       }
@@ -69,7 +69,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
     try {
       // Call createEntry to store the data in the database
-      await createEntry(category.Name, newItemValues);
+      await createEntry(category.name, newItemValues);
   
       const newItem = { ...newItemValues };
     setItems(prev => [...prev, newItem]);
@@ -84,7 +84,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   return (
     <div>
-      <h2>{cleanString(category.Name)} Costs</h2>
+      <h2>{cleanString(category.name)} Costs</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
         {renderFields()}
         <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
@@ -101,7 +101,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
             }}
           >
             {Object.entries(flatFields).map(([key, field]) => {
-              if (!field.visible) return null;
+              if (!field.entryvisible) return null;
               return (
                 <div key={key}>
                   <strong>{key}:</strong> {item[key] || ""}
