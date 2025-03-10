@@ -246,24 +246,30 @@ export const getUsersInstitutions = async (): Promise<any[]> => {
 };
 
 export const inviteUserToProject = async (email: string, projectID: number, roleID: number) => {
-    // Find the userID from the email
+    // Check if the user exists
     const { data: user, error: userError } = await supabase
         .from("Users")
         .select("userID")
         .eq("email", email)
         .single();
-   
+
     if (userError || !user) {
         console.error("User not found:", userError?.message);
         return null;
     }
-   
+
     const userID = user.userID;
-   
-    // Insert into UserInstitutionProject to associate the user with the project and their role
+    const invitedBy = localStorage.getItem("userID"); // Get inviter's ID
+
+    if (!invitedBy) {
+        console.error("Inviter ID not found in localStorage.");
+        return null;
+    }
+
+    // Store the invite in the database
     const { data, error } = await supabase
-        .from("UserInstitutionProject")
-        .insert({ userID, projectID, roleID })
+        .from("Invites")
+        .insert({ email, projectID, roleID, invitedBy, status: "pending" })
         .select("*");
 
         console.log("Insert data:", data);
@@ -272,12 +278,92 @@ export const inviteUserToProject = async (email: string, projectID: number, role
     if (error) {
         console.error("Error inviting user:", error.message);
     } else {
-        console.log("User invited successfully:", data); // Log the actual response data
+        console.log("Invite sent successfully:", data);
     }
     
-    return data; // Ensure this is returning the inserted data or null
-   };
-   
+    return data;
+};
+
+export const getSentInvites = async (userID: number) => {
+    const { data, error } = await supabase
+        .from("Invites")
+        .select("invitedID, email, projectID, roleID, status") // Added invitedID
+        .eq("invitedBy", userID);
+
+    if (error) {
+        console.error("Error fetching sent invites:", error.message);
+        return [];
+    }
+    return data;
+};
+
+// Fetch pending invitations for a user
+export const getPendingInvites = async (userEmail: string) => {
+    const { data, error } = await supabase
+        .from("Invites")
+        .select("*")
+        .eq("email", userEmail)
+        .eq("status", "pending"); // Get only pending invites
+
+    if (error) {
+        console.error("Error fetching invites:", error.message);
+        return [];
+    }
+
+    return data;
+};
+
+// Accept an invite and add the user to the project
+export const acceptInvite = async (invitedID: number, projectID: number, roleID: number, userEmail: string, institutionID: number) => {
+    // Fetch user ID from email
+    const { data: user, error: userError } = await supabase
+        .from("Users")
+        .select("userID")
+        .eq("email", userEmail)
+        .single();
+
+    if (userError || !user) {
+        console.error("User not found:", userError?.message);
+        return false;
+    }
+
+    const userID = user.userID;
+
+    // Insert user into UserInstitutionProject table (links user to project)
+    const { error: insertError } = await supabase
+        .from("UserInstitutionProject")
+        .insert({ userID, institutionID, roleID, projectID });
+
+    if (insertError) {
+        console.error("Error adding user to project:", insertError.message);
+        return false;
+    }
+
+    // Update invite status to 'accepted'
+    await supabase
+        .from("Invites")
+        .update({ status: "accepted" })
+        .eq("invitedID", invitedID);
+
+    console.log("Invite accepted successfully.");
+    return true;
+};
+
+// Reject an invite by updating its status
+export const rejectInvite = async (invitedID: number) => {
+    const { error } = await supabase
+        .from("Invites")
+        .update({ status: "rejected" })
+        .eq("invitedID", invitedID); 
+
+    if (error) {
+        console.error("Error rejecting invite:", error.message);
+        return false;
+    }
+
+    console.log("Invite rejected successfully.");
+    return true;
+};
 
 
 // Function to fetch all projects associated with a given user ID
@@ -331,9 +417,12 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
 
 
 
+
+
 /*
 
 */
+// TODO:  Modify projectID
 export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
     const projectID = localStorage.getItem("projectID");
     
@@ -567,6 +656,7 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
 
     return data.valueID;
 }
+
 
 // Update an entry
 export const updateIndividualField = async (valueID : number, result : any) : Promise<any> =>
