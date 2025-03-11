@@ -6,6 +6,8 @@ import { getProjectName, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
 import template from "../../template1.json";
+import { getTemplate } from "../newTemplateParser";
+import { categoryCalculation } from "../expressionParser";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -37,9 +39,9 @@ const ProjectView: React.FC = () => {
       setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
       console.log("Current category ID:", currentCatID);
       
-      // UNCOMMENT WHEN TEMPLATE DATA IS AVAILABLE //
-      //if(projectID!== undefined)
-        //categoryCalculation(currentCategory, Number(projectID), PUT-TEMPLATE-HERE);
+      
+      if(projectID!== undefined)
+        categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
     }
     updateCatID();
   }, [currentCategory])

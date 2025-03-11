@@ -10,7 +10,8 @@ interface GenericFormProps {
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Flatten the fields for easier handling.
-  const flatFields = category.fields; //TEMP changed to Fields instead
+  
+  const flatFields = Object.fromEntries(category.fields.map((field) => [field.name, field]));
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
@@ -42,7 +43,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
       return (
         <div key={key} style={{ marginBottom: "0.5rem" }}>
           <label>
-            {key}:
+            {cleanString(key)}:
             <input
               type={mapFieldType(field.type)}
               value={newItemValues[key] || ""}
@@ -102,14 +103,6 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
               borderRadius: "5px"
             }}
           >
-            {Object.entries(flatFields).map(([key, field]) => {
-              if (!field.entryvisible) return null;
-              return (
-                <div key={key}>
-                  <strong>{key}:</strong> {item[key] || ""}
-                </div>
-              );
-            })}
           </li>
         ))}
       </ul>
