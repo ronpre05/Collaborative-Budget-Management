@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import DynamicBudgetForm from "./DynamicBudgetForm";
 import ManageCollaborators from "./ManageCollaborators";
-import { getProjectName } from "../database";
+import { getProjectName, getCategoryID } from "../database";
+import CategoryDisplay from "../categoryDisplay";
+import { getCategoryDataCatOnly } from "../queryFunctions";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
