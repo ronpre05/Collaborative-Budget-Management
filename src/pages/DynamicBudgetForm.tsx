@@ -16,7 +16,7 @@ const DynamicBudgetForm: React.FC<DBProps> = ({ getCategoryName }) => {
   const categories = templateData.categories;
   const [activeTab, setActiveTab] = useState<number>(0);
   useEffect(()=> {
-    getCategoryName(categories[0].Name);
+    getCategoryName(categories[0].name);
   }, [])
   return (
     <div>
