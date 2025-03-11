@@ -8,7 +8,9 @@ const ProjectView: React.FC = () => {
   const location = useLocation();
 
   const [projectName, setProjectName] = useState<string | null>(null);
-
+  const testParentFunction = () => {
+    console.log("test complete");
+  };
   useEffect(() => {
     const fetchProjectName = async () => {
       const name = await getProjectName();
@@ -23,7 +25,7 @@ const ProjectView: React.FC = () => {
       {/* Display the project name */}
       {projectName && <h1>{projectName}</h1>}
       {/* Render the new generic cost management page */}
-      <DynamicBudgetForm />
+      <DynamicBudgetForm testChildFunction={testParentFunction}/>
       <Link
           to="/create-project/manage-collaborators"
           className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
