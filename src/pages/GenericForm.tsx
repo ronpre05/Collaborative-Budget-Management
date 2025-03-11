@@ -48,7 +48,6 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
               type={mapFieldType(field.type)}
               value={newItemValues[key] || ""}
               onChange={(e) => handleFieldChange(key, e.target.value)}
-              placeholder={field.name}
               style={{ marginLeft: "0.5rem" }}
             />
           </label>
