@@ -1,4 +1,5 @@
 import { supabase } from "./database";
+import { cleanString } from "./expressionParser";
 /*
 async function getprojectID(categoryID: number): Promise<number> {
   const { data, error } = await supabase
@@ -76,7 +77,7 @@ async function getCategoryHeaders(categoryID: number): Promise<string[]> {
     return [];
   }
 
-  return data.map((item) => item.fieldName);
+  return data.map((item) => cleanString(item.fieldName));
 }
 
 /**
@@ -184,9 +185,7 @@ export async function getCategoryDataEntryOnly(
 }
 
 // CALL THIS ONE IF YOU ONLY HAVE CATEGORY ID
-export async function getCategoryDataCatOnly(
-  categoryID: number
-): Promise<string[][]> {
+export async function getCategoryDataCatOnly(categoryID: number): Promise<string[][]> {
   // const projectID = await getprojectID(categoryID);
   // const entryID = await getEntryID(projectID, categoryID);
   const fieldIDs = await getFieldIDs(categoryID);

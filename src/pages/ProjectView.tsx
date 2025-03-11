@@ -40,7 +40,7 @@ const ProjectView: React.FC = () => {
       console.log("Current category ID:", currentCatID);
       
       
-      if(projectID!== undefined)
+      if(projectID !== undefined)
         categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
     }
     updateCatID();
