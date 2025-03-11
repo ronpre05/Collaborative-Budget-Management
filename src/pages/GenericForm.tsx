@@ -69,14 +69,16 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
     try {
       // Call createEntry to store the data in the database
-      await createEntry(category.name, newItemValues);
+
+      await createEntry(category.Name, newItemValues);
   
       const newItem = { ...newItemValues };
-    setItems(prev => [...prev, newItem]);
+      setItems(prev => [...prev, newItem]);
       setNewItemValues({});
   
       console.log("Entry successfully added to the database.");
-    } catch (error) {
+    } 
+    catch (error) {
       console.error("Failed to create entry:", error);
       alert("Error saving entry. Please try again.");
     }
@@ -84,7 +86,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   return (
     <div>
-      <h2>{cleanString(category.name)} Costs</h2>
+      <h2>{cleanString(category.Name)} Costs</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
         {renderFields()}
         <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
