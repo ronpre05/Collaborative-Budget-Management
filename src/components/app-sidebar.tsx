@@ -7,10 +7,12 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -42,30 +44,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="p-4">
-        <div className="flex flex-col space-y-4">
-          <h2 className="text-sm font-semibold tracking-tight">COLLABORATIVE BUDGET MANAGEMENT TOOL</h2>
-          <div className="flex items-center">
-            <UserButton />
+      <SidebarInset>
+        <SidebarHeader className="p-4">
+          <div className="flex flex-col space-y-4">
+            <header className="text-sm font-semibold tracking-tight">COLLABORATIVE BUDGET MANAGEMENT TOOL</header>
+            <div className="flex items-center">
+              <UserButton />
+            </div>
           </div>
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarMenu>
-          {navItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={location.pathname === item.path}>
-                <Link to={item.path} className="flex items-center gap-3">
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarContent>
-      <SidebarRail />
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarMenu>
+            {navItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild isActive={location.pathname === item.path}>
+                  <Link to={item.path} className="flex items-center gap-3">
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarContent>
+      </SidebarInset>
+      <SidebarRail />      
     </Sidebar>
+
   )
 }
 
