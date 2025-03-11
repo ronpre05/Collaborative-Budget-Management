@@ -5,10 +5,10 @@ import GenericForm from "./GenericForm";
 import { cleanString } from "../expressionParser";
 //manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
 type DBProps = {
-  testChildFunction: () => void;
+  getCategoryName: (categoryName: string) => void;
 };
 
-const DynamicBudgetForm: React.FC<DBProps> = ({ testChildFunction }) => {
+const DynamicBudgetForm: React.FC<DBProps> = ({ getCategoryName }) => {
   const templateData = templateDataJson;
   const categories = getCategoriesObjectsFromTemplate(templateData);
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -23,7 +23,7 @@ const DynamicBudgetForm: React.FC<DBProps> = ({ testChildFunction }) => {
             className={`tab ${activeTab === index ? "active-tab" : ""}`}
             onClick={() => {
               setActiveTab(index)
-              testChildFunction()
+              getCategoryName(category.Name)
             }}
           >
             {cleanString(category.Name)}

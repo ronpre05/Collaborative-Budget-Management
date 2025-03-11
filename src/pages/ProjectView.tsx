@@ -6,10 +6,11 @@ import { getProjectName } from "../database";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
-
+  const [currentCategory, setCurrentCategory] = useState<string>("");
   const [projectName, setProjectName] = useState<string | null>(null);
-  const testParentFunction = () => {
-    console.log("test complete");
+  const setCategoryName = (categoryName: string) => {
+    console.log("selected category:", categoryName);
+    setCurrentCategory(categoryName);
   };
   useEffect(() => {
     const fetchProjectName = async () => {
@@ -25,7 +26,7 @@ const ProjectView: React.FC = () => {
       {/* Display the project name */}
       {projectName && <h1>{projectName}</h1>}
       {/* Render the new generic cost management page */}
-      <DynamicBudgetForm testChildFunction={testParentFunction}/>
+      <DynamicBudgetForm getCategoryName={setCategoryName}/>
       <Link
           to="/create-project/manage-collaborators"
           className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
