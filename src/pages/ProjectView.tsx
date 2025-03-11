@@ -7,6 +7,7 @@ import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
 import { TemplateData } from "../types";
 import { readJsonFile } from "../newTemplateParser";
+import template from "../../template1.json";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -22,7 +23,6 @@ const ProjectView: React.FC = () => {
   useEffect(() => {
     const fetchProjectName = async () => {
       const name = await getProjectName();
-      const template : TemplateData = await readJsonFile("../template1.json");
       localStorage.setItem("template", JSON.stringify(template));
       setProjectName(name);
     };

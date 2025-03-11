@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CategoryType } from "../types";
+import { CategoryType, FieldType } from "../types";
 import { flattenFields } from "../templateParser";
 import { cleanString } from "../expressionParser";
 import { createEntry } from "../database";
