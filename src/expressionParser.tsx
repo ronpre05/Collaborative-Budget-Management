@@ -435,6 +435,8 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     // Run an update to change value (at field/entry) to be result
     const valueID :  number = await getValueID(fieldID, entryID);
 
+    console.log("ValueID" + valueID);
+
     updateIndividualField(valueID, result);
 
     return;
@@ -500,7 +502,6 @@ export async function categoryCalculation(catName : string, projectID : number, 
                 {
                     // do the calculation
                     result = await localEvaluator(calc, projectID, entry);
-                    console.log(result);
                     addResultToDataBase(entry, calc.output, catId, result);
                 }
                     
@@ -510,7 +511,6 @@ export async function categoryCalculation(catName : string, projectID : number, 
             {
                 // Do the calculation
                 result = await globalEvaluator(calc, projectID, catId);
-                console.log(result);
                 addResultToDataBase(-1, calc.output, catId, result);
             }
 
