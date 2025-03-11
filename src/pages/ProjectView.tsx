@@ -35,12 +35,20 @@ const ProjectView: React.FC = () => {
   }, [currentCategory])
 
 
+  useEffect(() => {
+    const updateCategoryData = async() => {
+      if(currentCatID!== undefined)
+        setCategoryData(await getCategoryDataCatOnly(currentCatID));
+    }
+    updateCategoryData();
+  }, [currentCatID])
+
   return (
     <div className="project-view">
       {/* Display the project name */}
       {projectName && <h1>{projectName}</h1>}
       {/* Render the new generic cost management page */}
-      <DynamicBudgetForm getCategoryName={setCategoryName}/>
+      <DynamicBudgetForm getCategoryName={setCategoryName} />
       <CategoryDisplay data={categoryData} />
       <Link
           to="/create-project/manage-collaborators"
