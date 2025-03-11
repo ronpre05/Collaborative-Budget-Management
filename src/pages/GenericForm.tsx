@@ -10,7 +10,6 @@ interface GenericFormProps {
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Flatten the fields for easier handling.
-  
   const flatFields = category.fields; //TEMP changed to Fields instead
 
   // State for the current item’s field values.

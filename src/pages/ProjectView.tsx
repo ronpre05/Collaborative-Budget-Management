@@ -5,8 +5,6 @@ import ManageCollaborators from "./ManageCollaborators";
 import { getProjectName, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import { TemplateData } from "../types";
-import { readJsonFile } from "../newTemplateParser";
 import template from "../../template1.json";
 
 const ProjectView: React.FC = () => {
