@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CategoryType, FieldType } from "../types";
+import { CategoryType } from "../types";
 import { flattenFields } from "../templateParser";
 import { cleanString } from "../expressionParser";
 import { createEntry } from "../database";
@@ -11,7 +11,7 @@ interface GenericFormProps {
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Flatten the fields for easier handling.
   
-  const flatFields = flattenFields(category.fields); //TEMP changed to Fields instead
+  const flatFields = category.fields; //TEMP changed to Fields instead
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
