@@ -433,7 +433,7 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     const fieldID : number = await getFieldID(catId, outputField);
 
     // Run an update to change value (at field/entry) to be result
-    const valueID :  number = await getValueID(fieldID, entryID);
+    const valueID :  number = await getValueID(entryID, fieldID);
 
     console.log("ValueID" + valueID);
 

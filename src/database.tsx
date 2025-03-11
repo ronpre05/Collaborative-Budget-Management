@@ -661,7 +661,7 @@ export const createBlankValue = async(entryID : number, fieldID : number) : Prom
 {
     const { data, error } = await supabase
         .from("FieldValues")
-        .insert({ entryID, fieldID, value : 0 })
+        .insert({ entryID : entryID, fieldID : fieldID, value : "0" })
         .select("valueID")
         .single()
 
