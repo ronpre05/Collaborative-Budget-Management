@@ -36,7 +36,7 @@ export async function readJsonFile(path: string): Promise<TemplateData>
  * @param template The raw template JSON that has been read in from readJsonFile
  * @returns A complete TemplateData structure which contains the categories list filled out
  */
-function getTemplate(template : any) : TemplateData
+export function getTemplate(template : any) : TemplateData
 {
     let temp = 
     {
