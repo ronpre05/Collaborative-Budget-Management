@@ -5,6 +5,7 @@ import ManageCollaborators from "./ManageCollaborators";
 import { getProjectName, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
+import { categoryCalculation } from "../expressionParser";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -13,10 +14,13 @@ const ProjectView: React.FC = () => {
   const [projectName, setProjectName] = useState<string | null>(null);
   const [categoryData, setCategoryData] = useState<string[][]>([[]])
   const [currentCatID, setCurrentCatID] = useState<number>();
+  
+  
   const setCategoryName = (categoryName: string) => {
     console.log("selected category:", categoryName);
     setCurrentCategory(categoryName);
   };
+
   useEffect(() => {
     const fetchProjectName = async () => {
       const name = await getProjectName();
@@ -26,10 +30,15 @@ const ProjectView: React.FC = () => {
     fetchProjectName();
   }, []);
 
+
   useEffect(() => {
     const updateCatID = async () => {
       setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
       console.log("Current category ID:", currentCatID);
+      
+      // UNCOMMENT WHEN TEMPLATE DATA IS AVAILABLE //
+      //if(projectID!== undefined)
+        //categoryCalculation(currentCategory, Number(projectID), PUT-TEMPLATE-HERE);
     }
     updateCatID();
   }, [currentCategory])
