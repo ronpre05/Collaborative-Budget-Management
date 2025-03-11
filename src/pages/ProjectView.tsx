@@ -8,8 +8,11 @@ import { getCategoryDataCatOnly } from "../queryFunctions";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
+  const projectID = localStorage.getItem("projectID")
   const [currentCategory, setCurrentCategory] = useState<string>("");
   const [projectName, setProjectName] = useState<string | null>(null);
+  const [categoryData, setCategoryData] = useState<string[][]>([[]])
+  const [currentCatID, setCurrentCatID] = useState<number>();
   const setCategoryName = (categoryName: string) => {
     console.log("selected category:", categoryName);
     setCurrentCategory(categoryName);
@@ -23,12 +26,22 @@ const ProjectView: React.FC = () => {
     fetchProjectName();
   }, []);
 
+  useEffect(() => {
+    const updateCatID = async () => {
+      setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
+      console.log("Current category ID:", currentCatID);
+    }
+    updateCatID();
+  }, [currentCategory])
+
+
   return (
     <div className="project-view">
       {/* Display the project name */}
       {projectName && <h1>{projectName}</h1>}
       {/* Render the new generic cost management page */}
       <DynamicBudgetForm getCategoryName={setCategoryName}/>
+      <CategoryDisplay data={categoryData} />
       <Link
           to="/create-project/manage-collaborators"
           className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
