@@ -5,7 +5,9 @@ import ManageCollaborators from "./ManageCollaborators";
 import { getProjectName, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import { categoryCalculation } from "../expressionParser";
+import { TemplateData } from "../types";
+import { readJsonFile } from "../newTemplateParser";
+import template from "../../template1.json";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -24,6 +26,7 @@ const ProjectView: React.FC = () => {
   useEffect(() => {
     const fetchProjectName = async () => {
       const name = await getProjectName();
+      localStorage.setItem("template", JSON.stringify(template));
       setProjectName(name);
     };
 

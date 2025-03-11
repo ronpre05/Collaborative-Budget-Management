@@ -5,12 +5,13 @@ import { cleanString } from "../expressionParser";
 import { createEntry } from "../database";
 
 interface GenericFormProps {
-  category: any; // TEMP changed to any
+  category: CategoryType; // TEMP changed to any
 }
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Flatten the fields for easier handling.
-  const flatFields = flattenFields(category.Fields); //TEMP changed to Fields instead
+  
+  const flatFields = category.fields; //TEMP changed to Fields instead
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
@@ -70,7 +71,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     try {
       // Call createEntry to store the data in the database
 
-      await createEntry(category.Name, newItemValues);
+      await createEntry(category.name, newItemValues);
   
       const newItem = { ...newItemValues };
       setItems(prev => [...prev, newItem]);
@@ -86,7 +87,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   return (
     <div>
-      <h2>{cleanString(category.Name)} Costs</h2>
+      <h2>{cleanString(category.name)} Costs</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
         {renderFields()}
         <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
