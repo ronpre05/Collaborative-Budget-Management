@@ -633,7 +633,7 @@ export const getValue = async (entryID : number, fieldID : number) : Promise<any
     
     if(error)
     {
-        console.error("Error fecthing value: ", error)
+        console.error("Error fetching value: ", error);
         return -1;
     }
 
@@ -665,8 +665,6 @@ export const createBlankValue = async(entryID : number, fieldID : number) : Prom
         .select("valueID")
         .single()
 
-    console.log(error);
-
     if(error)
     {
         console.log("Error creating valueID");
@@ -692,6 +690,42 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
     }
 
     return 1;
+}
+
+
+// Check if a category has an entry and create one if not
+// Check category entry for this (only in category entry/blank stuff dealt with in field updates)
+export const getGlobalEntryID = async (catID : number, projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .select("entryID")
+        .eq("categoryID", catID)
+        .single()
+    
+    if(error)
+    {
+        return createBlankEntry(catID, projectID);
+    }
+
+    return data.entryID;
+}
+
+const createBlankEntry = async (catID : number, projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .insert({categoryID : catID, projectID : projectID, institutionID : null})
+        .select("entryID")
+        .single()
+
+    if(error)
+    {
+        console.log("Error creating entryID")
+        return -1;
+    }
+
+    return data.entryID;
 }
 
 // Add an institution tot he database and reutn its ID
