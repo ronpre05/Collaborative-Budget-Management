@@ -341,7 +341,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Subcontracting:amount",
+					"Expression" : "Subcontracting:Amount",
 					"Type" : "Local",
 					"Output" : "Local_Total"
 				}
