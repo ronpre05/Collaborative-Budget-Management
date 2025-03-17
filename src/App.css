@@ -181,3 +181,27 @@ button:hover {
   border-radius: 5px;
   background-color: white;
 }
+
+.notification {
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f9;
+  color: #333;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.notification-icon {
+  margin-right: 8px;
+}
+
+.notification-message {
+  font-weight: 500;
+}
+
+.notification strong {
+  color: #007BFF;
+}
