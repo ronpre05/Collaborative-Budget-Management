@@ -58,7 +58,7 @@ const ProjectView: React.FC = () => {
   return (
     <div className="project-view">
       {/* Display the project name */}
-      {projectName && <strong><h1>{projectName}</h1></strong>}
+      {projectName && <h1>{projectName}</h1>}
       {/* Render the new generic cost management page */}
       <DynamicBudgetForm getCategoryName={setCategoryName} />
       <CategoryDisplay data={categoryData} />
@@ -73,6 +73,8 @@ const ProjectView: React.FC = () => {
           {location.pathname === "/create-project/manage-collaborators" && <ManageCollaborators />}
       </div>
     </div>
+
+    
   );
 };
 
