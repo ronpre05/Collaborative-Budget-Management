@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CategoryType } from "../types";
 import { flattenFields } from "../templateParser";
 import { cleanString } from "../expressionParser";
@@ -9,19 +9,26 @@ interface GenericFormProps {
 }
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
-  // Flatten the fields for easier handling.
   
+  // Flatten the fields for easier handling.
   const flatFields = Object.fromEntries(category.fields.map((field) => [field.name, field]));
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   // State for the list of submitted items.
   const [items, setItems] = useState<Array<Record<string, string>>>([]);
+  // Message display for adding an entry
+  const [addMessage, setAddMessage] = useState<string | null>(null);
 
   // Update a field value.
   const handleFieldChange = (fieldKey: string, value: string) => {
     setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
   };
+
+  // Reset add success message when category changes
+  useEffect(() => {
+    setAddMessage(null);
+  }, [category]);
 
   // Map our field "Type" from the JSON to an appropriate input type.
   const mapFieldType = (fieldType: string): string => {
@@ -41,16 +48,14 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     return Object.entries(flatFields).map(([key, field]) => {
       if (!field.entryvisible) return null;
       return (
-        <div key={key} style={{ marginBottom: "0.5rem" }}>
-          <label>
-            {cleanString(key)}:
-            <input
-              type={mapFieldType(field.type)}
-              value={newItemValues[key] || ""}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-              style={{ marginLeft: "0.5rem" }}
-            />
-          </label>
+        <div key={key} className="form-group">
+          <label htmlFor={key}>{cleanString(key)}:</label>
+          <input
+            id={key}
+            type={mapFieldType(field.type)}
+            value={newItemValues[key] || ""}
+            onChange={(e) => handleFieldChange(key, e.target.value)}
+          />
         </div>
       );
     });
@@ -62,7 +67,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     // Basic validation: ensure every visible field has a value.
     for (const key in flatFields) {
       if (flatFields[key].entryvisible && !newItemValues[key]) {
-        alert(`Please fill out the field: ${key}`);
+        alert(`Please fill out the field: ${cleanString(key)}`);
         return;
       }
     }
@@ -75,7 +80,8 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
       const newItem = { ...newItemValues };
       setItems(prev => [...prev, newItem]);
       setNewItemValues({});
-  
+
+      setAddMessage("Entry successfully added!");
       console.log("Entry successfully added to the database.");
     } 
     catch (error) {
@@ -86,25 +92,12 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   return (
     <div>
-      <h2>{cleanString(category.name)} Costs</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
+      <strong><h1>{cleanString(category.name)} Costs</h1></strong>
+      <form onSubmit={handleSubmit} className="generic-form-container">
         {renderFields()}
-        <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
+        {addMessage && <p className="add-message">{addMessage}</p>}
+        <button type="submit">Add Item</button>
       </form>
-      <ul style={{ maxWidth: "500px", listStyle: "none", padding: 0 }}>
-        {items.map((item, index) => (
-          <li
-            key={index}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              marginBottom: "10px",
-              borderRadius: "5px"
-            }}
-          >
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
