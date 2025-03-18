@@ -1,4 +1,5 @@
 import { supabase } from "./database";
+import { cleanString } from "./expressionParser";
 /*
 async function getprojectID(categoryID: number): Promise<number> {
   const { data, error } = await supabase
@@ -76,7 +77,7 @@ async function getCategoryHeaders(categoryID: number): Promise<string[]> {
     return [];
   }
 
-  return data.map((item) => item.fieldName);
+  return data.map((item) => cleanString(item.fieldName));
 }
 
 /**
@@ -184,14 +185,18 @@ export async function getCategoryDataEntryOnly(
 }
 
 // CALL THIS ONE IF YOU ONLY HAVE CATEGORY ID
-export async function getCategoryDataCatOnly(
-  categoryID: number
-): Promise<string[][]> {
+export async function getCategoryDataCatOnly(categoryID: number): Promise<string[][]> {
   // const projectID = await getprojectID(categoryID);
   // const entryID = await getEntryID(projectID, categoryID);
   const fieldIDs = await getFieldIDs(categoryID);
   const catHeaders = await getCategoryHeaders(categoryID);
   const fieldData = await getFieldData(fieldIDs);
+
+  // Check if fieldData is empty or its first element is undefined.
+  if (!fieldData || fieldData.length === 0 || !fieldData[0]) {
+    return [catHeaders]; // Return only the headers if there's no data.
+  }
+
   const result = formatData(catHeaders, fieldData);
 
   return result;

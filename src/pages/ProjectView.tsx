@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import DynamicBudgetForm from "./DynamicBudgetForm";
 import ManageCollaborators from "./ManageCollaborators";
-import { getProjectName, getUserRoleInProject } from "../database";
+import { getProjectName, getUserRoleInProject, getCategoryID } from "../database";
+import CategoryDisplay from "../categoryDisplay";
+import { getCategoryDataCatOnly } from "../queryFunctions";
+import template from "../../template1.json";
+import { getTemplate } from "../newTemplateParser";
+import { categoryCalculation } from "../expressionParser";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
-
+  
+  const [currentCategory, setCurrentCategory] = useState<string>("");
   const [projectID, setProjectID] = useState<string | null>(null);
   const [projectName, setProjectName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<number | null>(null);
@@ -16,6 +22,14 @@ const ProjectView: React.FC = () => {
     1: "Institution Collaborator",
     2: "Institution Lead",
     3: "Project Investigator",
+  };
+  const [categoryData, setCategoryData] = useState<string[][]>([[]])
+  const [currentCatID, setCurrentCatID] = useState<number>();
+  
+  
+  const setCategoryName = (categoryName: string) => {
+    console.log("selected category:", categoryName);
+    setCurrentCategory(categoryName);
   };
 
   useEffect(() => {
@@ -30,6 +44,7 @@ const ProjectView: React.FC = () => {
 
       // Fetch project name
       const name = await getProjectName();
+      localStorage.setItem("template", JSON.stringify(template));
       setProjectName(name);
 
       // Fetch user role in the project
@@ -46,15 +61,38 @@ const ProjectView: React.FC = () => {
     fetchProjectDetails();
   }, []);
 
+
+  useEffect(() => {
+    const updateCatID = async () => {
+      setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
+      console.log("Current category ID:", currentCatID);
+      
+      
+      if(projectID !== undefined)
+         await categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
+    }
+    updateCatID();
+  }, [currentCategory])
+
+
+  useEffect(() => {
+    const updateCategoryData = async() => {
+      if(currentCatID!== undefined)
+        setCategoryData(await getCategoryDataCatOnly(currentCatID));
+    }
+    updateCategoryData();
+  }, [currentCatID])
+
   return (
     <div className="project-view">
       {/* Display the project name */}
-      {projectName && <h1>{projectName}</h1>}
+      {projectName && <strong><h1>{projectName}</h1></strong>}
       {/* Show the user's role name */}
       {roleName && <p>User Role: {roleName}</p>}
       {/* Render the new generic cost management page */}
       {/* Only read-only for Institution Collaborators */}
-      <DynamicBudgetForm readOnly={userRole === 1} /> 
+      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1} />
+      <CategoryDisplay data={categoryData} />
       <Link
           to="/create-project/manage-collaborators"
           className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
@@ -69,8 +107,6 @@ const ProjectView: React.FC = () => {
           )}
       </div>
     </div>
-
-    
   );
 };
 
