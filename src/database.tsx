@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
-import { getFieldsSection, getCategoryObject, getFieldNames } from "./templateParser";
-import { cleanString } from "./expressionParser"; 
+import { CategoryType } from "./types";
+import { findCatObject, getTemplate, getFieldsNames, getSubEntryNames } from "./newTemplateParser";
+import template from "../template1.json"
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -64,6 +65,8 @@ export const checkAndAddCategories = async (categoryList: string[], categoryName
 export const createCategoryFields = async (categoryList: string[], categoryNames: string[]): Promise<void | null> => {
     const projectID = localStorage.getItem("projectID");
 
+
+
     if (!projectID) {
         console.error("No projectID found in localStorage");
         return null;
@@ -94,10 +97,12 @@ export const createCategoryFields = async (categoryList: string[], categoryNames
         const categoryID = data?.categoryID;
 
         // Get field data for the category
-        let categoryObject = getCategoryObject(categoryList, categoryName);
-        let fieldData = getFieldsSection(categoryObject);
+        let categoryObject = findCatObject(categoryName, getTemplate(template).categories);
         // Filter for field names
-        let fieldNames = getFieldNames(fieldData);
+        let fieldNames = getFieldsNames(categoryObject);
+
+
+        
 
         if (!fieldNames.length) {
             console.warn("No fields found for category: ${categoryName}");
@@ -119,7 +124,53 @@ export const createCategoryFields = async (categoryList: string[], categoryNames
             console.error("Error inserting fields for ${categoryName}:", insertError);
             continue;
         }
+
+        if(categoryObject.hassubentry == true)
+        {
+            let subEntryName = getSubEntryNames(categoryObject);
+
+            const subEntryEntries = subEntryName.map(fieldName => ({
+                categoryID,
+                fieldName,
+            }));
+    
+            const { error: subInsertError } = await supabase
+                .from("CategoryFields")
+                .insert(subEntryEntries);
+            
+            if (subInsertError)
+            {
+                console.error("Error inserting subEntries for ${categoryName}: ", subInsertError)
+                continue;
+            }
+        }
+
+        
+
     }
+}
+
+export const getProjectName = async (): Promise<string | null> => {
+    
+    const projectID = localStorage.getItem("projectID");
+    
+    if (!projectID) {
+        console.error("Project ID not found in local storage.");
+        return null;
+    }
+
+    const {data, error} = await supabase
+        .from("Project")
+        .select("projectName")
+        .eq("projectID", projectID)
+        .single();
+
+    if(error){
+        console.error("Error finding project name: ", error.message);
+        return null;
+    }
+
+    return data?.projectName || null;
 }
 
 export const createProjectQuery = async (
@@ -145,7 +196,7 @@ export const createProjectQuery = async (
         .select("projectID");
 
     if (error) {
-        console.error("Error creating project:", error.message);
+        console.error("Error creating project: ", error.message);
         return null;
     }
 
@@ -223,38 +274,124 @@ export const getUsersInstitutions = async (): Promise<any[]> => {
 };
 
 export const inviteUserToProject = async (email: string, projectID: number, roleID: number) => {
-    // Find the userID from the email
+    // Check if the user exists
     const { data: user, error: userError } = await supabase
         .from("Users")
         .select("userID")
         .eq("email", email)
         .single();
-   
+
     if (userError || !user) {
         console.error("User not found:", userError?.message);
         return null;
     }
-   
+
     const userID = user.userID;
-   
-    // Insert into UserInstitutionProject to associate the user with the project and their role
+    const invitedBy = localStorage.getItem("userID"); // Get inviter's ID
+
+    if (!invitedBy) {
+        console.error("Inviter ID not found in localStorage.");
+        return null;
+    }
+
+    // Store the invite in the database
     const { data, error } = await supabase
-        .from("UserInstitutionProject")
-        .insert({ userID, projectID, roleID })
+        .from("Invites")
+        .insert({ email, projectID, roleID, invitedBy, status: "pending" })
         .select("*");
 
         console.log("Insert data:", data);
         console.log("Insert error:", error);
    
-    if (error && !null) {
+    if (error) {
         console.error("Error inviting user:", error.message);
     } else {
-        console.log("User invited successfully:", data); // Log the actual response data
+        console.log("Invite sent successfully:", data);
     }
     
-    return data; // Ensure this is returning the inserted data or null
-   };
-   
+    return data;
+};
+
+export const getSentInvites = async (userID: number) => {
+    const { data, error } = await supabase
+        .from("Invites")
+        .select("invitedID, email, projectID, roleID, status") // Added invitedID
+        .eq("invitedBy", userID);
+
+    if (error) {
+        console.error("Error fetching sent invites:", error.message);
+        return [];
+    }
+    return data;
+};
+
+// Fetch pending invitations for a user
+export const getPendingInvites = async (userEmail: string) => {
+    const { data, error } = await supabase
+        .from("Invites")
+        .select("*")
+        .eq("email", userEmail)
+        .eq("status", "pending"); // Get only pending invites
+
+    if (error) {
+        console.error("Error fetching invites:", error.message);
+        return [];
+    }
+
+    return data;
+};
+
+// Accept an invite and add the user to the project
+export const acceptInvite = async (invitedID: number, projectID: number, roleID: number, userEmail: string, institutionID: number) => {
+    // Fetch user ID from email
+    const { data: user, error: userError } = await supabase
+        .from("Users")
+        .select("userID")
+        .eq("email", userEmail)
+        .single();
+
+    if (userError || !user) {
+        console.error("User not found:", userError?.message);
+        return false;
+    }
+
+    const userID = user.userID;
+
+    // Insert user into UserInstitutionProject table (links user to project)
+    const { error: insertError } = await supabase
+        .from("UserInstitutionProject")
+        .insert({ userID, institutionID, roleID, projectID });
+
+    if (insertError) {
+        console.error("Error adding user to project:", insertError.message);
+        return false;
+    }
+
+    // Update invite status to 'accepted'
+    await supabase
+        .from("Invites")
+        .update({ status: "accepted" })
+        .eq("invitedID", invitedID);
+
+    console.log("Invite accepted successfully.");
+    return true;
+};
+
+// Reject an invite by updating its status
+export const rejectInvite = async (invitedID: number) => {
+    const { error } = await supabase
+        .from("Invites")
+        .update({ status: "rejected" })
+        .eq("invitedID", invitedID); 
+
+    if (error) {
+        console.error("Error rejecting invite:", error.message);
+        return false;
+    }
+
+    console.log("Invite rejected successfully.");
+    return true;
+};
 
 
 // Function to fetch all projects associated with a given user ID
@@ -306,88 +443,104 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
     }
 };
 
-// Create a new CategoryEntry and return entryID
+
+
+
+
+/*
+
+*/
 // TODO:  Modify projectID
-export const createCategoryEntry = async (categoryID: number): Promise<number | null> => {
-    const { data, error } = await supabase
+export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
+    const projectID = localStorage.getItem("projectID");
+
+    let cat : CategoryType = findCatObject(categoryName, getTemplate(template).categories);
+    
+    if (!projectID) {
+        console.error("Project ID not found in local storage.");
+        return null;
+    }
+
+    // Check if the category already exists for the current project
+    let { data: existingCategory, error: categoryError } = await supabase
+        .from("Categories")
+        .select("categoryID")
+        .eq("categoryName", categoryName)
+        .eq("projectID", projectID)
+        .single();
+
+    if (categoryError && categoryError.code !== "PGRST116") { 
+        console.error("Error checking existing category:", categoryError.message);
+        return null;
+    }
+
+    let categoryID;
+    if (existingCategory) {
+        categoryID = existingCategory.categoryID;
+    } else {
+        // Insert new category
+        const { data: newCategory, error: newCategoryError } = await supabase
+            .from("Categories")
+            .insert({ categoryName, projectID })
+            .select("categoryID")
+            .single();
+
+        if (newCategoryError) {
+            console.error("Error creating category:", newCategoryError.message);
+            return null;
+        }
+        categoryID = newCategory.categoryID;
+    }
+
+    console.log("Using Category ID:", categoryID);
+
+    // Create a new entry in CategoryEntry
+    const { data: entryData, error: entryError } = await supabase
         .from("CategoryEntry")
-        //////////CHANGE projectID:1 to getProject function when implemented
-        .insert({ projectID: 1, categoryID: categoryID, institutionID: null })
+        .insert({ projectID, categoryID, institutionID: null, hasSubEntry : cat.hassubentry })
         .select("entryID")
         .single();
 
-    if (error) {
-        console.error("Error creating CategoryEntry:", error.message);
+    if (entryError) {
+        console.error("Error creating CategoryEntry:", entryError.message);
         return null;
     }
 
-    console.log("Successfully created CategoryEntry:", data);
-    return data.entryID;
+    return { categoryID, entryID: entryData.entryID };
 };
 
-// checks field exists, return fieldID
-export const ensureFieldExists = async (categoryID: number, fieldName: string): Promise<number | null> => {
-    // Check if the field already exists
-    let { data, error } = await supabase
-        .from("CategoryFields")
-        .select("fieldID")
-        .eq("categoryID", categoryID)
-        .eq("value", fieldName)
-        .single();
-
-    if (error && error.code !== "PGRST116") { // Ignore "no rows found" error
-        console.error("Error checking field " + fieldName + ":", error.message);
-        return null;
-    }
-
-    // If the field exists, return its fieldID
-    if (data) return data.fieldID;
-
-    // If not, insert new field
-    const { data: newField, error: insertError } = await supabase
-        .from("CategoryFields")
-        .insert({ categoryID, value: fieldName, datatype: "varchar" })
-        .select("fieldID")
-        .single();
-
-    if (insertError) {
-        console.error("Error inserting new field " + fieldName + ":", insertError.message);
-        return null;
-    }
-
-    return newField.fieldID;
-};
-
-
-const ensureCategoryExists = async (categoryID: number) => {
-    const { data } = await supabase
-        .from("Categories")
-        .select("categoryID")
-        .eq("categoryID", categoryID)
-        .single();
-
-    if (!data) {
-        console.log("Category ${categoryID} not found. Creating new category...");
-
-        const { error: insertError } = await supabase
-            .from("Categories")
-            .insert({ categoryID, categoryname: "PLACEHOLDER" });
-
-        if (insertError) {
-            console.error("Error creating category ${categoryID}:", insertError.message);
-            return false;
-        }
-    }
-    return true;
-};
-
-//insert values based on a dictionary input
 export const insertFieldValues = async (entryID: number, categoryID: number, data: Record<string, string>) => {
     const fieldValues = [];
 
     for (const [fieldName, value] of Object.entries(data)) {
-        const fieldID = await ensureFieldExists(categoryID, fieldName);
-        if (!fieldID) continue;
+        let { data: existingField, error: fieldError } = await supabase
+            .from("CategoryFields")
+            .select("fieldID")
+            .eq("categoryID", categoryID)
+            .eq("fieldName", fieldName)
+            .single();
+
+        if (fieldError && fieldError.code !== "PGRST116") {
+            console.error(`Error checking field ${fieldName}:`, fieldError.message);
+            continue;
+        }
+
+        let fieldID;
+        if (existingField) {
+            fieldID = existingField.fieldID;
+        } else {
+            const { data: newField, error: insertError } = await supabase
+                .from("CategoryFields")
+                .insert({ categoryID, fieldName })
+                .select("fieldID")
+                .single();
+
+            if (insertError) {
+                console.error(`Error inserting field ${fieldName}:`, insertError.message);
+                continue;
+            }
+            fieldID = newField.fieldID;
+        }
 
         fieldValues.push({ entryID, fieldID, value });
     }
@@ -406,41 +559,21 @@ export const insertFieldValues = async (entryID: number, categoryID: number, dat
     }
 };
 
-// Main function to create an entry with dynamic fields
-export const createEntry = async (categoryID: number, fieldData: Record<string, string>) => {
-    await ensureCategoryExists(categoryID);
-    const entryID = await createCategoryEntry(categoryID);
-    if (!entryID) return;
 
+/*
+Main function to insert forms into database.
+Example usage:
+createEntry("Personnel Costs", { Name: "John Pork", Role: admin, StartDate: 01/01,2025, EndDate: 01/01/2030})
+*/
+export const createEntry = async (categoryName: string, fieldData: Record<string, string>) => {
+    const categoryEntry = await createCategoryEntry(categoryName);
+    if (!categoryEntry) return;
+
+    const { categoryID, entryID } = categoryEntry;
     await insertFieldValues(entryID, categoryID, fieldData);
 };
 
-/*
-to use this function:
-To add new fields you can add new entries to the dictionary easily.
 
-if categoryID does not exist in the Categories table then a new row is created but with Placeholder for categoryname
-
-may be possible to use template jsons to create the dictionarys automatically
-
-for personnel costs (as categoryID is 1)
-createEntry(1, {
-      "Employee Name" : newName,
-      "Role" : newRole,
-      "Amount" : total.toString(),
-      "Monthly Salary" : newSalary,
-      "Person Months" : personMonths.toString(),
-      "Why" : newJustification
-  });
-
-for equipment costs:
-createEntry(2, {
-      "What" : newName,
-      "Why" : newRole,
-      "Amount" : total.toString()
-  });
-
-*/
 
 
 export const getRoles = async () => {
@@ -495,6 +628,96 @@ export const getAllCategoryEntries = async (catID : number) : Promise<any[]> =>
     return data.map((entry : any) => entry.entryID);
 }
 
+export const haveSubEntry = async (entryID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .select("hasSubEntry")
+        .eq("entryID", entryID)
+        .single()
+
+    if(error)
+    {
+        console.error("Error fetching hasSubEntry: ", error)
+        return false;
+    }
+
+    return data.hasSubEntry;
+}
+
+export const getAllSubEntries = async (entryID : number) : Promise<any[]> =>
+{
+    if(await haveSubEntry(entryID) == false)
+    {
+        return [];
+    }
+
+    const { data, error } = await supabase
+        .from("SubEntries")
+        .select("subEntryID")
+        .eq("entryID", entryID)
+
+    if(error)
+    {
+        console.error("Error fetching sub entry ids: ", error);
+        return [];
+    }
+
+    return data.map((entry : any) => entry.subEntryID);
+}
+
+export const getValueIDsOfSubEntry = async (subEntryID : number) : Promise<any[]> =>
+{
+    const { data, error } = await supabase
+        .from("SubValues")
+        .select("valueID")
+        .eq("subEntryID", subEntryID)
+    
+    if(error)
+    {
+        console.error("Error finding valueID from SubValues: ", error);
+        return [];
+    }
+
+    return data.map((entry : any) => entry.valueID);
+}
+
+
+// Get subValue (have subEntryID and fieldID)
+    // Get the valueID from subValues (may be multiple)
+    // Get value from FieldValues (match on fieldID and valueID, move on if not exist)
+        // Return the first value that matches to return a value
+
+export const getSubValue = async (subEntryID : number, fieldID : number) : Promise<any> =>
+{
+    let valueIDs : number[] = await getValueIDsOfSubEntry(subEntryID);
+
+    for(let valueID of valueIDs)
+    {
+        const { data, error } = await supabase
+            .from("FieldValues")
+            .select("value")
+            .eq("fieldID", fieldID)
+            .eq("valueID", valueID)
+            .single()
+
+        if(error)
+        {
+            continue;
+        }
+        else
+        {
+            return data.value;
+        }
+
+    }
+
+    return null;
+
+    // Loop through valueIDs from getValueIDOfSubEntry
+        // Get the value if exists else move on
+}
+
 
 
 // Get field id from catid and field name
@@ -529,7 +752,7 @@ export const getValue = async (entryID : number, fieldID : number) : Promise<any
     
     if(error)
     {
-        console.error("Error fecthing value: ", error)
+        console.error("Error fetching value: ", error);
         return -1;
     }
 
@@ -547,12 +770,29 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
     
     if(error)
     {
-        console.error("Error fecthing value ID: ", error)
-        return -1;
+        return createBlankValue(entryID, fieldID);
     }
 
     return data.valueID;
 }
+
+export const createBlankValue = async(entryID : number, fieldID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("FieldValues")
+        .insert({ entryID : entryID, fieldID : fieldID, value : "0" })
+        .select("valueID")
+        .single()
+
+    if(error)
+    {
+        console.log("Error creating valueID");
+        return -1;
+    }
+
+    return data.valueID
+}
+
 
 // Update an entry
 export const updateIndividualField = async (valueID : number, result : any) : Promise<any> =>
@@ -569,6 +809,42 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
     }
 
     return 1;
+}
+
+
+// Check if a category has an entry and create one if not
+// Check category entry for this (only in category entry/blank stuff dealt with in field updates)
+export const getGlobalEntryID = async (catID : number, projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .select("entryID")
+        .eq("categoryID", catID)
+        .single()
+    
+    if(error)
+    {
+        return createBlankEntry(catID, projectID);
+    }
+
+    return data.entryID;
+}
+
+const createBlankEntry = async (catID : number, projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .insert({categoryID : catID, projectID : projectID, institutionID : null})
+        .select("entryID")
+        .single()
+
+    if(error)
+    {
+        console.log("Error creating entryID")
+        return -1;
+    }
+
+    return data.entryID;
 }
 
 // Add an institution tot he database and reutn its ID

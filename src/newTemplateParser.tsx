@@ -1,4 +1,4 @@
-import { readFile } from "fs/promises";
+// import { readFile } from "fs/promises";
 import { TemplateData, CategoryType, FieldType, CalculationType } from "./types";
 
 main();
@@ -26,20 +26,19 @@ async function main()
  */
 export async function readJsonFile(path: string): Promise<TemplateData> 
 {
-    const file = await readFile(path, "utf8");
-    return getTemplate(await(JSON.parse(file)));
+    // const file = await readFile(path, "utf8");
+    // return getTemplate(await(JSON.parse(file)));
 
-    // const response = await fetch(path);
-    // return getTemplate(await response.json());
+    const response = await fetch(path);
+    return getTemplate(await response.json());
 }
 
 /**
  * Generates a TemplateData structure from a raw JSON template file, gathering the CategoryTypes and other internal structures
- * NO NEED TO EXPORT THIS FUNCTION "readJsonFile" CALLS THIS ALREADY
  * @param template The raw template JSON that has been read in from readJsonFile
  * @returns A complete TemplateData structure which contains the categories list filled out
  */
-function getTemplate(template : any) : TemplateData
+export function getTemplate(template : any) : TemplateData
 {
     let temp = 
     {
