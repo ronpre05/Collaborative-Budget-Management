@@ -9,6 +9,7 @@
 - [Activity Diagram (Person Months)](./ActivityDiagramPersonMonths.md)
 - [Prototype](./Prototype.md)
 - [Activity Diagram (Project Creation)](./ActivityDiagramProjectCreation.md)
+- [ERD Diagram](./ERDDiagram.md)
 
 ---
 

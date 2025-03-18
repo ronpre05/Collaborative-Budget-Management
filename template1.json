@@ -1,0 +1,556 @@
+{
+	"templateName" : "Horizon RIA",
+
+	"Categories" :
+	{
+		"PC": 
+		{
+			"Name" : "Personnel",
+			"Fields" : 
+			{
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Start Date" : 
+				{
+					"Name" : "Start_Date",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"End Date" : 
+				{
+					"Name" : "End_Date",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Percentage" : 
+				{
+					"Name" : "Percentage",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "%",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Person Month" : 
+				{
+					"Name" : "Person_Month",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Local Total" :
+				{
+					"Name" : "Local_Total",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"Calculations" :
+			{
+				"PersonMonths" : 
+				{
+					"Name" : "Person_Months",
+					"Expression" : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
+					"Type" : "Local",
+					"Output" : "Person_Month"
+				},
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Personnel:Amount",
+					"Type" : "Local",
+					"Output" : "Local_Total"
+				}
+			}
+		},
+
+		"EC" : 
+		{
+			"Name" : "Equipment",
+			"Fields" : 
+			{
+				"What" : 
+				{
+					"Name" : "What",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Why" : 
+				{
+					"Name" : "Why",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "Local_Total",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"Calculations" :
+			{
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Equipment:Amount",
+					"Type" : "Local",
+					"Output" : "Local_Total"
+				}
+			}
+		},
+
+		"OGC" : 
+		{
+			"Name" : "Other_Goods_and_Services",
+			"Fields" : 
+			{
+				"What" : 
+				{
+					"Name" : "What",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Why" : 
+				{
+					"Name" : "Why",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "Local_Total",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"Calculations" :
+			{
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Other_Goods_and_Services:Amount",
+					"Type" : "Local",
+					"Output" : "Local_Total"
+				}
+			}
+		},
+
+		"TC" : 
+		{
+			"Name" : "Travel_Costs",
+			"Fields" : 
+			{
+				"Days"  : 
+				{
+					"Name" : "Days",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Accomodation" : 
+				{
+					"Name" : "Accomodation",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Currency",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Sustinance" : 
+				{
+					"Name" : "Sustinance",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Entry" : 
+				{
+					"What" : 
+					{
+						"Name" : "What",
+						"Prefix" : "",
+						"Value" : "",
+						"Postfix" : "",
+						"Type" : "String",
+						"DisplayVisiblity" : true,
+						"EntryVisibility" : true
+					},
+					"Amount" : 
+					{
+						"Name" : "Amount",
+						"Prefix" : "€",
+						"Value" : "",
+						"Postfix" : "",
+						"Type" : "Int",
+						"DisplayVisiblity" : true,
+						"EntryVisibility" : true
+					}
+				}
+			},
+			"Calculations" :
+			{
+				"baseTotal" : 
+				{
+					"Name" : "Base_Total",
+					"Expression" : "Travel_Costs:Days*Travel_Costs:Accomodation + Travel_Costs:Days*Travel_Costs:Sustinance",
+					"Type" : "Local",
+					"Output" : ""
+				},
+				"entryTotals" :
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Travel_Costs:Amount",
+					"Type" : "Local",
+					"Output" : ""
+				},
+				"Total:Local" : 
+				{
+					"Name" : "Trip_Total",
+					"Expression" : "Travel_Costs:Base_Total + Travel_Costs:Entry_Total",
+					"Type" : "Local",
+					"Output" : ""
+				}
+			}
+			
+		},
+
+		"SC" : 
+		{
+			"Name" : "Subcontracting",
+			"Fields" : 
+			{
+				"What" : 
+				{
+					"Name" : "What",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Why" : 
+				{
+					"Name" : "Why",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "Local_Total",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"Calculations" :
+			{
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Subcontracting:Amount",
+					"Type" : "Local",
+					"Output" : "Local_Total"
+				}
+			}
+		},
+
+		"IIC" : 
+		{
+			"Name" : "Internally_Invoiced_Services",
+			"Fields" : 
+			{
+				"What" : 
+				{
+					"Name" : "What",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Why" : 
+				{
+					"Name" : "Why",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Local Total" :
+				{
+					"Name" : "Local_Total",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"Calculations" :
+			{
+				"Total:Local" : 
+				{
+					"Name" : "Entry_Total",
+					"Expression" : "Internally_Invoiced_Services:Amount",
+					"Type" : "Local",
+					"Output" : "Local_Total"
+				}
+			}
+		},
+
+		"Totals" : 
+		{
+			"Name" : "Totals",
+			"Fields" :
+			{
+				"Indirect Costs" : 
+				{
+					"Name" : "Indirect_Costs",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Personnel Total" :
+				{
+					"Name" : "Personnel_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Equipment Total" :
+				{
+					"Name" : "Equipment_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Other Goods Total" :
+				{
+					"Name" : "Other_Goods_and_Services_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Subcontracting Total" :
+				{
+					"Name" : "Subcontracting_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Internal Invoice Total" :
+				{
+					"Name" : "Internally_Invoiced_Services_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Travel Total" :
+				{
+					"Name" : "Travel_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Grand Total" :
+				{
+					"Name" : "Grand_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Float",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}				
+			},
+			"Calculations" : 
+			{
+				"Indirect Costs" : 
+				{
+					"Name" : "Indirect_Cost",
+					"Expression" : "0.25 * (Totals:Personnel_Total + Totals:Equipment_Total + Totals:Other_Goods_and_Services_Total + Totals:Travel_Total)",
+					"Type" : "Local",
+					"Output" : "Indirect_Costs"
+				},
+				"Personnel Total" : 
+				{
+					"Name" : "Personnel_Total",
+					"Expression" : "Personnel:Local_Total",
+					"Type" : "Global",
+					"Output" : "Personnel_Total"
+				},
+				"Equipment Total" : 
+				{
+					"Name" : "Equipment_Total",
+					"Expression" : "Equipment:Local_Total",
+					"Type" : "Global",
+					"Output" : "Equipment_Total"
+				},
+				"OGC Total" : 
+				{
+					"Name" : "Other_Goods_and_Services_Total",
+					"Expression" : "Other_Goods_and_Services:Local_Total",
+					"Type" : "Global",
+					"Output" : "Other_Goods_and_Services_Total"
+				},
+				"Subcontracting Total" : 
+				{
+					"Name" : "Subcontracting_Total",
+					"Expression" : "Subcontracting:Local_Total",
+					"Type" : "Global",
+					"Output" : "Subcontracting_Total"
+				},
+				"Internal Invoice Total" : 
+				{
+					"Name" : "Internally_Invoiced_Services_Total",
+					"Expression" : "Internally_Invoiced_Services:Local_Total",
+					"Type" : "Global",
+					"Output" : "Internally_Invoiced_Services_Total"
+				},
+				"Travel Totals" :
+				{
+					"Name" : "Travel_Total",
+					"Expression" : "Travel_Costs:Trip_Total",
+					"Type" : "Global",
+					"Output" : "Travel_Total"
+				},
+				"Grand Total" :
+				{
+					"Name" : "Grand_Total",
+					"Expression" : "Totals:Personnel_Total + Totals:Equipment_Total + Totals:Other_Goods_and_Services_Total + Totals:Subcontracting_Total + Totals:Internally_Invoiced_Services_Total + Totals:Travel_Total",
+					"Type" : "Local",
+					"Output" : "Grand_Total"
+				}
+			}
+		}
+	}
+}
