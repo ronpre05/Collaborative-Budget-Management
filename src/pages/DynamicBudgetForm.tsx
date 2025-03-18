@@ -9,9 +9,10 @@ import template from "../../template1.json"
 //manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
 type DBProps = {
   getCategoryName: (categoryName: string) => void;
+  readOnly: boolean;
 };
 
-const DynamicBudgetForm: React.FC<DBProps> = ({ getCategoryName }) => {
+const DynamicBudgetForm: React.FC<DBProps> = ({ getCategoryName, readOnly}) => {
   const templateData : TemplateData = getTemplate(template);
   const categories = templateData.categories;
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -36,7 +37,7 @@ const DynamicBudgetForm: React.FC<DBProps> = ({ getCategoryName }) => {
         ))}
       </div>
       <div className="tab-content">
-        <GenericForm category={categories[activeTab]} />
+      <GenericForm category={categories[activeTab]} readOnly={readOnly} /> 
       </div>
     </div>
   );
