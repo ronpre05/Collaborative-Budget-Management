@@ -41,7 +41,7 @@ const ProjectView: React.FC = () => {
       
       
       if(projectID !== undefined)
-        categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
+         await categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
     }
     updateCatID();
   }, [currentCategory])
@@ -58,7 +58,7 @@ const ProjectView: React.FC = () => {
   return (
     <div className="project-view">
       {/* Display the project name */}
-      {projectName && <h1>{projectName}</h1>}
+      {projectName && <strong><h1>{projectName}</h1></strong>}
       {/* Render the new generic cost management page */}
       <DynamicBudgetForm getCategoryName={setCategoryName} />
       <CategoryDisplay data={categoryData} />
@@ -73,8 +73,6 @@ const ProjectView: React.FC = () => {
           {location.pathname === "/create-project/manage-collaborators" && <ManageCollaborators />}
       </div>
     </div>
-
-    
   );
 };
 

@@ -1,4 +1,4 @@
-import { getAllCategoryEntries, getCategoryID, getFieldID, getValue, getValueID, updateIndividualField } from "./database";
+import { getAllCategoryEntries, getCategoryID, getFieldID, getGlobalEntryID, getValue, getValueID, updateIndividualField } from "./database";
 import { readJsonFile, findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
 
@@ -433,11 +433,9 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     const fieldID : number = await getFieldID(catId, outputField);
 
     // Run an update to change value (at field/entry) to be result
-    const valueID :  number = await getValueID(fieldID, entryID);
+    const valueID :  number = await getValueID(entryID, fieldID);
 
-    console.log("ValueID" + valueID);
-
-    updateIndividualField(valueID, result);
+    await updateIndividualField(valueID, result);
 
     return;
 }
@@ -453,20 +451,31 @@ async function localEvaluator(calc : CalculationType, projectID : number, entryI
     return result;
 }
 
-async function globalEvaluator(calc : CalculationType, projectID : number, categoryID : number) : Promise<number>
+function extractCatName(expr : string) : string
 {
+    return expr.split(":")[0];
+}
+
+async function globalEvaluator(calc : CalculationType, projectID : number) : Promise<number>
+{
+    let catName : string = extractCatName(calc.expression);
+    let categoryID : number = await getCategoryID(catName, projectID);
     // Get a list of entries in that category
     let entries : number[] = await getAllCategoryEntries(categoryID);
     let total : number = 0;
 
+    // Now successfully gets the entries where there are entries added
+    // So once it has the entry ids if should:
+            // pass the entry id into the basic eval
+            // That should calculate the expression
+            // Has the entry id where it should pull the data from
+
     let RPN : string[] = expressionToRPN(calc.expression);
 
-    Object.values(entries).forEach(async entry =>
+    for(let entry of entries)
     {
         total += await basicEvaluator(RPN, projectID, entry);
     }
-    );
-
     return total;
 }
 
@@ -510,8 +519,12 @@ export async function categoryCalculation(catName : string, projectID : number, 
             // If global
             {
                 // Do the calculation
-                result = await globalEvaluator(calc, projectID, catId);
-                addResultToDataBase(-1, calc.output, catId, result);
+                result = await globalEvaluator(calc, projectID);
+                // Need to do a check for a category entry
+                    // If no entry make one and return its id
+                    // If one return its id
+                // Replace the -1 below with that
+                addResultToDataBase(await getGlobalEntryID(catId, projectID), calc.output, catId, result);
             }
 
         }

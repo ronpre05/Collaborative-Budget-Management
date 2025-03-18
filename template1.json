@@ -341,7 +341,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Subcontracting:amount",
+					"Expression" : "Subcontracting:Amount",
 					"Type" : "Local",
 					"Output" : "Local_Total"
 				}
@@ -399,7 +399,7 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Internally_Invoiced_Services:amount",
+					"Expression" : "Internally_Invoiced_Services:Amount",
 					"Type" : "Local",
 					"Output" : "Local_Total"
 				}
@@ -504,35 +504,35 @@
 				"Personnel Total" : 
 				{
 					"Name" : "Personnel_Total",
-					"Expression" : "Personnel:Entry_Total",
+					"Expression" : "Personnel:Local_Total",
 					"Type" : "Global",
 					"Output" : "Personnel_Total"
 				},
 				"Equipment Total" : 
 				{
 					"Name" : "Equipment_Total",
-					"Expression" : "Equipment:Entry_Total",
+					"Expression" : "Equipment:Local_Total",
 					"Type" : "Global",
 					"Output" : "Equipment_Total"
 				},
 				"OGC Total" : 
 				{
 					"Name" : "Other_Goods_and_Services_Total",
-					"Expression" : "Other_Goods_and_Services:Entry_Total",
+					"Expression" : "Other_Goods_and_Services:Local_Total",
 					"Type" : "Global",
 					"Output" : "Other_Goods_and_Services_Total"
 				},
 				"Subcontracting Total" : 
 				{
 					"Name" : "Subcontracting_Total",
-					"Expression" : "Subcontracting:Entry_Total",
+					"Expression" : "Subcontracting:Local_Total",
 					"Type" : "Global",
 					"Output" : "Subcontracting_Total"
 				},
 				"Internal Invoice Total" : 
 				{
 					"Name" : "Internally_Invoiced_Services_Total",
-					"Expression" : "Internally_Invoiced_Services:Entry_Total",
+					"Expression" : "Internally_Invoiced_Services:Local_Total",
 					"Type" : "Global",
 					"Output" : "Internally_Invoiced_Services_Total"
 				},
