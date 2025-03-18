@@ -39,10 +39,10 @@ const ProjectsView: React.FC<ProjectsViewProps> = ({ userId, onProjectsFetched }
     <main>
       {error ? (
         <p>Error fetching projects: {error}</p>
-      ) : hasFetched && projects.length > 0 ? (
-        <p>Projects loaded successfully.</p>
       ) : hasFetched ? (
-        <p>No projects found.</p>
+        projects.length > 0 ? null : (
+          <p>No projects found.</p>
+        )
       ) : (
         <p>Loading projects...</p>
       )}
