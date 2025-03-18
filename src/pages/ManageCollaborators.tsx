@@ -19,8 +19,13 @@ const ManageCollaborators: React.FC<ManageCollaboratorsProps> = ({ projectID, us
       <p>Below are the users in this project.</p>
 
       {/* Show the list of collaborators (to all roles) */}
-      {projectID && <CollaboratorList projectID={projectID} />}
 
+      {userRole != 3 && (
+        <>
+        {projectID && <CollaboratorList projectID={projectID} />}
+        </>
+      )}
+      
       {/* Only Project Investigators (role ID 3) can invite or remove users */}
       {userRole === 3 && (
         <>
