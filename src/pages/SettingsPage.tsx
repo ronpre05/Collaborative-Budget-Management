@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Creatable from "react-select/async-creatable";
 import { getInstitutions, addInstitution, addUserInstitution } from "../database";
+import { Button } from "@/components/ui/button";
 
 // Account settings page, allows for institutions to be added to a users account
 const SettingsPage = () => {
@@ -47,7 +48,7 @@ const SettingsPage = () => {
         isClearable
       />
 
-      <button type="button" onClick={handleAddInstitution}>Add Institution</button>
+      <Button variant="outline" onClick={handleAddInstitution} >Add Institution</Button>
     </div>
   );
 };
