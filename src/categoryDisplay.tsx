@@ -1,5 +1,10 @@
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import type React from "react"
+
+
+
 /**
- * Dynamic table display for a 2D array.
+ * Dynamic table display for a 2D array using shadcn/ui components.
  * @component
  *
  * @param props Component props.
@@ -15,37 +20,59 @@
  *
  * return <CategoryDisplay data={tableData} />;
  */
-const CategoryDisplay: React.FC<{ data: string[][] }> = ({
-  data,
-}): JSX.Element => {
-  /*
-   * slices data into 2 arrays,
-   * "headings" array, for category fields - 1D array
-   * "tableItems" array, contents of every field - 2D array
-   */
-  const [headings, ...tableItems] = data;
+const CategoryDisplay: React.FC<{ data: string[][] | null | undefined }> = ({ data }): JSX.Element => {
+  // Check if data is valid and iterable
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="rounded-md border">
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell className="h-24 text-center">No data available.</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    )
+  }
+
+  // Extract headers and table data
+  const headings = data[0] || []
+  const tableItems = data.slice(1)
 
   return (
-    <div className="dymcTable">
-      <table>
-        <thead>
-          <tr>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
             {headings.map((header, index) => (
-              <th key={index}>{header}</th>
+              <TableHead key={index}>{header}</TableHead>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableItems.map((row, index) => (
-            <tr key={index}>
-              {row.map((item, itemIndex) => (
-                <td key={itemIndex}>{item}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tableItems.length > 0 ? (
+            tableItems.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {Array.isArray(row) ? (
+                  row.map((item, cellIndex) => <TableCell key={cellIndex}>{item}</TableCell>)
+                ) : (
+                  <TableCell>Invalid row data</TableCell>
+                )}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={headings.length || 1} className="h-24 text-center">
+                No data available.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
-  );
-};
-export default CategoryDisplay;
+  )
+}
+
+export default CategoryDisplay
+

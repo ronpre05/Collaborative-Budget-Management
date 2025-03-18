@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
 import { getFieldsSection, getCategoryObject, getFieldNames } from "./templateParser";
 import { cleanString } from "./expressionParser"; 
+import { ValueContainer } from "react-select/animated";
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -415,6 +416,14 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
     }
 };
 
+
+
+
+
+/*
+
+*/
+// TODO:  Modify projectID
 export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
     const projectID = localStorage.getItem("projectID");
     
@@ -475,9 +484,6 @@ export const insertFieldValues = async (entryID: number, categoryID: number, dat
     const fieldValues = [];
 
     for (const [fieldName, value] of Object.entries(data)) {
-
-        console.log(fieldName);
-
         let { data: existingField, error: fieldError } = await supabase
             .from("CategoryFields")
             .select("fieldID")
@@ -627,7 +633,7 @@ export const getValue = async (entryID : number, fieldID : number) : Promise<any
     
     if(error)
     {
-        console.error("Error fecthing value: ", error)
+        console.error("Error fetching value: ", error);
         return -1;
     }
 
@@ -645,11 +651,27 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
     
     if(error)
     {
-        console.error("Error fecthing value ID: ", error)
-        return -1;
+        return createBlankValue(entryID, fieldID);
     }
 
     return data.valueID;
+}
+
+export const createBlankValue = async(entryID : number, fieldID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("FieldValues")
+        .insert({ entryID : entryID, fieldID : fieldID, value : "0" })
+        .select("valueID")
+        .single()
+
+    if(error)
+    {
+        console.log("Error creating valueID");
+        return -1;
+    }
+
+    return data.valueID
 }
 
 
@@ -668,6 +690,42 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
     }
 
     return 1;
+}
+
+
+// Check if a category has an entry and create one if not
+// Check category entry for this (only in category entry/blank stuff dealt with in field updates)
+export const getGlobalEntryID = async (catID : number, projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .select("entryID")
+        .eq("categoryID", catID)
+        .single()
+    
+    if(error)
+    {
+        return createBlankEntry(catID, projectID);
+    }
+
+    return data.entryID;
+}
+
+const createBlankEntry = async (catID : number, projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryEntry")
+        .insert({categoryID : catID, projectID : projectID, institutionID : null})
+        .select("entryID")
+        .single()
+
+    if(error)
+    {
+        console.log("Error creating entryID")
+        return -1;
+    }
+
+    return data.entryID;
 }
 
 // Add an institution tot he database and reutn its ID

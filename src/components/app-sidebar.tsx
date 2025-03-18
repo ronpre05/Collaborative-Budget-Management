@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { Home, FolderKanban, Settings, LifeBuoy } from "lucide-react"
+import { Home, FolderKanban, Settings, LifeBuoy, Mail } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { UserButton } from "@clerk/clerk-react"
 
@@ -29,6 +29,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: "Projects",
       icon: FolderKanban,
       path: "/projects",
+    },
+    {
+      title: "Invitations",
+      icon: Mail,
+      path: "/invitations",
     },
     {
       title: "Settings",

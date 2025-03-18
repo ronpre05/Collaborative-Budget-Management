@@ -73,8 +73,6 @@ const ProjectView: React.FC = () => {
           {location.pathname === "/create-project/manage-collaborators" && <ManageCollaborators />}
       </div>
     </div>
-
-    
   );
 };
 
