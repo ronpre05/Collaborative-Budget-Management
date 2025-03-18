@@ -67,7 +67,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     // Basic validation: ensure every visible field has a value.
     for (const key in flatFields) {
       if (flatFields[key].entryvisible && !newItemValues[key]) {
-        alert(`Please fill out the field: ${key}`);
+        alert(`Please fill out the field: ${cleanString(key)}`);
         return;
       }
     }
