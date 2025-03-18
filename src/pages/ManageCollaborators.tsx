@@ -1,35 +1,35 @@
 import React, { useState, useEffect } from "react";
-import RemoveCollaborator from "./RemoveCollaborator"; // Import RemoveCollaborator
-import InviteUser from "./InviteUser"; // Import the InviteUser component
+import RemoveCollaborator from "./RemoveCollaborator";
+import CollaboratorList from "./CollaboratorList";
+import InviteUser from "./InviteUser";
 
-const ManageCollaborators: React.FC = () => {
-  const [projectID, setProjectID] = useState<number | null>(null);
+interface ManageCollaboratorsProps {
+  projectID: number | null;
+  userRole: number | null;
+}
 
+const ManageCollaborators: React.FC<ManageCollaboratorsProps> = ({ projectID, userRole }) => {
   useEffect(() => {
-    // Retrieve the project ID from localStorage
-    const storedProjectID = localStorage.getItem("projectID");
-
-    if (storedProjectID) {
-      setProjectID(parseInt(storedProjectID, 10));
-    } else {
-      console.error("No project ID found in localStorage.");
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log("ManageCollaborators mounted"); // Debugging
+    console.log("ManageCollaborators mounted");
   }, []);
 
   return (
     <div>
       <h2>Manage Collaborators</h2>
-      <p>Below is the option to remove collaborators from this project.</p>
+      <p>Below are the users in this project.</p>
 
-      {/* Remove Collaborator Section */}
-      {projectID && <RemoveCollaborator projectID={projectID} />}
+      {/* Show the list of collaborators (to all roles) */}
+      {projectID && <CollaboratorList projectID={projectID} />}
 
-      {/* Show InviteUser only when projectID is available */}
-      {projectID && <InviteUser projectID={projectID} />} 
+      {/* Only Project Investigators (role ID 3) can invite or remove users */}
+      {userRole === 3 && (
+        <>
+          <h3>Invite Collaborators</h3>
+          {projectID && <InviteUser projectID={projectID} />}
+          <h3>Remove Collaborators</h3>
+          {projectID && <RemoveCollaborator projectID={projectID} />}
+        </>
+      )}
     </div>
   );
 };

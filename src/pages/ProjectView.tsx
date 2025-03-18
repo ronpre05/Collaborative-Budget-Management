@@ -7,6 +7,7 @@ import { getProjectName, getUserRoleInProject } from "../database";
 const ProjectView: React.FC = () => {
   const location = useLocation();
 
+  const [projectID, setProjectID] = useState<string | null>(null);
   const [projectName, setProjectName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<number | null>(null);
   const [roleName, setRoleName] = useState<string | null>(null);
@@ -24,6 +25,8 @@ const ProjectView: React.FC = () => {
         console.error("No project ID found in localStorage.");
         return;
       }
+
+      setProjectID(projectID); // Store projectID in state
 
       // Fetch project name
       const name = await getProjectName();
@@ -60,7 +63,10 @@ const ProjectView: React.FC = () => {
         </Link>
 
         <div className="tab-content">
-          {location.pathname === "/create-project/manage-collaborators" && <ManageCollaborators />}
+        {location.pathname === "/create-project/manage-collaborators" && 
+          projectID && userRole !== null && (
+            <ManageCollaborators projectID={parseInt(projectID, 10)} userRole={userRole} />
+          )}
       </div>
     </div>
 

@@ -52,7 +52,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
               onChange={(e) => handleFieldChange(key, e.target.value)}
               placeholder={field.name}
               style={{ marginLeft: "0.5rem" }}
-              readOnly={readOnly} // Disable input if readOnly is true
+              disabled={readOnly} // Disable input if readOnly is true
             />
           </label>
         </div>
@@ -77,7 +77,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
       await createEntry(category.name, newItemValues);
   
       const newItem = { ...newItemValues };
-    setItems(prev => [...prev, newItem]);
+      setItems(prev => [...prev, newItem]);
       setNewItemValues({});
   
       console.log("Entry successfully added to the database.");
