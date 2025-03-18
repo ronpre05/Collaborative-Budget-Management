@@ -11,7 +11,7 @@
 			{
 				"Amount" : 
 				{
-					"Name" : "amount",
+					"Name" : "Amount",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
@@ -21,7 +21,7 @@
 				},
 				"Start Date" : 
 				{
-					"Name" : "startDate",
+					"Name" : "Start_Date",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -31,7 +31,7 @@
 				},
 				"End Date" : 
 				{
-					"Name" : "endDate",
+					"Name" : "End_Date",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -41,7 +41,7 @@
 				},
 				"Percentage" : 
 				{
-					"Name" : "percentage",
+					"Name" : "Percentage",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "%",
@@ -51,7 +51,7 @@
 				},
 				"Person Month" : 
 				{
-					"Name" : "personMonth",
+					"Name" : "Person_Month",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -61,7 +61,7 @@
 				},
 				"Local Total" :
 				{
-					"Name" : "localTotal",
+					"Name" : "Local_Total",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -75,16 +75,16 @@
 				"PersonMonths" : 
 				{
 					"Name" : "Person_Months",
-					"Expression" : "(Personnel:endDate - Personnel:startDate) * Personnel:percentage",
+					"Expression" : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
 					"Type" : "Local",
-					"Output" : "personMonth"
+					"Output" : "Person_Month"
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Personnel:amount",
+					"Expression" : "Personnel:Amount",
 					"Type" : "Local",
-					"Output" : "localTotal"
+					"Output" : "Local_Total"
 				}
 			}
 		},
@@ -97,7 +97,7 @@
 			{
 				"What" : 
 				{
-					"Name" : "what",
+					"Name" : "What",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -107,7 +107,7 @@
 				},
 				"Why" : 
 				{
-					"Name" : "why",
+					"Name" : "Why",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -117,7 +117,7 @@
 				},
 				"Amount" : 
 				{
-					"Name" : "amount",
+					"Name" : "Amount",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
@@ -127,7 +127,7 @@
 				},
 				"Local Total" :
 				{
-					"Name" : "localTotal",
+					"Name" : "Local_Total",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -141,9 +141,9 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Equipment:amount",
+					"Expression" : "Equipment:Amount",
 					"Type" : "Local",
-					"Output" : "localTotal"
+					"Output" : "Local_Total"
 				}
 			}
 		},
@@ -156,7 +156,7 @@
 			{
 				"What" : 
 				{
-					"Name" : "what",
+					"Name" : "What",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -166,7 +166,7 @@
 				},
 				"Why" : 
 				{
-					"Name" : "why",
+					"Name" : "Why",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -176,7 +176,7 @@
 				},
 				"Amount" : 
 				{
-					"Name" : "amount",
+					"Name" : "Amount",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
@@ -186,7 +186,7 @@
 				},
 				"Local Total" :
 				{
-					"Name" : "localTotal",
+					"Name" : "Local_Total",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -200,9 +200,9 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Other_Goods_and_Services:amount",
+					"Expression" : "Other_Goods_and_Services:Amount",
 					"Type" : "Local",
-					"Output" : "localTotal"
+					"Output" : "Local_Total"
 				}
 			}
 		},
@@ -215,7 +215,7 @@
 			{
 				"Days"  : 
 				{
-					"Name" : "days",
+					"Name" : "Days",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -225,30 +225,60 @@
 				},
 				"Accomodation" : 
 				{
-					"Name" : "accomodation",
+					"Name" : "Accomodation",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
 				"Sustinance" : 
 				{
-					"Name" : "sustinance",
+					"Name" : "Sustinance",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
+				},
+				"Base Total" : 
+				{
+					"Name" : "Base_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Entry Total" : 
+				{
+					"Name" : "Entry_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Trip Total" : 
+				{
+					"Name" : "Trip_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
 				}
 			},
 			"SubEntries" : 
 			{
 				"What" : 
 				{
-					"Name" : "what",
+					"Name" : "What",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -258,7 +288,7 @@
 				},
 				"Amount" : 
 				{
-					"Name" : "amount",
+					"Name" : "Amount",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
@@ -272,23 +302,23 @@
 				"baseTotal" : 
 				{
 					"Name" : "Base_Total",
-					"Expression" : "Travel_Costs:days*Travel_Costs:accomodation + Travel_Costs:days*Travel_Costs:sustinance",
+					"Expression" : "Travel_Costs:Days*Travel_Costs:Accomodation + Travel_Costs:Days*Travel_Costs:Sustinance",
 					"Type" : "Local",
-					"Output" : ""
+					"Output" : "Base_Total"
 				},
 				"entryTotals" :
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Travel_Costs:amount",
-					"Type" : "Local",
-					"Output" : ""
+					"Expression" : "Travel_Costs:Amount",
+					"Type" : "SubGlobal",
+					"Output" : "Entry_Total"
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Trip_Total",
 					"Expression" : "Travel_Costs:Base_Total + Travel_Costs:Entry_Total",
 					"Type" : "Local",
-					"Output" : ""
+					"Output" : "Trip_Total"
 				}
 			}
 		},
@@ -301,7 +331,7 @@
 			{
 				"What" : 
 				{
-					"Name" : "what",
+					"Name" : "What",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -311,7 +341,7 @@
 				},
 				"Why" : 
 				{
-					"Name" : "why",
+					"Name" : "Why",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -321,7 +351,7 @@
 				},
 				"Amount" : 
 				{
-					"Name" : "amount",
+					"Name" : "Amount",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
@@ -331,7 +361,7 @@
 				},
 				"Local Total" :
 				{
-					"Name" : "localTotal",
+					"Name" : "Local_Total",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -345,9 +375,9 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Subcontracting:amount",
+					"Expression" : "Subcontracting:Amount",
 					"Type" : "Local",
-					"Output" : "localTotal"
+					"Output" : "Local_Total"
 				}
 			}
 		},
@@ -360,7 +390,7 @@
 			{
 				"What" : 
 				{
-					"Name" : "why",
+					"Name" : "What",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -370,7 +400,7 @@
 				},
 				"Why" : 
 				{
-					"Name" : "why",
+					"Name" : "Why",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -380,7 +410,7 @@
 				},
 				"Amount" : 
 				{
-					"Name" : "amount",
+					"Name" : "Amount",
 					"Prefix" : "€",
 					"Value" : "",
 					"Postfix" : "",
@@ -390,7 +420,7 @@
 				},
 				"Local Total" :
 				{
-					"Name" : "localTotal",
+					"Name" : "Local_Total",
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
@@ -404,9 +434,9 @@
 				"Total:Local" : 
 				{
 					"Name" : "Entry_Total",
-					"Expression" : "Internally_Invoiced_Services:amount",
+					"Expression" : "Internally_Invoiced_Services:Amount",
 					"Type" : "Local",
-					"Output" : "localTotal"
+					"Output" : "Local_Total"
 				}
 			}
 		},
