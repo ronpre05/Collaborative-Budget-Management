@@ -1,0 +1,159 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #f8f8f8;
+  min-height: 100%;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+h1 {
+  font-size: 2em;
+  color: #800020;
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh; /* Changed from height: 100vh; */
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #800020;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.sidebar header h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar .user-section {
+  margin-bottom: 20px;
+}
+
+.sidebar nav {
+  width: 100%;
+}
+
+.sidebar nav button {
+  width: 100%;
+  background-color: white;
+  color: #800020;
+  border: none;
+  padding: 10px 0;
+  font-size: 1em;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.sidebar nav button:hover {
+  background-color: #d3d3d3;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f8f8; 
+}
+
+.content {
+  text-align: center;
+}
+
+.create-project-btn {
+  background-color: #800020;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.create-project-btn:hover {
+  background-color: #d3d3d3;
+  color: #800020;
+}
+
+.create-project-content {
+  padding: 20px;
+  background-color: #f8f8f8; 
+}
+
+.tab-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 2px solid #d3d3d3;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.tab {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #800020;
+  border: 1px solid #d3d3d3;
+  border-bottom: none;
+  background-color: white;
+  margin-right: 10px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+}
+
+.tab:hover {
+  background-color: #f8f8f8;
+}
+
+.active-tab {
+  background-color: #800020;
+  color: white;
+  font-weight: bold;
+}
+
+.tab-content {
+  padding: 20px;
+  border: 1px solid #d3d3d3;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f9;
+  color: #333;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.notification-icon {
+  margin-right: 8px;
+}
+
+.notification-message {
+  font-weight: 500;
+}
+
+.notification strong {
+  color: #007BFF;
+}
