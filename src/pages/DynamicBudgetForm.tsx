@@ -3,8 +3,13 @@ import templateDataJson from "../../template1.json";
 import { getCategoriesObjectsFromTemplate, getTemplateName } from "../templateParser";
 import GenericForm from "./GenericForm";
 import { cleanString } from "../expressionParser";
+
+interface DynamicBudgetFormProps {
+  readOnly: boolean; // Add readOnly prop
+}
+
 //manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
-const DynamicBudgetForm: React.FC = () => {
+const DynamicBudgetForm: React.FC<DynamicBudgetFormProps> = ({ readOnly }) => {
   const templateData = templateDataJson;
   const categories = getCategoriesObjectsFromTemplate(templateData);
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -24,7 +29,7 @@ const DynamicBudgetForm: React.FC = () => {
         ))}
       </div>
       <div className="tab-content">
-        <GenericForm category={categories[activeTab]} />
+      <GenericForm category={categories[activeTab]} readOnly={readOnly} /> 
       </div>
     </div>
   );

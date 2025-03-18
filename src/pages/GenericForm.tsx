@@ -6,9 +6,10 @@ import { createEntry } from "../database";
 
 interface GenericFormProps {
   category: CategoryType;
+  readOnly: boolean; 
 }
 
-const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
+const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
   // Flatten the fields for easier handling.
   const flatFields = flattenFields(category.fields);
 
@@ -19,7 +20,9 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   // Update a field value.
   const handleFieldChange = (fieldKey: string, value: string) => {
-    setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
+    if (!readOnly) {
+      setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
+    }
   };
 
   // Map our field "Type" from the JSON to an appropriate input type.
@@ -49,6 +52,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
               onChange={(e) => handleFieldChange(key, e.target.value)}
               placeholder={field.name}
               style={{ marginLeft: "0.5rem" }}
+              readOnly={readOnly} // Disable input if readOnly is true
             />
           </label>
         </div>
@@ -59,6 +63,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Handle form submission.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (readOnly) return; // Prevent submission in read-only mode
     // Basic validation: ensure every visible field has a value.
     for (const key in flatFields) {
       if (flatFields[key].entryvisible && !newItemValues[key]) {
@@ -87,7 +92,9 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
       <h2>{cleanString(category.name)} Costs</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
         {renderFields()}
-        <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
+        {!readOnly && ( // Hide the button if readOnly is true
+          <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
+        )}
       </form>
       <ul style={{ maxWidth: "500px", listStyle: "none", padding: 0 }}>
         {items.map((item, index) => (
