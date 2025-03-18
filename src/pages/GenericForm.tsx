@@ -48,16 +48,14 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
     return Object.entries(flatFields).map(([key, field]) => {
       if (!field.entryvisible) return null;
       return (
-        <div key={key} style={{ marginBottom: "0.5rem" }}>
-          <label>
-            {cleanString(key)}:
-            <input
-              type={mapFieldType(field.type)}
-              value={newItemValues[key] || ""}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-              style={{ marginLeft: "0.5rem" }}
-            />
-          </label>
+        <div key={key} className="form-group">
+          <label htmlFor={key}>{cleanString(key)}:</label>
+          <input
+            id={key}
+            type={mapFieldType(field.type)}
+            value={newItemValues[key] || ""}
+            onChange={(e) => handleFieldChange(key, e.target.value)}
+          />
         </div>
       );
     });
@@ -82,7 +80,6 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
       const newItem = { ...newItemValues };
       setItems(prev => [...prev, newItem]);
       setNewItemValues({});
-  
 
       setAddMessage("Entry successfully added!");
       console.log("Entry successfully added to the database.");
@@ -96,10 +93,10 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   return (
     <div>
       <strong><h1>{cleanString(category.name)} Costs</h1></strong>
-      {addMessage && <p style={{ color: "green" }}>{addMessage}</p>}
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
+      <form onSubmit={handleSubmit} className="generic-form-container">
         {renderFields()}
-        <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
+        {addMessage && <p className="add-message">{addMessage}</p>}
+        <button type="submit">Add Item</button>
       </form>
     </div>
   );
