@@ -75,7 +75,7 @@ const CategoryDisplay: React.FC<{ data: string[][] | null | undefined }> = ({ da
   }
 
   return (
-    <div className="space-y-4">
+    <div className="m-3 space-y-4">
       <div className="rounded-md border">
         <Table>
           <TableHeader>
