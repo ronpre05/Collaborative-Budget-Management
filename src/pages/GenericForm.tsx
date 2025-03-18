@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CategoryType } from "../types";
 import { flattenFields } from "../templateParser";
 import { cleanString } from "../expressionParser";
@@ -9,19 +9,26 @@ interface GenericFormProps {
 }
 
 const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
-  // Flatten the fields for easier handling.
   
+  // Flatten the fields for easier handling.
   const flatFields = Object.fromEntries(category.fields.map((field) => [field.name, field]));
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
   // State for the list of submitted items.
   const [items, setItems] = useState<Array<Record<string, string>>>([]);
+  // Message display for adding an entry
+  const [addMessage, setAddMessage] = useState<string | null>(null);
 
   // Update a field value.
   const handleFieldChange = (fieldKey: string, value: string) => {
     setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
   };
+
+  // Reset add success message when category changes
+  useEffect(() => {
+    setAddMessage(null);
+  }, [category]);
 
   // Map our field "Type" from the JSON to an appropriate input type.
   const mapFieldType = (fieldType: string): string => {
@@ -76,6 +83,8 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
       setItems(prev => [...prev, newItem]);
       setNewItemValues({});
   
+
+      setAddMessage("Entry successfully added!");
       console.log("Entry successfully added to the database.");
     } 
     catch (error) {
@@ -86,25 +95,12 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   return (
     <div>
-      <h2>{cleanString(category.name)} Costs</h2>
+      <strong><h1>{cleanString(category.name)} Costs</h1></strong>
+      {addMessage && <p style={{ color: "green" }}>{addMessage}</p>}
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", maxWidth: "400px" }}>
         {renderFields()}
         <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
       </form>
-      <ul style={{ maxWidth: "500px", listStyle: "none", padding: 0 }}>
-        {items.map((item, index) => (
-          <li
-            key={index}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              marginBottom: "10px",
-              borderRadius: "5px"
-            }}
-          >
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
