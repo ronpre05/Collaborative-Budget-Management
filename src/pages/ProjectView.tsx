@@ -58,7 +58,7 @@ const ProjectView: React.FC = () => {
   return (
     <div className="project-view">
       {/* Display the project name */}
-      {projectName && <h1>{projectName}</h1>}
+      {projectName && <strong><h1>{projectName}</h1></strong>}
       {/* Render the new generic cost management page */}
       <DynamicBudgetForm getCategoryName={setCategoryName} />
       <CategoryDisplay data={categoryData} />
