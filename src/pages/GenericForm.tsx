@@ -6,10 +6,10 @@ import { createEntry } from "../database";
 
 interface GenericFormProps {
   category: CategoryType; // TEMP changed to any
+  readOnly: boolean; 
 }
 
-const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
-  
+const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
   // Flatten the fields for easier handling.
   const flatFields = Object.fromEntries(category.fields.map((field) => [field.name, field]));
 
@@ -22,7 +22,9 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
 
   // Update a field value.
   const handleFieldChange = (fieldKey: string, value: string) => {
-    setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
+    if (!readOnly) {
+      setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
+    }
   };
 
   // Reset add success message when category changes
@@ -46,7 +48,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Render all (flattened) fields.
   const renderFields = () => {
     return Object.entries(flatFields).map(([key, field]) => {
-      if (!field.entryvisible) return null;
+      if (readOnly) return null;
       return (
         <div key={key} className="form-group">
           <label htmlFor={key}>{cleanString(key)}:</label>
@@ -64,6 +66,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
   // Handle form submission.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (readOnly) return; // Prevent submission in read-only mode
     // Basic validation: ensure every visible field has a value.
     for (const key in flatFields) {
       if (flatFields[key].entryvisible && !newItemValues[key]) {
@@ -95,8 +98,9 @@ const GenericForm: React.FC<GenericFormProps> = ({ category }) => {
       <strong><h1>{cleanString(category.name)} Costs</h1></strong>
       <form onSubmit={handleSubmit} className="generic-form-container">
         {renderFields()}
-        {addMessage && <p className="add-message">{addMessage}</p>}
-        <button type="submit">Add Item</button>
+        {!readOnly && ( // Hide the button if readOnly is true
+          <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
+        )}
       </form>
     </div>
   );
