@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js"
 import { CategoryType } from "./types";
 import { findCatObject, getTemplate, getFieldsNames, getSubEntryNames } from "./newTemplateParser";
 import template from "../template1.json"
+import { getCategoryNames } from "./templateParser";
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -550,13 +551,22 @@ export const insertFieldValues = async (entryID: number, categoryID: number, dat
         return;
     }
 
-    const { error } = await supabase.from("FieldValues").insert(fieldValues);
+    const { data : valIDs, error } = await supabase.from("FieldValues").insert(fieldValues).select("valueID");
 
-    if (error) {
+    if (error) 
+    {
         console.error("Error inserting FieldValues:", error.message);
-    } else {
+    } 
+    else 
+    {
         console.log("Successfully inserted FieldValues:", fieldValues);
     }
+
+    if(valIDs)
+    {
+        return valIDs.map((entry : any) => entry.valueID);
+    }
+    
 };
 
 
@@ -572,6 +582,123 @@ export const createEntry = async (categoryName: string, fieldData: Record<string
     const { categoryID, entryID } = categoryEntry;
     await insertFieldValues(entryID, categoryID, fieldData);
 };
+
+
+
+
+
+
+
+
+
+export const createEntryWithSubEntry = async (categoryName : string, fieldData : Record<string, string>, subEntryData : Record<string, string>[]) => 
+{
+    const categoryEntry = await createCategoryEntry(categoryName);
+
+    if (!categoryEntry)
+    {
+        return;
+    }
+
+    const { categoryID, entryID } = categoryEntry;
+    await addWithSubEntry(entryID, categoryID, fieldData, subEntryData);
+    
+}
+
+export const addWithSubEntry = async (entryID : number, categoryID : number, fieldData : Record<string, string>, subEntryData : (Record<string, string>)[]) =>
+{
+    await insertFieldValues(entryID, categoryID, fieldData);
+
+    // Add sub entry data
+    
+    // For each entry in subEntryData
+    for(let [key, subEntry] of Object.entries(subEntryData))
+    {
+        // Add each one to field values using insertFieldValues
+        let valueIDs = await insertFieldValues(entryID, categoryID, subEntry);
+            // Modify to return valueIDs as a list of the things that were added
+
+        if(!valueIDs)
+        {
+            continue;
+        }
+
+        // Then add a new subEntry in subEntries
+        let subEntryID = await createSubEntry(entryID);
+
+        // Take that subEntry and the list of valueIDs
+        for(let valueID of valueIDs)
+        {
+            // Add them to subValues
+            await addToSubValues(subEntryID, valueID);
+        }
+            
+    }
+        
+        
+
+}
+
+export const createSubEntry = async (entryID : number) : Promise<number> =>
+{
+    const { data, error } = await supabase
+        .from("SubEntries")
+        .insert(entryID)
+        .select("subEntryID")
+        .single()
+
+    if(error)
+    {
+        console.error("Error fetching subEntryID when inserting: ", error)
+        return -1;
+    }
+
+    return data.subEntryID;
+}
+
+export const addToSubValues = async (subEntryID : number, valueID : number) =>
+{
+    const { error } = await supabase
+        .from("subValues")
+        .insert({subEntryID : subEntryID, valueID : valueID})
+
+    if(error)
+    {
+        console.error("Error inserting valueID to subValues: ", error);
+    }
+
+}
+
+
+
+
+
+
+
+
+// Can already get all fields for an entry os leave that alone, just return a list of records of subEntries
+export const getSubEntriesForEntry = async () : Promise<Record<string, string>[]> =>
+{
+    // Get list of subEntries from subEntries (already have function for this)
+    // For each subEntry, get the list of valueIDs
+    // Build up a record by getting the fieldName from the field id in fieldValues and the value
+        // One query to return the field id and value
+        // One query to map the field id into the field name
+        // Add this to the list of records
+    // Return the list of records
+
+
+
+    return [];
+}
+
+
+
+
+
+
+
+
 
 
 
