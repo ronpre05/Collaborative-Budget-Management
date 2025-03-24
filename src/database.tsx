@@ -589,8 +589,7 @@ export const createEntry = async (categoryName: string, fieldData: Record<string
 
 
 
-
-
+// Main function to add where the entry contains a sub entry
 export const createEntryWithSubEntry = async (categoryName : string, fieldData : Record<string, string>, subEntryData : Record<string, string>[]) => 
 {
     const categoryEntry = await createCategoryEntry(categoryName);
@@ -643,7 +642,7 @@ export const createSubEntry = async (entryID : number) : Promise<number> =>
 {
     const { data, error } = await supabase
         .from("SubEntries")
-        .insert(entryID)
+        .insert({entryID})
         .select("subEntryID")
         .single()
 
@@ -659,7 +658,7 @@ export const createSubEntry = async (entryID : number) : Promise<number> =>
 export const addToSubValues = async (subEntryID : number, valueID : number) =>
 {
     const { error } = await supabase
-        .from("subValues")
+        .from("SubValues")
         .insert({subEntryID : subEntryID, valueID : valueID})
 
     if(error)
@@ -669,34 +668,77 @@ export const addToSubValues = async (subEntryID : number, valueID : number) =>
 
 }
 
-
-
-
-
-
-
-
-// Can already get all fields for an entry os leave that alone, just return a list of records of subEntries
-export const getSubEntriesForEntry = async () : Promise<Record<string, string>[]> =>
+// Can already get all fields for an entry so leave that alone, just return a list of records of subEntries
+export const getSubEntriesForEntry = async (entryID : number) : Promise<Record<string, string>[]> =>
 {
     // Get list of subEntries from subEntries (already have function for this)
-    // For each subEntry, get the list of valueIDs
-    // Build up a record by getting the fieldName from the field id in fieldValues and the value
-        // One query to return the field id and value
-        // One query to map the field id into the field name
+    let subEntryIDs = await getAllSubEntries(entryID);
+    let subEntries : Record<string, string>[] = [];
+    
+    for(let subEntryID of subEntryIDs)
+    {
+        // For each subEntry, get the list of valueIDs
+        let valueIDs = await getValueIDsOfSubEntry(subEntryID);
+        let rec : Record<string, string> = {};
+
+        // for each value ids get the name and value and add to the record
+        for(let valueID of valueIDs)
+        {
+            // Forms each part of the record object
+            let { fieldName, value } = await getFieldNameAndValue(valueID);
+            rec[fieldName] = value;
+        }
+
+        // Build up a record by getting the fieldName from the field id in fieldValues and the value
+            // One query to return the field id and value
+            // One query to map the field id into the field name
+            
         // Add this to the list of records
+        subEntries.push(rec);
+    }
+    
     // Return the list of records
-
-
-
-    return [];
+    return subEntries;
 }
 
+export const getFieldNameAndValue = async (valueID : number) : Promise<{fieldName : string, value : string}> =>
+{
+    // Get the fieldID and value from field Values
+    const { data, error } = await supabase
+        .from("FieldValues")
+        .select("fieldID, value")
+        .eq("valueID", valueID)
+        .single()
 
+    
+    if(error)
+    {
+        console.error("Error fetching fieldID and value from fieldValues: ", error)
+        return {fieldName : "", value : ""};
+    }
 
+    // Call getField name on ID
+    // Put field name and value into object and return them
+    return {fieldName : await getFieldName(data.fieldID), value : data.value};
+}
 
+export const getFieldName = async (fieldID : number) : Promise<string> =>
+{
+    // get field name from the id in category fields
+    const { data, error } = await supabase
+        .from("CategoryFields")
+        .select("fieldName")
+        .eq("fieldID", fieldID)
+        .single()
 
+    if(error)
+    {
+        console.error("Error fetching field name: ", error);
+        return "";
+    }
 
+    return data.fieldName;
+}
 
 
 
