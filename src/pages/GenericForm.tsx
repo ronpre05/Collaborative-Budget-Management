@@ -48,7 +48,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
   // Render all (flattened) fields.
   const renderFields = () => {
     return Object.entries(flatFields).map(([key, field]) => {
-      if (readOnly) return null;
+      if (readOnly || !field.entryvisible) return null;
       return (
         <div key={key} className="form-group">
           <label htmlFor={key}>{cleanString(key)}:</label>
