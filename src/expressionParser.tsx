@@ -448,7 +448,7 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
     // Run an update to change value (at field/entry) to be result
     const valueID :  number = await getValueID(entryID, fieldID);
 
-    updateIndividualField(valueID, result);
+    await updateIndividualField(valueID, result);
 
     return;
 }
@@ -511,8 +511,11 @@ async function subGlobalEvaluator(calc : CalculationType, projectID : number, en
     return total;
 }
 
-export function cleanString(str : string) : string
+export function cleanString(str? : string) : string
 {
+    if(!str){
+        return "";
+    }
     return str.split("_").join(" ");
 }
 

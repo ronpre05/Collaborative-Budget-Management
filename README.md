@@ -12,5 +12,5 @@
 3. Start server
 
 ```console
-    npm start
+    npm run dev
 ```

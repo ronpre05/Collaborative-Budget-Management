@@ -1,21 +1,18 @@
 // import { readFile } from "fs/promises";
 import { TemplateData, CategoryType, FieldType, CalculationType } from "./types";
 
-main();
+// main();
 
-async function main()
-{
-    const template : TemplateData = await readJsonFile("./template1.json");
-    console.log(template);
-    console.log(getCatNames(template));
-    console.log(getFieldsNames(template.categories[3]));
-    console.log(findCatObject("Travel_Costs", template.categories));
-    console.log(findFieldObject("days", template.categories[3]));
-    console.log(findCalcObject("Trip_Total", template.categories[3]));
-    console.log(getSubEntryNames(template.categories[3]));
-    console.log(findSubEntryObject("amount", template.categories[3]));
-    console.log(findSubEntryObject("amount", template.categories[0]));
-}
+// async function main()
+// {
+//     const template : TemplateData = await readJsonFile("./template1.json");
+//     console.log(template);
+//     console.log(getCatNames(template));
+//     console.log(getFieldsNames(template.categories[0]));
+//     console.log(findCatObject("Personnel", template.categories));
+//     console.log(findFieldObject("amount", template.categories[0]));
+//     console.log(findCalcObject("Total", template.categories[0]));
+// }
 
 /**
  * Function to read in a JSON file in the template format from the disk and store in inside a TemplateData structure

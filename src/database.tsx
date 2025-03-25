@@ -1099,3 +1099,33 @@ export const addUserInstitution = async (institutionID : number) : Promise<void>
         console.error("Error adding user institution: ", error);
     }
 }
+
+//Fetches user Role when enetering a Project
+export const getUserRoleInProject = async (projectID: number): Promise<number | null> => {
+    const userID = localStorage.getItem("userID");
+
+    if (!userID) {
+        console.error("No user ID found in localStorage.");
+        return null;
+    }
+
+    const { data, error } = await supabase
+        .from("UserInstitutionProject")
+        .select("roleID")
+        .eq("userID", userID)
+        .eq("projectID", projectID)
+        .single();
+
+    if (error) {
+        console.error("Error fetching user role:", error.message);
+        return null;
+    }
+
+    console.log(`User Role for Project ${projectID}:`, data?.roleID);
+    return data?.roleID || null;
+};
+
+
+  
+  
+

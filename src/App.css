@@ -1,3 +1,50 @@
+.main-content {
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+[data-sidebar="sidebar"] {
+  background-color: hsl(215, 100%, 98%) !important;
+  color: hsl(215, 80%, 30%) !important;
+  border-color: hsl(215, 20%, 85%) !important;
+}
+
+[data-sidebar="menu-button"] {
+  color: hsl(215, 80%, 30%) !important;
+}
+
+[data-sidebar="menu-button"]:hover,
+[data-sidebar="menu-button"][data-active="true"] {
+  background-color: hsl(215, 90%, 90%) !important;
+  color: hsl(215, 90%, 30%) !important; 
+}
+
+.sidebar-primary-element {
+  background-color: hsl(215, 90%, 50%) !important;
+  color: white !important;
+}
+
+.dark [data-sidebar="sidebar"] {
+  background-color: hsl(215, 50%, 15%) !important;
+  color: hsl(215, 30%, 90%) !important;
+  border-color: hsl(215, 30%, 25%) !important;
+}
+
+.dark [data-sidebar="menu-button"] {
+  color: hsl(215, 30%, 90%) !important;
+}
+
+.dark [data-sidebar="menu-button"]:hover,
+.dark [data-sidebar="menu-button"][data-active="true"] {
+  background-color: hsl(215, 50%, 25%) !important;
+  color: hsl(215, 30%, 90%) !important;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -9,7 +56,7 @@ html, body {
 
 h1 {
   font-size: 2em;
-  color: #800020;
+  color: #132339;
 }
 
 .center-content {
@@ -74,8 +121,8 @@ h1 {
   text-align: center;
 }
 
-.create-project-btn {
-  background-color: #800020;
+button {
+  background-color: #123b53;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -85,10 +132,11 @@ h1 {
   margin-top: 20px;
 }
 
-.create-project-btn:hover {
+button:hover {
   background-color: #d3d3d3;
-  color: #800020;
+  color: #730080;
 }
+
 
 .create-project-content {
   padding: 20px;
@@ -104,10 +152,45 @@ h1 {
   margin-top: 10px;
 }
 
+input {
+  background-color: white;
+  border: 1px solid #132339;
+  padding: 5px;
+}
+
+/* Generic form layout*/
+.generic-form-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+}
+/* Styling for the fields that are dynamically generated */
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.form-group label {
+  flex: 1;
+  text-align: left;
+  margin-right: 10px;
+}
+
+.form-group input {
+  flex: 2;
+  padding: 5px;
+}
+/* Add entry success text */
+.add-message {
+  color: green;
+}
+
+
 .tab {
   padding: 10px 20px;
   text-decoration: none;
-  color: #800020;
+  color: #132339;
   border: 1px solid #d3d3d3;
   border-bottom: none;
   background-color: white;
@@ -122,7 +205,7 @@ h1 {
 }
 
 .active-tab {
-  background-color: #800020;
+  background-color: #132339;
   color: white;
   font-weight: bold;
 }
@@ -132,4 +215,28 @@ h1 {
   border: 1px solid #d3d3d3;
   border-radius: 5px;
   background-color: white;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f9;
+  color: #333;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.notification-icon {
+  margin-right: 8px;
+}
+
+.notification-message {
+  font-weight: 500;
+}
+
+.notification strong {
+  color: #007BFF;
 }
