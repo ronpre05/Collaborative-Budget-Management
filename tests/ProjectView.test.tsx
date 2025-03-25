@@ -12,17 +12,18 @@ vi.mock("./database", () => ({
 
 describe("ProjectView Component", () => {
   beforeEach(() => {
-    localStorage.setItem("projectID", "123"); // Set a mock project ID
+    // Mock the project ID
+    localStorage.setItem("projectID", "123");
   });
 
-  it("displays the correct project name", async () => {
+  it("displays the correct template name", async () => {
     render(
       <MemoryRouter>
         <ProjectView />
       </MemoryRouter>
     );
 
-    // Wait for the project name to appear
+    // Wait for the template name to appear
     await waitFor(() => expect(screen.getByText("Horizon RIA - Budget Management")).not.toBeNull());
   });
 });
