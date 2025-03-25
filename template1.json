@@ -6,6 +6,7 @@
 		"PC": 
 		{
 			"Name" : "Personnel",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"Amount" : 
@@ -91,6 +92,7 @@
 		"EC" : 
 		{
 			"Name" : "Equipment",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -149,6 +151,7 @@
 		"OGC" : 
 		{
 			"Name" : "Other_Goods_and_Services",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -207,6 +210,7 @@
 		"TC" : 
 		{
 			"Name" : "Travel_Costs",
+			"HasSubEntry" : true,
 			"Fields" : 
 			{
 				"Days"  : 
@@ -225,7 +229,7 @@
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "Currency",
+					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
@@ -239,28 +243,58 @@
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
-				"Entry" : 
+				"Base Total" : 
 				{
-					"What" : 
-					{
-						"Name" : "What",
-						"Prefix" : "",
-						"Value" : "",
-						"Postfix" : "",
-						"Type" : "String",
-						"DisplayVisiblity" : true,
-						"EntryVisibility" : true
-					},
-					"Amount" : 
-					{
-						"Name" : "Amount",
-						"Prefix" : "€",
-						"Value" : "",
-						"Postfix" : "",
-						"Type" : "Int",
-						"DisplayVisiblity" : true,
-						"EntryVisibility" : true
-					}
+					"Name" : "Base_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Entry Total" : 
+				{
+					"Name" : "Entry_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Trip Total" : 
+				{
+					"Name" : "Trip_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"SubEntries" : 
+			{
+				"What" : 
+				{
+					"Name" : "What",
+					"Prefix" : "",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				}
 			},
 			"Calculations" :
@@ -270,29 +304,29 @@
 					"Name" : "Base_Total",
 					"Expression" : "Travel_Costs:Days*Travel_Costs:Accomodation + Travel_Costs:Days*Travel_Costs:Sustinance",
 					"Type" : "Local",
-					"Output" : ""
+					"Output" : "Base_Total"
 				},
 				"entryTotals" :
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Travel_Costs:Amount",
-					"Type" : "Local",
-					"Output" : ""
+					"Type" : "SubGlobal",
+					"Output" : "Entry_Total"
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Trip_Total",
 					"Expression" : "Travel_Costs:Base_Total + Travel_Costs:Entry_Total",
 					"Type" : "Local",
-					"Output" : ""
+					"Output" : "Trip_Total"
 				}
 			}
-			
 		},
 
 		"SC" : 
 		{
 			"Name" : "Subcontracting",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -351,6 +385,7 @@
 		"IIC" : 
 		{
 			"Name" : "Internally_Invoiced_Services",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
@@ -409,6 +444,7 @@
 		"Totals" : 
 		{
 			"Name" : "Totals",
+			"HasSubEntry" : false,
 			"Fields" :
 			{
 				"Indirect Costs" : 
