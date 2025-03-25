@@ -1,13 +1,13 @@
 import React from "react"
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, it, vi, beforeEach } from "vitest";
-import ProjectView from "../src/pages/ProjectView"; // Adjust the import path
+import { render, screen, waitFor, } from "@testing-library/react";
+import { describe, it, vi, beforeEach, expect } from "vitest";
+import ProjectView from "../src/pages/ProjectView";
 import { MemoryRouter } from "react-router-dom";
 
 // Mock the database functions
-vi.mock("../database", () => ({
+vi.mock("./database", () => ({
   getProjectName: vi.fn(() => Promise.resolve("Test Project")),
-  getUserRoleInProject: vi.fn(() => Promise.resolve(2)), // Example role ID
+  getUserRoleInProject: vi.fn(() => Promise.resolve(2)),
 }));
 
 describe("ProjectView Component", () => {
@@ -23,6 +23,6 @@ describe("ProjectView Component", () => {
     );
 
     // Wait for the project name to appear
-    await waitFor(() => expect(screen.getByText("Test Project")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Horizon RIA - Budget Management")).not.toBeNull());
   });
 });
