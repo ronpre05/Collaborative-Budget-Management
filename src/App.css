@@ -8,6 +8,12 @@
   padding: 1.5rem;
 }
 
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
 [data-sidebar="sidebar"] {
   background-color: hsl(215, 100%, 98%) !important;
   color: hsl(215, 80%, 30%) !important;
