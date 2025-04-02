@@ -1,7 +1,5 @@
 # Templates
 
-Note that sections on parsing templates, expression and expression parsing are not currently present
-
 ## JSON Templates
 
 ### Introduction to templates
@@ -217,15 +215,15 @@ Should you wish to include calculations which sum up parts of entries together, 
 
 #### Elements you can include
 
-| Elements |
-| -------- |
-| Add + |
-| Subtract - |
-| Multiply *|
-| Divide / |
-| Exponential ^ |
-| Brackets () |
-| Variables Category:Field |
+| Elements | Symbol |
+| -------- | ------ |
+| Add | + |
+| Subtract | - |
+| Multiply | * |
+| Divide | / |
+| Exponential | ^ |
+| Brackets | () |
+| Variables | Category:Field |
 
 To add more operations, see the "How to add more operations if required" section later
 
@@ -323,7 +321,6 @@ function isAlphabet(c : string) : boolean
 Once the full expression has been parsed, you will be left with a list of the tokens in the expression. Using the example in "How variables are formed" you would get:
 
 ```typescript
-    "Travel_Costs:Days*Travel_Costs:Accomodation + Travel_Costs:Days*Travel_Costs:Sustinance"
     ["Travel_Costs:Days", "*", "Travel_Costs:Accomodation", "+", "Travel_Costs:Days", "*", "Travel_Costs:Sustinance"]
 ```
 
