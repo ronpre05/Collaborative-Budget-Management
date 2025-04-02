@@ -105,29 +105,137 @@ The "Calculation Abbreviation" can be anything, it doesn't impact the internal w
 A sub entry is a small collection of fields inside a category for which a single database entry may require them to have more than one value, and the groups of values entered together should be maintained. For example, in a "Travel_Costs" entry, you may require more than one entry for "What" and "Amount" for a single main entry of "Days" etc. Sub entries provide a way to allow for multiple "What" and "Amount" pairs to be added along with a single entry for the category. Not every category will have a "SubEntries" section. Any category that needs a "SubEntries" section must also have the "HasSubEntry" flag set to true, else the sub entries will be ignored. The "SubEntries" section is made up of a list of objects in exactly the same way that "Fields" is, and also contains a list of fields which follow the same format as in the "Fields" section. 
 
 
-
-
-
-
-
-
-
-
 ## Template Parsing
-
-### How to use the Parser
-
 
 ### Template Data Types
 
+Provided to make interacting with the template's information easier are a number of types (located in types.ts) which capture the sections of the template. Generating these types is explained in the next section. 
 
-## Formation of expressions
+We will look at the types in a bottom up fashion instead of the top down fashion they are generated in, so that those which are expressed in terms of another type appear later than the type it contains.
 
-### How expressions are made
+
+This stores the fields of a category within the template, holding each of its attributes. This is also the type used to hold a sub entry as a sub entry contains all of the same attributes as a field.
+
+```typescript
+export interface FieldType 
+{
+    name : string;
+    prefix : string;
+    value : string;
+    postfix : string;
+    type : string;
+    displayvisible : boolean;
+    entryvisible : boolean;
+}
+```
+
+
+This stores the calculations of a category within the template, holding each of its attributes.
+
+```typescript
+export interface CalculationType 
+{
+    name : string;
+    expression : string;
+    type : string;
+    output : string;
+}
+
+```
+
+
+This stores the categories of a template, holding each of its attributes. It contains lists of FieldType and CalcualtionType for the fields, sub entries and calculations of the category. If hassubentry is False, then the subentries will be []
+
+```typescript
+export interface CategoryType 
+{
+  name : string;
+  hassubentry : boolean;
+  fields : FieldType[];
+  calculations : CalculationType[];
+  subentries : FieldType[];
+}
+```
+
+
+This stores the overall template, holding the name attribute and the list of the CategoryType's that make up the categories of the template.
+
+```typescript
+export interface TemplateData
+{
+  templateName : string;
+  categories : CategoryType[];
+}
+```
+
+### How to use the Template Parser
+
+In order to parse the JSON templates into a consistent format for the code to oeprate on, there is a template parser in newTemplateParser.tsx. The main function of this is to turn the JSON template into a data structure formed of bespoke types. The types themselves are descibed in more detail in the previous section. The parser also provides some functions for operations on these structures for some common tasks such as listing the names of the categories in said template. 
+
+The most important function of the template parser is:
+
+```typescript
+/**
+ * Generates a TemplateData structure from a raw JSON template file, gathering the CategoryTypes and other internal structures
+ * @param template The raw template JSON that has been read in from readJsonFile
+ * @returns A complete TemplateData structure which contains the categories list filled out
+ */
+export function getTemplate(template : any) : TemplateData
+{
+    let temp = 
+    {
+        templateName : template.templateName,
+        categories : getCategoriesFromRaw(template)
+    };
+
+    return temp;
+}
+```
+
+which generates the main TemplateData object in a top down fashion, storing all of the provided information in the JSON in a simpler format. It operates on the template's text either read in from a file, or more likely from the database itself.
+This starts a chain of function calls which find each category inside the JSON and generate the lists of its fields etc, and then creates the list of categories for the TemplateData type. Elsewhere in the code these should never be used as you should already have use the "getTemplate" function which handles the raw template for you. 
+
+
+
+#### Provided functions to operate on the types
+
+| Function Name | Parameters | Return | Description |
+| ------------- | ---------- | ------ | ----------- |
+| getCatNames | TemplateData | string[] | Returns a list of names of the categories inside the given template |
+| getFieldsNames | CategoryType | string[] | Returns a list of names of the fields inside the given category |
+| findCatObject | string, CategoryType[] | CategoryType | Returns the category with the given name from the list of CategoryType given using a linear search |
+| findFieldObject | string, CategoryType | FieldType | Returns the field with the given name from the list of FieldType inside the given category using a linear search |
+| findCalcObject | string, CategoryType | CalculationType | Returns the calculation with the given name from the list of CalculationType inside the given category using a linear search |
+| getSubEntryNames | CategoryType | string[] | Returns a list of names of the sub entries insde the given category, or the empty list if no sub entries are present |
+| findSubEntryObject | string, CategoryType | FieldType | Returns the sub entry with the given name from the list of FieldType (sub entries) inside the given category using a linear search. Returns an empty FieldType if there are no subentries |
+
+
+
+
+
+
+## Expressions
+
+### How expressions are formed
+
+
+### How variables are formed
+
+
+### Operations you can include
+
+
+### How to add more operations if required
+
+
+
 
 
 ## Expression Parsing
 
-### How variables are parsed
+### How variables are evaluated
+
+### How whole expressions are evaluated
 
 ### Different evaluator types
+
