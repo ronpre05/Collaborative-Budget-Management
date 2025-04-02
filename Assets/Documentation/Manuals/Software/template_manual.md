@@ -1,7 +1,5 @@
 # Templates
 
-Note that sections on parsing templates, expression and expression parsing are not currently present
-
 ## JSON Templates
 
 ### Introduction to templates
@@ -217,15 +215,17 @@ Should you wish to include calculations which sum up parts of entries together, 
 
 #### Elements you can include
 
-| Elements |
-| -------- |
-| Add + |
-| Subtract - |
-| Multiply *|
-| Divide / |
-| Exponential ^ |
-| Brackets () |
-| Variables Category:Field |
+| Elements | Symbol |
+| -------- | ------ |
+| Add | + |
+| Subtract | - |
+| Multiply | * |
+| Divide | / |
+| Exponential | ^ |
+| Brackets | () |
+| Variables | Category:Field |
+
+To add more operations, see the "How to add more operations if required" section later
 
 ### How variables are formed
 
@@ -244,11 +244,195 @@ The category in the variable does not have to refer to the current category you 
 
 ## Expression Parsing
 
+The code which evaluates the expressions is given inside "expressionParser.tsx". It operates by calling the "categoryCalculation" function whenever a categories calculations need to be updated. It will run thorugh each of the calculations and carry out the calulations within each, choosing which type of evaluator to use and what entries need to be included in the calculation. 
+
 ### How variables are evaluated
 
-### How whole expressions are evaluated
+A single variable is evaluated by first breaking down the variable, and then finding the variable within the database.
+This is done with the "parseVariable" and "getVariable" functions. First you call parseVariable giving the variable name, the ID of the project, the ID of the entry and whether its a sub entry or not. If it is a sub entry, then the entryID should be used as a sub entry ID instead. (This is explained further in the SubGlobal evaluator type later on). Then the string is split to extract the category and field name from around the :. This then calls getVariable with the two extracted names along with the rest of the parameters. getVariable will then find the category and field ID inside the database and will call on of two functions, either getValue or getSubValue (depending on the status of the isSubEntry parameter), giving both the entry and field IDs. This will return the value of the variable in the provided context for use in the calculation.
+
+
+### Expression evaluation steps
+
+#### Prepping the expression
+
+The first step in the process of evaluating an expression is to prep the expression. This is the process of turning the expression into an array of tokens in the expression, where each token is a string that is either a number, variable or operator that has been found in the expression. This is done by the function "prepString" which takes an string expression and returns a list of strings. prepString works by looping through each character in the expression.
+
+| Character type | How it is parsed |
+| -------------- | ---------------- |
+| isSpace | Skip the character and move on |
+| isOperator | Push the token to the output list and move on |
+| isNumeric | Continue to loop through, gathering all numbers into an extra list, then when you reach a non-numeric character, place the whole number into the output list and move on, going back to the character you just parsed that wasn't a number |
+| isAlphabet | As above, but with isAlphabet characters instead of numbers |
+
+These are the function which define what type each parsed character belongs to. Notably isAlphabet only includes a-z, A-Z, : and _, all other characters are ignored.
+
+```typescript
+function isSpace(element : string) : boolean
+// Checks if an elements is a space or a blank string
+{
+    if(element == " " || element == "")
+    {
+        return true;
+    }
+    
+    return false;
+}
+
+function isOperator(value : string) : boolean
+{
+    let ret : boolean = false;
+
+    Object.values(operators).forEach(operator =>
+    {
+        if(operator.symbol === value)
+        {
+            ret = true
+            return;
+        }
+
+    }
+    );
+
+    return ret;
+}
+
+function isNumeric(c : string) : boolean
+{
+    if((Number.isFinite(+c) || c === ".") && !isSpace(c))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+function isAlphabet(c : string) : boolean
+{
+    if(((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === ":" || c === "_") && !isSpace(c))
+    {
+        return true;
+    }
+    
+    return false;
+}
+```
+
+Once the full expression has been parsed, you will be left with a list of the tokens in the expression. Using the example in "How variables are formed" you would get:
+
+```typescript
+    ["Travel_Costs:Days", "*", "Travel_Costs:Accomodation", "+", "Travel_Costs:Days", "*", "Travel_Costs:Sustinance"]
+```
+
+note the spaces have been removed.
+
+#### Conversion to RPN
+
+Before the expression can be properly evaluated, is must be converted in Reverse Polish Notation (also known as postfix expressions). This is carried out using the "expressionToRPN" function which takes the whole string expression and returns the expression as a list of strings in postfix form. Note that this function takes the expression string and not the prepped list of tokens as it carries out the prepString itself.
+It converts an expressino to RPN using the Shunting Yard algorithm utilising an operator stack and an output queue. It will loop through the prepped tokens and will do one of four things:
+
+| Token type | Operation |
+| ---------- | --------- | 
+| "(" | Pushes to operator stack |
+| ")" | Pops from operator stack to output until a "(" is found |
+| isOperator | Pops from operator stack to output until it finds an operator with less precedence then pushes to operator stack |
+| Otherwise | Must be a variable or number so push to output |
+
+#### Basic evaluator
+
+Now the expression can be evaluated. This is done by the "basicEvaluator" function which takes the postfix expression, the projectID, entryID and isSubEntry and returns the number asynchronously using a stack for the numbers. You would never typically use this function alone as it would be a part of an evaluator which are described alter on. It requires the IDs of the project involved as it must parse the variables within the expression and gather the values from the database. To evaluate an expression it will loop through the postfix expression:
+
+| Token type | Operation |
+| ---------- | --------- | 
+| isAlphabet | Call parse variable to get the numerical value and push to the number stack |
+| isOperator | Pop two values from the stack, convert them into floating point numbers then apply the operation in the token |
+| Otherwise | It is a number and should be placed on the number stack |
+
+Once the whole expression has been dealt with, there should be a single number remaining on the stack which is returned else 0 is returned.
+
+#### Updating the database
+
+Once the expression has been evaluated the value should be placed into the database using the "addResultToDataBase" function which takes the entryID, the output field as a string, the categoryID and the number that is must be updated with. It is assumed that the results to a calcualtion cannot be inside a sub entry and so this should be avoided. 
+The function will simply find the field and entry IDs then update the field inside the database using the "updateIndividualField" query
+
 
 ### Different evaluator types
 
+There are three different types of evaluator provided which are described in the section below. There are different types of evaluator to allow you to calculate within an entry, such as person months, to sum up values such as totals and to sum up sub entries such as in "Travel_Costs". These all require the basicEvaluator to be applied in different ways, possibly with loops etc so are split into different evaluators. Which evaluator is applied to which calculation is defined in the type of the calculation within the template and must contain either "Local", "Global", or "SubGlobal".
+While different they all follow a similar pattern. Firstly the expression in the given CalculationType must be converted to postfix using "expressionToRPN", then you must call the "basicEvaluator" either in a loop of some form, or just on its own, dependent on the type of evaluator, then finally you must return the result of the calculation.
+
+#### Local
+
+A "Local" calculation type is one that happens within a single database entry (think within the fields of a single row). Its evaluator therefore is very simple, just converting to RPN then calling the basicEvaluator and returning the result. To run a local evaluation for a whole category, you must place it inside a loop which calls the evaluator once for each entryID in the chosen category as per "categoryCalculations" function, adding to the database after each one. These can appear in any category, even among global calculations should they be required.
+
+#### Global
+
+A "Global" calculation type is one that happens along all entries inside a project, used to sum up values possibly from local calculations. A calculation of this type will typically only contain a single variable, and the category it uses the entries of is determined by the first category it comes across in the string expression. It is therefore best practise to use a local calculation for small calculations then sum up the results of those rather than doing all in one go. The evaluator will get all entries of the category it determines, will convert the expression to RPN then run the evaluator for each entryID keeping a running total before returning that total. To run a global evaluation for a whole category, you can simply call the global evaluator and add to the database as per "categoryCalculations". However as global calculations are not coupled to an entry, you must call getGlobalEntryID which will maintain a singleton entry for that category to place the results of global calculations. Therefore it is advised that global calculations end up inside a category of their own such as "Totals" away from typical data entry categories.
+
+#### SubGlobal
+
+A "SubGlobal" calculation type is one that happens within a single database entry but which also contains sub entries and is used to sum up values inside the sub entry. It must therefore act as a global evaluator inside a local area. Its evalutor acts very much like the global evaluator, instead looping through sub entries for the chosen entry id, and giving the basic evaluator a flag of true instead of false. It can also include some local calculations such as adding number together as long as they appear inside the same sub entry. To run a subglobal evaluation for a whole category, you must place it insde a loop which calls the evaluator once for every entryID in the category as per "categoryCalculations". As they are still tied to an entry, they can simply add the result into the database at the entry it operated on. These can be used in any category which has a sub entry.
+
+### How to use evaluators in general
+
+Whichever evaluator type you use, there is a general pattern to use. This involves calling the evaluator you wish to use, then adding it to the database. Depending on the evaluator you have chosen this may be carried out inside of a loop or be done inside of a single entry.
+
 ### How to add more operations if required
 
+You may wish to add more operations to expressions for more complex calculations such as a modulus operator. You can do this by updating the operators list inside "expressionParser.tsx", ensuring that the precedence and associatvity is correct relative to the other operators.
+
+```typescript
+const operators : Operator[] = 
+[
+    {symbol : "+", precedence : 1, associativity : Associativity.Left},
+    {symbol : "-", precedence : 1, associativity : Associativity.Left},
+    {symbol : "*", precedence : 2, associativity : Associativity.Left},
+    {symbol : "/", precedence : 2, associativity : Associativity.Left},
+    {symbol : "^", precedence : 3, associativity : Associativity.Right},
+]
+```
+
+You must also update the switch case basic evaluator which handles applying the operators to include a case for the new operator as shown below
+
+```typescript
+switch (token)
+{
+    case "+":
+    {
+        val = op2 + op1;
+        break;
+    }
+    
+    case "-":
+    {
+        val = op2- op1;
+        break;
+    }
+    
+    case "*":
+    {
+        val = op2 * op1;
+        break;
+    }
+    
+    case "/":
+    {
+        if(op2 == 0)
+        {
+            val = 0;
+        }
+        else
+        {
+            val = op2 / op1;
+        }
+    
+        break;
+    }
+    
+    case "^":
+    {
+        val = op2 ** op1;
+        break;
+    }
+}
+```
