@@ -90,8 +90,8 @@ In the template the "Calculations" section of a category is again made up of a l
     "Calculation Abbreviation" : 
     {
         "Name" : "Underscore_Separated_Name",
-        "Expression" : "String expression"
-        "Type" : "How it should be evaluated"
+        "Expression" : "String expression",
+        "Type" : "How it should be evaluated",
         "Output" : "Name of field to output to"
     },
     …
@@ -102,8 +102,7 @@ The "Calculation Abbreviation" can be anything, it doesn't impact the internal w
 
 ### Sub Entries
 
-A sub entry is a small collection of fields inside a category for which a single database entry may require them to have more than one value, and the groups of values entered together should be maintained. For example, in a "Travel_Costs" entry, you may require more than one entry for "What" and "Amount" for a single main entry of "Days" etc. Sub entries provide a way to allow for multiple "What" and "Amount" pairs to be added along with a single entry for the category. Not every category will have a "SubEntries" section. Any category that needs a "SubEntries" section must also have the "HasSubEntry" flag set to true, else the sub entries will be ignored. The "SubEntries" section is made up of a list of objects in exactly the same way that "Fields" is, and also contains a list of fields which follow the same format as in the "Fields" section. 
-
+A sub entry is a small collection of fields inside a category for which a single database entry may require them to have more than one value, and the groups of values entered together should be maintained. For example, in a "Travel_Costs" entry, you may require more than one entry for "What" and "Amount" for a single main entry of "Days" etc. Sub entries provide a way to allow for multiple "What" and "Amount" pairs to be added along with a single entry for the category. Not every category will have a "SubEntries" section. Any category that needs a "SubEntries" section must also have the "HasSubEntry" flag set to true, else the sub entries will be ignored. The "SubEntries" section is made up of a list of objects in exactly the same way that "Fields" is, and also contains a list of fields which follow the same format as in the "Fields" section. For data entry, retrieval and expressions to function as intended, sub entries and fields should not be given the same name within the same category
 
 ## Template Parsing
 
@@ -129,7 +128,6 @@ export interface FieldType
 }
 ```
 
-
 This stores the calculations of a category within the template, holding each of its attributes.
 
 ```typescript
@@ -143,7 +141,6 @@ export interface CalculationType
 
 ```
 
-
 This stores the categories of a template, holding each of its attributes. It contains lists of FieldType and CalcualtionType for the fields, sub entries and calculations of the category. If hassubentry is False, then the subentries will be []
 
 ```typescript
@@ -156,7 +153,6 @@ export interface CategoryType
   subentries : FieldType[];
 }
 ```
-
 
 This stores the overall template, holding the name attribute and the list of the CategoryType's that make up the categories of the template.
 
@@ -195,8 +191,6 @@ export function getTemplate(template : any) : TemplateData
 which generates the main TemplateData object in a top down fashion, storing all of the provided information in the JSON in a simpler format. It operates on the template's text either read in from a file, or more likely from the database itself.
 This starts a chain of function calls which find each category inside the JSON and generate the lists of its fields etc, and then creates the list of categories for the TemplateData type. Elsewhere in the code these should never be used as you should already have use the "getTemplate" function which handles the raw template for you. 
 
-
-
 #### Provided functions to operate on the types
 
 | Function Name | Parameters | Return | Description |
@@ -209,24 +203,41 @@ This starts a chain of function calls which find each category inside the JSON a
 | getSubEntryNames | CategoryType | string[] | Returns a list of names of the sub entries insde the given category, or the empty list if no sub entries are present |
 | findSubEntryObject | string, CategoryType | FieldType | Returns the sub entry with the given name from the list of FieldType (sub entries) inside the given category using a linear search. Returns an empty FieldType if there are no subentries |
 
-
-
-
-
-
 ## Expressions
 
 ### How expressions are formed
 
+Expressions are stored as strings as defined in the template. You should simply write out the expression that must be calculated, including brackets where necessary (following "order of operations" rules). You do not have to worry about where spaces occur within the expression as long as they are not inside of a variable. You also don't have to worry about the output and = signs as this is handled inside the "Output" attribute of the calculation as explained in the calculations section of the template manual.
+An example expression is given inside the "How variables are formed" section below.
+
+Should you wish to include calculations which sum up parts of entries together, this is not defined inside an expression, you should instead look at "Different Evaluator Types" inside the expression parsing section.
+
+<em> How expressions handle dates needs to be added, but implementation is not yet complete and method not fully decided </em>
+
+
+#### Elements you can include
+
+| Elements |
+| -------- |
+| Add + |
+| Subtract - |
+| Multiply *|
+| Divide / |
+| Exponential ^ |
+| Brackets () |
+| Variables Category:Field |
 
 ### How variables are formed
 
+A variable is simply formed of the category you are currently in and the field within that category, separated by a :, for example
 
-### Operations you can include
+```json
+    "Expression" : "Travel_Costs:Days*Travel_Costs:Accomodation + Travel_Costs:Days*Travel_Costs:Sustinance"
+```
 
+where the variables are "Travel_Costs:Days", "Travel_Costs:Accomodation" and "Travel_Costs:Sustinance".
 
-### How to add more operations if required
-
+The category in the variable does not have to refer to the current category you are writing an expression for, but as variables are found on an entry-level, it is best to use a "Global" calcuation if you refer to outside the current category. This will be further explained in the "Expression Parsing" section.
 
 
 
@@ -238,4 +249,6 @@ This starts a chain of function calls which find each category inside the JSON a
 ### How whole expressions are evaluated
 
 ### Different evaluator types
+
+### How to add more operations if required
 
