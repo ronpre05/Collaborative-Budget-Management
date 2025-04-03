@@ -13,7 +13,6 @@
 ## Table of Contents
 
 - [User Authentication](./pages/user_authentication_manual.md)
-
 - [Projects](./pages/projects_manual.md)
 
 - [Data Display](#data-display)

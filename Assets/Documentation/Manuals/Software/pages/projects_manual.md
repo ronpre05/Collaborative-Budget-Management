@@ -14,7 +14,6 @@
     - [Invitation Flow](#invitation-flow)
     - [Managing Invites](#managing-invites)
   - [Summary](#summary-of-key-functions-and-files)
-- [Data Display](#data-display)
 
 ## Projects
 
