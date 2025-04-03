@@ -1,3 +1,5 @@
+# [Return](../software_manual.md)
+
 # User Authentication
 
 ## Introduction
