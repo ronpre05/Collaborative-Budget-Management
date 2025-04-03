@@ -3,7 +3,6 @@
 # Table of Contents
 
 - [User Authentication](#user-authentication)
-
   - [Authentication Flow](#authentication-flow)
     - [User Signup & Login](#user-signup--login)
   - [Implementation](#implementation-details)
