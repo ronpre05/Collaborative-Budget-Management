@@ -3,8 +3,10 @@
 - [ ] Build instructions (clone, run, test)
 - [ ] Coding/Maintainbaility conventions
 - [ ] Links to further documentation
-- [ ] Introduction
-- [ ] Definitions of project specific teminology and jargon
+- [x] Introduction
+- [x] Definitions of project specific teminology and jargon
+- [ ] Feedback on project scope/goals
+- [ ] Proof read tomorrow
 
 # Software Manual
 
@@ -84,6 +86,36 @@
     - [How to Add More Operations if Required](#how-to-add-more-operations-if-required)
 
 ---
+
+## Introduction
+
+Welcome to the **Collaborative Budget Management Software Manual**. This is a guide fo developers working on the system, providing an overview of the architecture, core features and best practices for development and maintainability.
+
+### Project Goal
+
+The goal of the software is to provide an efficient and scalable budget management system which allows users to:
+
+- Create and manage budgets for pojects
+- Invite project collaborators to projects to enter/view budget data
+- View budget breakdowns for projects
+- Allow for projects to be dynamically created based on the **project template** they are using
+
+### Project Scope
+
+The system is a web-based application built using, **React, TypeScript, Supabase, Shadcn and Clerk** supporting:
+
+- Multi-user access with role-based permissions
+- Dynamic project creation using custom-made JSON templates
+- A flexible database schema that supports any properly structured template
+
+## Terminology
+
+Within this software manual, specific teminology to the project may be used frequently. This section defines these key terms to ensure clarity and consistency for all developers working on the system.
+
+- **Project Template** - A JSON-based structure defining the categories, fields, calculations.
+- **Principal Investigator (PI)** - The lead responsible for overseeing the project. By default, this is the project creator.
+- **Institution Lead** - A leader within an institution, managing project-related activites and users from their institution.
+- **Institution Collaborator** - A user working on the project under a specific institution.
 
 ## User Authentication with Clerk and Supabase
 
