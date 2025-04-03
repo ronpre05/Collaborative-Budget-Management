@@ -1,7 +1,7 @@
 # Software Manual TODO:
 
-- [ ] Build instructions (clone, run, test)
-- [ ] Coding/Maintainbaility conventions
+- [x] Build instructions (clone, run, test)
+- [x] Coding/Maintainbaility conventions
 - [ ] Links to further documentation
 - [x] Introduction
 - [x] Definitions of project specific teminology and jargon
@@ -158,7 +158,11 @@ To start developing, following these steps to set up the project environment and
 
 ### Coding Conventions
 
+Coding conventions that must be followed when developing this project can be found [here](../../../Documentation/CodingConventions.md).
+
 ### Git Conventions
+
+Git conventions that must be followed when developing this project can be found [here](../../../Documentation/GitStrategy.md).
 
 ## User Authentication with Clerk and Supabase
 
