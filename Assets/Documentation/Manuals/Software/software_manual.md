@@ -65,7 +65,7 @@ To start developing, following these steps to set up the project environment and
 
 2. **Install Dependencies**
 
-   Ensure that you have [Node.js](https://nodejs.org/en/download) and npm installed. Then run, this command to instal the required packages:
+   Ensure that you have [Node.js](https://nodejs.org/en/download) and npm installed. Then run, this command to install the required packages:
 
    ```bash
    npm install
