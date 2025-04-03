@@ -1,4 +1,26 @@
-# [Return](../software_manual.md)
+# [Return Home](../software_manual.md)
+
+# Table of Contents
+
+- [User Authentication](#user-authentication-with-clerk-and-supabase)
+
+  - [Authentication Flow](#authentication-flow)
+    - [User Signup & Login](#user-signup--login)
+  - [Implementation](#implementation-details)
+    - [Clerk Authentication Setup](#clerk-authentication-setup)
+    - [Handling User Login and Database Storage](#handling-user-login-and-database-storage)
+  - [Clerk Authentication Features](#clerk-authentication-features)
+    - [Email Verification Code Login](#email-verification-code-login)
+    - [Session Management](#session-management)
+    - [Signed In & Signed Out Components](#signed-in--signed-out-components)
+  - [User Authorization & Role Management](#user-authorization--role-management)
+    - [Protected Routes](#protected-routes)
+    - [User Session Handling](#user-session-handling)
+    - [Logout Handling](#logout-handling)
+    - [Adavanced Database Setup with Supabase](#advanced-database-setup-with-supabase)
+      - [Example Schema](#example-schema)
+  - [Troubleshooting](#troubleshooting)
+  - [Summary](#summary)
 
 # User Authentication
 
