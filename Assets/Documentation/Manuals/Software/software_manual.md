@@ -22,24 +22,24 @@
 
 ## Introduction
 
-Welcome to the **Collaborative Budget Management Software Manual**. This is a guide fo developers working on the system, providing an overview of the architecture, core features and best practices for development and maintainability.
+Welcome to the **Collaborative Budget Management Software Manual**. This is a guide for developers working on the system, providing an overview of the architecture, core features and best practices for development and maintainability.
 
 ### Project Goal
 
 The goal of the software is to provide an efficient and scalable budget management system which allows users to:
 
-- Create and manage budgets for pojects
-- Invite project collaborators to projects to enter/view budget data
-- View budget breakdowns for projects
-- Allow for projects to be dynamically created based on the **project template** they are using
+- Create and manage budgets for pojects.
+- Invite project collaborators to projects to enter/view budget data.
+- View budget breakdowns for projects.
+- Allow for projects to be dynamically created based on the project template they are using.
 
 ### Project Scope
 
 The system is a web-based application built using, **React, TypeScript, Supabase, Shadcn and Clerk** supporting:
 
-- Multi-user access with role-based permissions
-- Dynamic project creation using custom-made JSON templates
-- A flexible database schema that supports any properly structured template
+- Multi-user access with role-based permissions.
+- Dynamic project creation using custom-made JSON templates.
+- A flexible database schema that supports any properly structured template.
 
 ## Terminology
 
