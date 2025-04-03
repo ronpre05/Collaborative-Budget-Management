@@ -1,3 +1,11 @@
+# Software Manual TODO:
+
+- [ ] Build instructions (clone, run, test)
+- [ ] Coding/Maintainbaility conventions
+- [ ] Links to further documentation
+- [ ] Introduction
+- [ ] Definitions of project specific teminology and jargon
+
 # Software Manual
 
 ## Table of Contents
