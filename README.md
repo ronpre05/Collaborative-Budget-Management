@@ -2,15 +2,37 @@
 
 ## How To Build
 
-1. Clone from GitLab
-2. Install dependencies
+To start developing, following these steps to set up the project environment and build the application locally:
 
-```console
-    npm install
-```
+1. **Clone the Repository**
 
-3. Start server
+   ```bash
+   git clone https://projects.cs.nott.ac.uk/comp2002/2024-2025/team45_project.git
+   cd team45_project
+   ```
 
-```console
-    npm run dev
-```
+2. **Install Dependencies**
+
+   Ensure that you have [Node.js](https://nodejs.org/en/download) and npm installed. Then run, this command to instal the required packages:
+
+   ```bash
+   npm install
+   ```
+
+3. **Run the Development Serrver**
+
+   Start the development server by running:
+
+   ```bash
+   npm run dev
+   ```
+
+   This will launch the application at `http://localhost:5173/`.
+
+4. **Run Tests**
+
+   To run the unit tests and ensure everything is working correctly, run the command:
+
+   ```bash
+   npm run test
+   ```
