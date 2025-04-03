@@ -106,7 +106,7 @@ Git conventions that must be followed when developing this project can be found 
 
 ## Further Documentation
 
-To gain a deeper understanding of different sections of the project, read more of the software manual [here](#table-of-contents).
+To gain a deeper understanding of different sections of the project, read more of the software manual [here](#separate-pages).
 
 Any further documentation including: prototypes, requirements and UML diagrams can be found [here](../../../Documentation/).
 
