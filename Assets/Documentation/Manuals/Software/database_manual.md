@@ -77,3 +77,52 @@ correctly in the appropriate tables.
    For each field within the category, repeat **Step 2** to ensure all field values are stored.
 
 To view the code which carries out these queries to insert data in the relevant tables for an entry, [see line 577 in **_database.tsx_**](../../../../src/database.tsx)
+
+
+### Database Queries
+
+| Query                      | Description                                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| checkAndAddCategories      | Checks if the given categories exist in the database. If not, adds them and creates their associated fields |
+| createCategoryFields       | Creates fields for a list of categories by inserting fields into the CategoryFields table                   |
+| getProjectName             | Fetches the project name from the Project table using the stored projectID in localStorage                  |
+| createProjectQuery         | Creates a new project in the Project table and links it to the user and institution                         |
+| createUserInstitutionProjectQuery | Links a user to a project under a specific institution by inserting an entry into the UserInstitutionProject table|
+| getInstitutionID           | Retrieves the ID of an institution based on its name from the Institutions table                            |
+| getUsersInstitutions       | Fetches a list of institutions associated with the logged-in user                                           |
+| inviteUserToProject        | Sends an invitation to a user by inserting an entry into the Invites table                                  |
+| getSentInvites             | Retrieves all invitations sent by the given user                                                            |
+| getPendingInvites          | Fetches all pending invitations for a user                                                                  |
+| acceptInvite               | Accepts an invitation, adds the user to the project in UserInstitutionProject, and updates the invite status to "accepted"|
+| rejectInvite               | Rejects an invitation by updating the invite status to "rejected"                                           |
+| getUsersProjects           | Fetches all projects associated with the logged-in user                                                     |
+| removeCollaborator         | Removes a user from a project by deleting their entry from the UserInstitutionProject table                 |
+| createCategoryEntry        | Creates a new category entry in the CategoryEntry table. If the category doesn't exist, it inserts into the Categories table first |
+| insertFieldValues          | Inserts values into the FieldValues table for a given entryID and categoryID. If a field doesn't exist, it creates it first |
+| createEntry                | Uses 'createCategoryEntry' and 'insertFieldValues' to insert forms into the database                        |
+| createEntryWithSubEntry    | Creates an entry that contains a sub-entry and adds corresponding field values                              |
+| addWithSubEntry            | Handles inserting field values for an entry and its sub-entries, linking them together                      |
+| createSubEntry             | Inserts a new sub-entry record and returns its ID                                                           |
+| addToSubValues             | Associates sub-entry IDs with value IDs in the SubValues table                                              |
+| getSubEntriesForEntry      | Retrieves all sub-entries related to a given entry and their associated field values                        |
+| getFieldNameAndValue       | Fetches the field name and value for a given value ID                                                       |
+| getFieldName               | Retrieves the field name corresponding to a given field ID                                                  |
+| getRoles                   | Fetches all available roles from the database                                                               |
+| getCategoryID              | Retrieves the category ID using category name and project ID                                                |
+| getAllCategoryEntries      | Fetches all entry IDs for a given category                                                                  |
+| haveSubEntry               | Checks whether an entry has sub-entries                                                                     |
+| getAllSubEntries           | Retrieves all sub-entry IDs for a given entry                                                               |
+| getValueIDsOfSubEntry      | Fetches value IDs associated with a sub-entry                                                               |
+| getSubValue                | Retrieves a value from a sub-entry based on field ID                                                        |
+| getFieldID                 | Retrieves a field ID using a category ID and field name                                                     |
+| getValue                   | Fetches a value for a given entry ID and field ID                                                           |
+| getValueID                 | Retrieves the value ID for a given entry ID and field ID, creating a blank value if none exists             |
+| createBlankValue           | Inserts a blank field value of "0" if no value exists for an entry and field ID                             |
+| updateIndividualField      | Updates a specific field value in FieldValues                                                               |
+| getGlobalEntryID           | Checks if a category has an entry, creating one if it doesn’t exist                                         |
+| createBlankEntry           | Creates a new blank entry for a category in a project                                                       |
+| addInstitution             | Adds an institution to Institutions and returns its ID                                                      |
+| checkExisitingInstitution  | Checks if an institution exists in Institutions and returns its ID if found                                 |
+| getInstitutions            | Retrieves a list of institutions matching an input value                                                    |
+| addUserInstitution         | Links a user to an institution in UserInstitutions                                                          |
+| getUserRoleInProject       | Fetches the role ID of a user for a given project                                                           |
