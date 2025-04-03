@@ -14,11 +14,8 @@
 
 - [User Authentication](./pages/user_authentication_manual.md)
 - [Projects](./pages/projects_manual.md)
+- [Data Display](./pages/data_display_manual.md)
 
-- [Data Display](#data-display)
-  - [Data Retrieval](#data-retrieval)
-  - [Data Formatting](#data-formatting)
-  - [Table Display](#table-display)
 - [Database](#database)
   - [ERD Diagram](#erd-diagram)
   - [Connection](#connection)
