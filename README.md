@@ -1,6 +1,8 @@
 # Collaborative Budget Management
 
-## How To Build
+If you are new to developing on the project, please read the **[Software Manual](./Assets/Documentation/Manuals/Software/software_manual.md)**.
+
+## Build Instructions
 
 To start developing, following these steps to set up the project environment and build the application locally:
 
