@@ -12,6 +12,16 @@
 
 ## Table of Contents
 
+- [Introduction](#introduction)
+  - [Project Goal](#project-goal)
+  - [Project Scope](#project-scope)
+- [Teminology](#terminology)
+- [Get Started](#get-started)
+  - [Build Instructions](#build-instructions)
+  - [Coding Conventions](#coding-conventions)
+  - [Git Conventions](#git-conventions)
+- [Further Documentation](#further-documentation)
+
 - [User Authentication](./pages/user_authentication_manual.md)
 - [Projects](./pages/projects_manual.md)
 - [Data Display](./pages/data_display_manual.md)
@@ -97,7 +107,7 @@ Coding conventions that must be followed when developing this project can be fou
 
 Git conventions that must be followed when developing this project can be found [here](../../../Documentation/GitStrategy.md).
 
-### Further Documentation
+## Further Documentation
 
 To gain a deeper understanding of different sections of the project, read more of the software manual [here](#table-of-contents).
 
