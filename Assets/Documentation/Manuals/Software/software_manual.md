@@ -1,13 +1,3 @@
-# Software Manual TODO:
-
-- [x] Build instructions (clone, run, test)
-- [x] Coding/Maintainbaility conventions
-- [x] Links to further documentation
-- [x] Introduction
-- [x] Definitions of project specific teminology and jargon
-- [ ] Feedback on project scope/goals
-- [ ] Proof read tomorrow
-
 # Software Manual
 
 ## Table of Contents
@@ -112,3 +102,5 @@ Git conventions that must be followed when developing this project can be found 
 To gain a deeper understanding of different sections of the project, read more of the software manual [here](#table-of-contents).
 
 Any further documentation including: prototypes, requirements and UML diagrams can be found [here](../../../Documentation/).
+
+[⬆️ Back to top](#software-manual)

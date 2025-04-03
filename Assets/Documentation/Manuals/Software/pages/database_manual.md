@@ -89,3 +89,5 @@ correctly in the appropriate tables.
    For each field within the category, repeat **Step 2** to ensure all field values are stored.
 
 To view the code which carries out these queries to insert data in the relevant tables for an entry, [see line 577 in **_database.tsx_**](../../../../src/database.tsx)
+
+[⬆️ Back to top](#return-home)

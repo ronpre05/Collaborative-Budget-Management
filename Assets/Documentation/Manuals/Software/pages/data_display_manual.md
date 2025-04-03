@@ -178,3 +178,5 @@ First, the 2D array is sliced along the first item, separating the array of head
 Then, the data is memoized, using the `useMemo` react hook, to store `catHeaders` into `columns`, and `fieldData` into `tableItems`. Each individual row is stored within a `rowData` object, which combined together make up `tableData`, which is the overall data for the table.
 
 This is then used to create a table instance, using pagination, with `tableData` as our base. The rest of the `"categoryDisplay.tsx"` file is formatting, using `shadcn` components for design.
+
+[⬆️ Back to top](#return-home)

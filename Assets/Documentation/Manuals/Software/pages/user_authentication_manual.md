@@ -308,3 +308,5 @@ Protected routes restrict access based on authentication and roles.
 Session management ensures users remain logged in.
 
 This manual provides everything needed to implement a secure authentication and user management system using Clerk and Supabase.
+
+[⬆️ Back to top](#return-home)
