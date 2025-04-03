@@ -2,7 +2,7 @@
 
 # Table of Contents
 
-- [User Authentication](#user-authentication-with-clerk-and-supabase)
+- [User Authentication](#user-authentication)
 
   - [Authentication Flow](#authentication-flow)
     - [User Signup & Login](#user-signup--login)
@@ -41,7 +41,7 @@ The app uses **email verification codes** for login, ensuring secure access. Cle
 5. The app checks if the user exists in the **Supabase database**.
 6. If the user does not exist, a new record is **created** in Supabase.
 
-##Implementation Details
+## Implementation Details
 
 ### Clerk Authentication Setup
 
