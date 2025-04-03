@@ -7,7 +7,7 @@
   - [Connection](#connection)
     - [Project API Keys](#project-api-keys)
   - [Schema Overview](#schema-overview)
-  - [Data Entry](#data-entry)
+  - [Data Entry](#project-data-entry)
     - [Steps for Data Entry](#steps-for-data-entry)
 
 # Database
