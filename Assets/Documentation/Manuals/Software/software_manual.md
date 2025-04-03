@@ -2,6 +2,8 @@
 
 ## Table of Contents
 
+### **Current Page:**
+
 - [Introduction](#introduction)
   - [Project Goal](#project-goal)
   - [Project Scope](#project-scope)
@@ -10,13 +12,18 @@
   - [Build Instructions](#build-instructions)
   - [Coding Conventions](#coding-conventions)
   - [Git Conventions](#git-conventions)
-- [Further Documentation](#further-documentation)
+
+### **Separate Pages:**
 
 - [User Authentication](./pages/user_authentication_manual.md)
 - [Projects](./pages/projects_manual.md)
 - [Data Display](./pages/data_display_manual.md)
 - [Database](./pages/database_manual.md)
 - [Templates](./pages/template_manual.md)
+
+### **Further Documentation:**
+
+- [Further Documentation](../../../Documentation/)
 
 ---
 
