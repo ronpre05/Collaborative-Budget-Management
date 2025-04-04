@@ -1,4 +1,4 @@
-# [⬅️ Return Home](../software_manual.md)
+# [Return Home](../software_manual.md)
 
 # Table of Contents
 
@@ -144,3 +144,5 @@ The table below lists key database queries that can be found in [database.tsx](.
 ## Clone Database
 
 If you need to setup your own instance of the database on Supabase, you can copy the PostgreSQL table schema from [here](./sql_copy.md). This can then be ran as a PostgreSQl query in Supabase to generate the database used throughout the project.
+
+[⬆️ Back to top](#return-home)
