@@ -9,6 +9,7 @@
   - [Schema Overview](#schema-overview)
   - [Data Entry](#project-data-entry)
     - [Steps for Data Entry](#steps-for-data-entry)
+  - [Database Queries](#database-queries)
 
 # Database
 
@@ -91,6 +92,8 @@ correctly in the appropriate tables.
 To view the code which carries out these queries to insert data in the relevant tables for an entry, [see line 577 in **_database.tsx_**](../../../../src/database.tsx)
 
 ### Database Queries
+
+The table below lists key database queries that can be found in [database.tsx](../../../../../src/database.tsx), as well as their purpose. These queries should be reused throughout the codebase to improve code reability for all developers.
 
 | Query                             | Description                                                                                                                        |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
