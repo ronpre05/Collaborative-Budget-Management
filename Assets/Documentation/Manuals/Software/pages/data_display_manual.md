@@ -20,19 +20,20 @@ Data display works in three parts:
 Data retrieval works via a chain of fetch requests to the database, starting from the Category ID for the category we are fetching data for and ending with a 2D array of (unordered) data.
 These functions are all combined into one master function within the `"queryFunctions.tsx"` file, located at the bottom.
 
-```
-export async function getCategoryDataCatOnly(categoryID: number): Promise<string[][]> {
-  const fieldIDs = await getFieldIDs(categoryID);
-  const catHeaders = await getCategoryHeaders(categoryID);
-  const fieldData = await getFieldData(fieldIDs);
+```ts
+export async function getCategoryDataCatOnly(
+  categoryID: number
+): Promise<string[][]> {
+  const fieldIDs = await getFieldIDs(categoryID);
+  const catHeaders = await getCategoryHeaders(categoryID);
+  const fieldData = await getFieldData(fieldIDs); // Check if fieldData is empty or its first element is undefined.
 
-  // Check if fieldData is empty or its first element is undefined.
-  if (!fieldData || fieldData.length === 0 || !fieldData[0]) {
-    return [catHeaders]; // Return only the headers if there's no data.
-  }
+  if (!fieldData || fieldData.length === 0 || !fieldData[0]) {
+    return [catHeaders]; // Return only the headers if there's no data.
+  }
 
-  const result = formatData(catHeaders, fieldData);
-  return result;
+  const result = formatData(catHeaders, fieldData);
+  return result;
 }
 ```
 
@@ -46,7 +47,7 @@ The overall process is the following:
 
 All of these steps typically make use of an asynchronous function that queries the database, and handles the data in some way. See the following:
 
-```
+```ts
 async function getCategoryHeaders(categoryID: number): Promise<string[]> {
   const { data, error } = await supabase
     .from("CategoryFields")
@@ -63,7 +64,7 @@ async function getCategoryHeaders(categoryID: number): Promise<string[]> {
 
 Here is the function for fetching all the category headers. You can clearly see that it first queries the database, as well as checking for errors, before mapping the results to an array. This is the typical format all of these functions follow, with all functions within the `"queryFunctions.tsx"` file formatted with JSDoc:
 
-```
+```ts
 /**
  * Fetches all FieldNames for the Field of a given Category.
  * @param {number} categoryID ID of category to fetch FieldNames for.
@@ -80,20 +81,20 @@ This is the JSDoc for the above function.
 
 When retrieving data for each field, the code will fetch the data for one field at a time. This is great for ease of use and speed, but leaves the overall data unordered. Take the following example:
 
-```
+```ts
 [
-	["name1", "name2", "name3", "name4", "name5", "name6"],
-	[age1, age2, age3, age4, age5, age6],
-	[gender1, gender2, gender3, gender4, gender5, gender6],
-	[salary1, salary2, salary3, salary4, salary5, salary6]
-]
+  ["name1", "name2", "name3", "name4", "name5", "name6"],
+  [age1, age2, age3, age4, age5, age6],
+  [gender1, gender2, gender3, gender4, gender5, gender6],
+  [salary1, salary2, salary3, salary4, salary5, salary6],
+];
 ```
 
 In the above example, the fieldData we truly want is top-down. That is, we want `["name1", age1, gender1, salary1]` to be the first array, not all the names, then all the ages, genders, and so on.
 
 To do this, we use the `formatData` function:
 
-```
+```ts
 function formatData(
   categoryHeaders: string[],
   fieldData: string[][]
@@ -114,16 +115,16 @@ This function does 2 things:
 
 In the example previously mentioned, with a `catHeaders` of `["Name", "Age", "Gender", "Salary"]`, we would end up with the following:
 
-```
+```ts
 [
-	["Name", "Age", "Gender", "Salary"],
-	["name1", age1, gender1, salary1],
-	["name2", age2, gender2, salary2],
-	["name3", age3, gender3, salary3],
-	["name4", age4, gender4, salary4],
-	["name5", age5, gender5, salary5],
-	["name6", age6, gender6, salary6]
-]
+  ["Name", "Age", "Gender", "Salary"],
+  ["name1", age1, gender1, salary1],
+  ["name2", age2, gender2, salary2],
+  ["name3", age3, gender3, salary3],
+  ["name4", age4, gender4, salary4],
+  ["name5", age5, gender5, salary5],
+  ["name6", age6, gender6, salary6],
+];
 ```
 
 You can see now that the data is ordered, and already is beginning to look like a table. All that is left is to display it to the user.
@@ -134,7 +135,7 @@ The final step now is to display the data back to the user, in a way that can ac
 
 The main section, `lines 26-61`, handles the logic for this:
 
-```
+```ts
 const CategoryDisplay: React.FC<{ data: string[][] | null | undefined }> = ({ data }): JSX.Element => {
   // Handle invalid data
   const headers = useMemo(() => (data && data.length > 0 ? data[0] || [] : []), [data])
