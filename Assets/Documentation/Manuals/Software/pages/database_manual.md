@@ -21,9 +21,9 @@ An up-to-date copy of the ERD diagram for the database currently being hosted on
 
 ## Connection
 
-The connection to the database is established once the website is launched, this can be found in [main.tsx](../../../../src/main.tsx). The system makes use of **Supabase's JavaScript Client** to allow the code to interact witht he database via REST APIs.
+The connection to the database is established once the website is launched, this can be found in [database.tsx](../../../../src/database.tsx). The system makes use of **Supabase's JavaScript Client** to allow the code to interact witht he database via REST APIs.
 
-As seen in [main.tsx](../../../../src/main.tsx), connection to the database is made using the **Supabase Client**.
+As seen in [database.tsx](../../../../src/database.tsx), connection to the database is made using the **Supabase Client**.
 
 ```ts
 import { createClient } from "@supabase/supabase-js";
