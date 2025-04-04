@@ -46,8 +46,8 @@ The app uses **email verification codes** for login, ensuring secure access. Cle
 
 To integrate Clerk, the application includes the **ClerkProvider** component, which wraps the main app component:
 
-```
-import { ClerkProvider } from '@clerk/clerk-react';
+```ts
+import { ClerkProvider } from "@clerk/clerk-react";
 
 const App = () => (
   <ClerkProvider publishableKey="your-clerk-publishable-key">
@@ -60,7 +60,7 @@ export default App;
 
 The App.tsx file handles user authentication using Clerk:
 
-```
+```ts
 type Invitation = {
   invitedID: number;
   inviteID: number;
@@ -104,38 +104,41 @@ function App() {
 
 The `HandleUserLoginfunction` ensures that once a user logs in via Clerk, they are stored in Supabase:
 
-```
+```ts
 const HandleUserLogin = async (user: any) => {
-  console.log("HandleUserLogin was called!", user)
+  console.log("HandleUserLogin was called!", user);
   if (!user) {
-    console.error("No user found in Clerk.")
-    return
+    console.error("No user found in Clerk.");
+    return;
   }
 
-  const email = user.primaryEmailAddress?.emailAddress
-  const username = user.username || user.firstName || email
-  const firstName = user.firstName || "Unknown"
-  const lastName = user.lastName || "Unknown"
+  const email = user.primaryEmailAddress?.emailAddress;
+  const username = user.username || user.firstName || email;
+  const firstName = user.firstName || "Unknown";
+  const lastName = user.lastName || "Unknown";
 
   // If missing email or username
   if (!email || !username) {
-    console.error("Required user information missing.")
-    return
+    console.error("Required user information missing.");
+    return;
   }
 
-  let userId
+  let userId;
 
   try {
-    const { data, error } = await supabase.from("Users").select("userID").eq("email", email)
+    const { data, error } = await supabase
+      .from("Users")
+      .select("userID")
+      .eq("email", email);
 
     if (error) {
-      throw new Error(`Error checking user existence: ${error.message}`)
+      throw new Error(`Error checking user existence: ${error.message}`);
     }
 
     // If user in db exists
     if (data && data.length > 0) {
-      userId = data[0].userID
-      console.log(`User found: ${userId}`)
+      userId = data[0].userID;
+      console.log(`User found: ${userId}`);
     }
     // If no user found in db
     else {
@@ -149,23 +152,25 @@ const HandleUserLogin = async (user: any) => {
           username,
         })
         .select("userID")
-        .single()
+        .single();
 
       if (insertError) {
-        throw new Error(`Error creating user: ${insertError.message}`)
+        throw new Error(`Error creating user: ${insertError.message}`);
       }
 
-      userId = newUser?.userID
-      console.log(`New user created: ${userId}`)
+      userId = newUser?.userID;
+      console.log(`New user created: ${userId}`);
     }
 
-    localStorage.setItem("userID", userId)
-    console.log(`User session stored with ID: ${userId}`)
-    return userId
+    localStorage.setItem("userID", userId);
+    console.log(`User session stored with ID: ${userId}`);
+    return userId;
   } catch (err) {
-    console.error(`Error handling user login (userID ${userId}): ${err.message}`)
+    console.error(
+      `Error handling user login (userID ${userId}): ${err.message}`
+    );
   }
-}
+};
 ```
 
 This ensures that every new user is recorded in Supabase.
@@ -186,7 +191,7 @@ This ensures that every new user is recorded in Supabase.
 
 Clerk provides simple conditional rendering for authentication-based UI elements:
 
-```
+```ts
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 
 <SignedIn>
@@ -204,7 +209,7 @@ import { SignedIn, SignedOut } from '@clerk/clerk-react';
 
 Certain routes require authentication. We wrap protected pages with the SignedIn component:
 
-```
+```ts
 <SignedIn>
   <Route path="/dashboard" element={<Dashboard />} />
 </SignedIn>
@@ -216,8 +221,8 @@ If a user is not signed in, they are automatically redirected to the Login Page.
 
 Clerk provides an active session object, which can be used as follows:
 
-```
-import { useAuth } from '@clerk/clerk-react';
+```ts
+import { useAuth } from "@clerk/clerk-react";
 
 const { sessionId, userId } = useAuth();
 console.log(`Current session ID: ${sessionId}, User ID: ${userId}`);
@@ -226,13 +231,13 @@ console.log(`Current session ID: ${sessionId}, User ID: ${userId}`);
 1. The app retrieves the user session from Clerk.
 2. The session is stored in localStorage for convenience.
 
-```
-localStorage.setItem('userID', userId);
-    console.log(`User session stored with ID: ${userId}`);
-    return userId;
+```ts
+localStorage.setItem("userID", userId);
+console.log(`User session stored with ID: ${userId}`);
+return userId;
 ```
 
-```
+```ts
 const storedUserId = localStorage.getItem("userID");
 ```
 
@@ -240,8 +245,8 @@ const storedUserId = localStorage.getItem("userID");
 
 Clerk provides a built-in profile dropdown menu with a sign-out option:
 
-```
-import { UserButton } from '@clerk/clerk-react';
+```ts
+import { UserButton } from "@clerk/clerk-react";
 
 <UserButton />;
 ```
@@ -259,7 +264,7 @@ The database schema includes tables for users, roles, projects, and institutions
 
 #### Example Schema:
 
-```
+```ts
 CREATE TABLE Users (
   userID BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   firstName VARCHAR,
