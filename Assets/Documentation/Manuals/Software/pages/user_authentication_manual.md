@@ -264,7 +264,7 @@ The database schema includes tables for users, roles, projects, and institutions
 
 #### Example Schema:
 
-```ts
+```sql
 CREATE TABLE Users (
   userID BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   firstName VARCHAR,
