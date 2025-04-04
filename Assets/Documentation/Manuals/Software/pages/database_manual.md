@@ -140,3 +140,7 @@ The table below lists key database queries that can be found in [database.tsx](.
 | getInstitutions                   | Retrieves a list of institutions matching an input value                                                                           |
 | addUserInstitution                | Links a user to an institution in UserInstitutions                                                                                 |
 | getUserRoleInProject              | Fetches the role ID of a user for a given project                                                                                  |
+
+## Clone Database
+
+If you need to setup your own instance of the database on Supabase, you can copy the PostgreSQL table schema from [here](./sql_copy.md). This can then be ran as a PostgreSQl query in Supabase to generate the database used throughout the project.
