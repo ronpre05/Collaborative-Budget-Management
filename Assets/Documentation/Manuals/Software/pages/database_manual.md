@@ -13,7 +13,7 @@
 
 # Database
 
-The database is the core data storage component of the system, managing both user and project data in their respective tables. It uses **PostgreSQL**, hosted on **Supabase**.
+The database is the core data storage component of the system, managing both user, institution and project data in their respective tables. It uses **PostgreSQL**, hosted on **Supabase**.
 
 ## ERD Diagram
 
@@ -21,7 +21,7 @@ An up-to-date copy of the ERD diagram for the database currently being hosted on
 
 ## Connection
 
-The connection to the database is established once the website is launched, this can be found in [database.tsx](../../../../src/database.tsx). The system makes use of **Supabase's JavaScript Client** to allow the code to interact witht he database via REST APIs.
+The connection to the database is established once the website is launched, this can be found in [database.tsx](../../../../src/database.tsx). The system makes use of **Supabase's JavaScript Client** to allow the code to interact with the database via REST APIs.
 
 As seen in [database.tsx](../../../../src/database.tsx), connection to the database is made using the **Supabase Client**.
 
@@ -39,9 +39,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 As of **02/04/2025**, the following API keys are utilisied within the application to perform CRUD operations on the database.
 
-> Project URL = "https://xybccoipttcvmdniwysj.supabase.co"
+> **Project URL** = "https://xybccoipttcvmdniwysj.supabase.co"
 
-> Public Key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
+> **Public Key** = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 
 ## Schema Overview
 
