@@ -1,4 +1,4 @@
-# [Return Home](../software_manual.md)
+# [⬅️ Return Home](../software_manual.md)
 
 # Table of Contents
 
