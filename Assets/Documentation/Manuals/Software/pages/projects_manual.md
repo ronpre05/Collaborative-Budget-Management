@@ -148,3 +148,4 @@ Each user in a project is associated with a role stored in the `Roles` table. Wh
 This Projects section handles everything from inception to collaboration, serving as the operational core of the system.
 
 [⬆️ Back to top](#return-home)
+
