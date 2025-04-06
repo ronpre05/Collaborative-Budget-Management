@@ -32,7 +32,6 @@ export async function readJsonFile(path: string): Promise<TemplateData>
 
 /**
  * Generates a TemplateData structure from a raw JSON template file, gathering the CategoryTypes and other internal structures
- * NO NEED TO EXPORT THIS FUNCTION "readJsonFile" CALLS THIS ALREADY
  * @param template The raw template JSON that has been read in from readJsonFile
  * @returns A complete TemplateData structure which contains the categories list filled out
  */
@@ -48,7 +47,7 @@ export function getTemplate(template : any) : TemplateData
 }
 
 /**
- * Gets the raw categoires section from a template, loop through each category and creates a CategoryType out of it in order
+ * Gets the raw categories section from a template, loop through each category and creates a CategoryType out of it in order
  * to populate the TemplateData type requested by the user for a project.
  * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
  * @param template the raw template file to extract the categories from
@@ -77,7 +76,7 @@ function getCategoriesFromRaw(template : any) : CategoryType[]
 
 /**
  * Generates a type safe category with its fields and calculations ready to form a list for the category list in the
- * TemplateData structure
+ * TemplateData structure. Also handles getting the sub entries from the template if that category has sub entries
  * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
  * @param category a raw category from the template
  * @returns a correctly populated CategoryType object which has fields and calculations read in
@@ -87,9 +86,16 @@ function getCategoryData(category : any) : CategoryType
     let cat : CategoryType = 
     {
         name : category.Name,
+        hassubentry : category.HasSubEntry,
         fields : getFieldsFromRaw(category),
-        calculations : getCalculationsFromRaw(category)
+        calculations : getCalculationsFromRaw(category),
+        subentries : [],
     };
+
+    if(cat.hassubentry == true)
+    {
+        cat.subentries = getSubEntryFromRaw(category);
+    }
 
     return cat;
 }
@@ -113,6 +119,26 @@ function getFieldsFromRaw(category : any) : FieldType[]
     );
 
     return fields;
+}
+
+/**
+ * A function to construct a list of FieldType from a raw category i order to populate the CategoryType object of the raw category
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * @param category the category to get sub entries from
+ * @returns the list of fields that make up the sub entries of the category
+ */
+function getSubEntryFromRaw(category : any) : FieldType[]
+{
+    const rawSubEntry : any = category.SubEntries;
+    let subEntries : FieldType[] = [];
+
+    Object.values(rawSubEntry).forEach(subEntry =>
+    {
+        subEntries.push(getFieldData(subEntry));
+    }
+    );
+
+    return subEntries;
 }
 
 /**
@@ -236,7 +262,7 @@ export function getFieldsNames(category : CategoryType) : string[]
  */
 export function findCatObject(catName : string, categories : CategoryType[]) : CategoryType
 {
-    let ret : CategoryType = {name : "", fields : [], calculations : []};
+    let ret : CategoryType = {name : "", fields : [], calculations : [], hassubentry : false, subentries : []};
 
     if(categories == undefined)
     {
@@ -304,6 +330,58 @@ export function findCalcObject(calcName : string, category : CategoryType) : Cal
         if(calc.name == calcName)
         {
             return calc;
+        }
+    }
+
+    return ret;
+}
+
+// Get sub entry names
+/**
+ * Returns a list of the subentries from a given CategoryType object
+ * @param category the chosen CategoryType object
+ * @returns a list of sub entry names, [] if has no subentries
+ */
+export function getSubEntryNames(category : CategoryType) : string[]
+{
+    const subEntries : FieldType[] = category.subentries;
+    let subEntryNames : string[] = [];
+
+    if(subEntries == undefined || category.hassubentry == false)
+    {
+        return subEntryNames;
+    }
+
+    for(let subEntry of subEntries)
+    {
+        subEntryNames.push(subEntry.name);
+    }
+
+    return subEntryNames;
+}
+
+// From a sub entry name, get the sub entry
+/**
+ * From a given sub entry name, find the sub entryobject
+ * @param subEntryName the sub entry name that you are searching for
+ * @param category the category you are searching the sub entries of
+ * @returns the FieldType object with that name
+ */
+export function findSubEntryObject(subEntryName : string, category : CategoryType) : FieldType
+{
+    const subEntries : FieldType[] = category.subentries;
+    let ret : FieldType = {name : "", prefix : "", value : "", postfix : "", type : "", displayvisible : false, entryvisible : false};
+
+    if(subEntries == undefined || category.hassubentry == false)
+    {
+        return ret;
+    }
+
+    for(let subEntry of subEntries)
+    {
+        if(subEntry.name == subEntryName)
+        {
+            return subEntry;
         }
     }
 

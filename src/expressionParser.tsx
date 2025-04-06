@@ -1,4 +1,4 @@
-import { getAllCategoryEntries, getCategoryID, getFieldID, getGlobalEntryID, getValue, getValueID, updateIndividualField } from "./database";
+import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
 import { readJsonFile, findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
 
@@ -282,7 +282,7 @@ function expressionToRPN(expression : string) : string[]
     return outQueue;
 }
 
-async function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number) : Promise<number>
+async function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
 {
     let stack : string[] = []
 
@@ -290,9 +290,8 @@ async function basicEvaluator(postfixExpr : string[], projectID : number, entryI
     {
         if(isAlphabet(token[0]))
             {
-                let num : number = await parseVariable(token, projectID, entryID);
+                let num : number = await parseVariable(token, projectID, entryID, isSubEntry);
                 stack.push(num.toString());
-                
             }
             else if(isOperator(token)) // is operator
             {
@@ -385,7 +384,7 @@ async function basicEvaluator(postfixExpr : string[], projectID : number, entryI
 }
 
 
-async function parseVariable(vari : string, projectID : number, entryID : number) : Promise<number>
+async function parseVariable(vari : string, projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
 {
     // Split the variable up into its constituent types
     const splitString : string[] = vari.split(":");
@@ -393,13 +392,15 @@ async function parseVariable(vari : string, projectID : number, entryID : number
     let catName : string = splitString[0];
     let valName : string = splitString[1];
 
-    return getVariable(catName, valName, projectID, entryID);
+    return getVariable(catName, valName, projectID, entryID, isSubEntry);
 }
 
-async function getVariable(catName : string, fieldName : string, projectID : number, entryID : number) : Promise<number>
+async function getVariable(catName : string, fieldName : string, projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
 {
     // Query the database to get the value, either in the field or calculation section
     // Can use the project and entry ids to do this
+
+    let value : number = 0;
 
     // Get category id from name and projectid
     const catId : number = await getCategoryID(catName, projectID);
@@ -407,8 +408,20 @@ async function getVariable(catName : string, fieldName : string, projectID : num
     // Use the catid and field name to get all matching field ids
     const fieldID : number = await getFieldID(catId, fieldName);
 
-    // Get the value from field values with matching entry and field ids
-    const value : number = await getValue(entryID, fieldID);
+    if(isSubEntry)
+    {
+        //FILL IN THIS BIT FOR SUBGLOBAL TO BE DONE
+        // Have subEntryID, fieldID
+        // Want value
+        value = await getSubValue(entryID, fieldID);
+    }
+    else
+    {
+        // Get the value from field values with matching entry and field ids
+        value = await getValue(entryID, fieldID);
+    }
+
+    
 
     // Return that value
     return value;
@@ -441,12 +454,11 @@ async function addResultToDataBase(entryID : number, outputField : string, catId
 }
 
 
-
 async function localEvaluator(calc : CalculationType, projectID : number, entryID : number) : Promise<number>
 {
     let RPN : string[] = expressionToRPN(calc.expression);
 
-    let result : number = await basicEvaluator(RPN, projectID, entryID);
+    let result : number = await basicEvaluator(RPN, projectID, entryID, false);
 
     return result;
 }
@@ -474,8 +486,28 @@ async function globalEvaluator(calc : CalculationType, projectID : number) : Pro
 
     for(let entry of entries)
     {
-        total += await basicEvaluator(RPN, projectID, entry);
+        total += await basicEvaluator(RPN, projectID, entry, false);
     }
+    return total;
+
+}
+
+async function subGlobalEvaluator(calc : CalculationType, projectID : number, entryID : number) : Promise<number>
+{
+    let subentries : number[] = await getAllSubEntries(entryID);
+    let total : number = 0;
+
+    let RPN : string[] = expressionToRPN(calc.expression);
+
+    for(let subentry of subentries)
+    {
+        // Need to specify that it is a subentry id not an entry id
+            // This is also needed in parse variable and get variable
+            // Get variable then needs to be modified to get the right variable if given a sub entry id
+        total += await basicEvaluator(RPN, projectID, subentry, true);
+    }
+
+
     return total;
 }
 
@@ -515,7 +547,7 @@ export async function categoryCalculation(catName : string, projectID : number, 
                 }
                     
             }
-            else
+            else if (calc.type == "Global")
             // If global
             {
                 // Do the calculation
@@ -525,6 +557,22 @@ export async function categoryCalculation(catName : string, projectID : number, 
                     // If one return its id
                 // Replace the -1 below with that
                 addResultToDataBase(await getGlobalEntryID(catId, projectID), calc.output, catId, result);
+
+            }
+            else if (calc.type == "SubGlobal")
+            {
+                const entries = await getAllCategoryEntries(catId);
+
+                for(const entry of entries)
+                {
+                    result = await subGlobalEvaluator(calc, projectID, entry);
+                    addResultToDataBase(entry, calc.output, catId, result);
+                }
+                
+            }
+            else
+            {
+                continue;
             }
 
         }
@@ -534,16 +582,16 @@ export async function categoryCalculation(catName : string, projectID : number, 
 
 // async function main()
 // {
-//     // console.log(await getCategoryID("Personnel", 88)); // Gives 35
-//     // console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
-//     // console.log(await getFieldID(28, "personMonth")); // 64
-//     // console.log(await getValue(46, 57)) // Gives 100 
-//     // console.log(await getValueID(46, 57)); // Gives 89
-//     // console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
+//     console.log(await getCategoryID("Personnel", 88)); // Gives 35
+//     console.log(await getAllCategoryEntries(1)); // Gives 36,37,38,39,40,41,42,46,48,49,54
+//     console.log(await getFieldID(28, "personMonth")); // 64
+//     console.log(await getValue(46, 57)) // Gives 100 
+//     console.log(await getValueID(46, 57)); // Gives 89
+//     console.log(await updateIndividualField(105, 10000)); // Observed to work when rls off
 
-//     // console.log("");
+//     console.log("");
 
-//     // Some tests for get variable, global and local evaluator
+//     Some tests for get variable, global and local evaluator
 
 //     console.log(await getVariable("Internally Invoiced Services", "amount", 99, 58)); // Gives 100
 
@@ -557,7 +605,28 @@ export async function categoryCalculation(catName : string, projectID : number, 
 
 //     console.log(await basicEvaluator(expressionToRPN("10 +Internally_Invoiced_Services:F:amount"), 99, 58));
 
-//     //await(categoryCalculation("Internally_Invoiced_Services", 99, template));
+//     await(categoryCalculation("Internally_Invoiced_Services", 99, template));
+
+//     console.log(await haveSubEntry(127));
+//     console.log(await haveSubEntry(128));
+//     console.log(await getAllSubEntries(147));
+
+//     console.log(await getSubValue(1, 2237));
+
+//     const projectID = 214;
+
+//     const catName : string = "Travel_Costs";
+//     const fieldData : Record<string, string> = {Days : "10", Accomodation : "50", Sustinance : "50"};
+//     const subEntryData : Record<string, string>[] = [{What : "Train", Amount : "50"}, {What : "Plane", Amount : "500"}];
+
+//     await createEntryWithSubEntry(catName, fieldData, subEntryData);
+
+//     const entryID = 182;
+
+//     console.log(await getSubEntriesForEntry(entryID));
+
+//     await(categoryCalculation("Travel_Costs", 214, template));
+    
 // }
 
 
