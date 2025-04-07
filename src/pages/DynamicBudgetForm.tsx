@@ -6,6 +6,7 @@ import { cleanString } from "../expressionParser";
 import { TemplateData } from "../types";
 import { getTemplate } from "../newTemplateParser";
 import template from "../../template1.json"
+
 //manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
 type DBProps = {
   getCategoryName: (categoryName: string) => void;

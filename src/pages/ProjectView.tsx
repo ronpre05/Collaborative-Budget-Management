@@ -86,7 +86,7 @@ const ProjectView: React.FC = () => {
   return (
     <div className="project-view">
       {/* Display the project name */}
-      {projectName && <strong><h1>{projectName}</h1></strong>}
+      {projectName && <h1><strong>{projectName}</strong></h1>}
       {/* Show the user's role name */}
       {roleName && <p>User Role: {roleName}</p>}
       {/* Render the new generic cost management page */}
