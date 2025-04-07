@@ -1126,6 +1126,57 @@ export const getUserRoleInProject = async (projectID: number): Promise<number | 
 };
 
 
-  
-  
 
+
+// Fetches all of the templates that exist inside the database
+export const getAllTemplates = async () : Promise<string[]> => 
+{
+    const { data, error } = await supabase
+        .from("Templates")
+        .select("templateName")
+    
+    if(error)
+    {
+        console.error("Error fetching template names: ", error)
+        return [];
+    }
+
+    return data.map((entry : any) => entry.templateName);
+}
+
+// Fetches the template JSON data for the chosen template with the given name
+export const getChosenTemplateData = async (templateName : string) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("Templates")
+        .select("templateData")
+        .eq("templateName", templateName)
+        .single()
+
+    if (error)
+    {
+        console.error("Error fetching chosen template data: ", error)
+        return;
+    }
+
+    return data.templateData;
+}
+
+// Fetches the template JSON data for the chosen project
+export const getProjectTemplate = async (projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("Projects")
+        .select("templateData")
+        .eq("projectID", projectID)
+        .single()
+    
+    if (error)
+    {
+        console.error("Error fetching the template data for project ID: ", projectID, " ", error)
+        return;
+    }
+
+    return data.templateData;
+}
+    

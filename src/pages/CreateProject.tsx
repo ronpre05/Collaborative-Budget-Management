@@ -22,6 +22,8 @@ async function categoryCheck(){
 const CreateProject: React.FC = () => {
   const [institutions, setInstitutions] = useState<string[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
+  const [template, setTemplates] = useState<string[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [projectName, setProjectName] = useState<string>("");
   const [projectAcronym, setProjectAcronym] = useState<string>("");
   
@@ -29,6 +31,8 @@ const CreateProject: React.FC = () => {
   const handleCreateProject = async () => {
       try {
         let institutionID = await getInstitutionID(selectedInstitution);
+
+        
 
         if(institutionID !== null){
           let projectID =  await createProjectQuery(institutionID, projectName, projectAcronym);
