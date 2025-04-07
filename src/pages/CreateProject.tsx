@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createProjectQuery, getUsersInstitutions, getInstitutionID } from "../database";
-import { readJsonFile, getCategoriesSection, getCategoryNames } from "../templateParser";
 import { checkAndAddCategories } from "../database";
+import template from "../../template1.json"
+import { getCatNames, getTemplate } from "@/newTemplateParser";
 
 //test rahy branch
 // Inserts new categories for a project into the database
 async function categoryCheck(){
   // Get template data
-  let templateData = await readJsonFile("./template1.json");
-  // Get list of categories
-  let categoryList = getCategoriesSection(templateData);
+  let templateData = await getTemplate(template);
+
   // Get names of categories
-  let categoryNames = getCategoryNames(categoryList);
+  let categoryNames = getCatNames(templateData);
 
   // Check for missing categories and add any missing ones
-  await checkAndAddCategories(categoryList, categoryNames);
+  await checkAndAddCategories(categoryNames);
 }
 
 // Configuration page for creating a new project

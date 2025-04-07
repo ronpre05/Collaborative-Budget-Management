@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import templateDataJson from "../../template1.json";
-import { getCategoriesObjectsFromTemplate, getTemplateName } from "../templateParser";
 import GenericForm from "./GenericForm";
 import { cleanString } from "../expressionParser";
 import { TemplateData } from "../types";

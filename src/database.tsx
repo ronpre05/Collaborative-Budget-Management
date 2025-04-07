@@ -7,7 +7,7 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 // Check for any missing categories and add them to the db
-export const checkAndAddCategories = async (categoryList: string[], categoryNames: string[]): Promise<void | null> => {
+export const checkAndAddCategories = async (categoryNames: string[]): Promise<void | null> => {
     // Retrieve the project ID from localStorage
     const projectID = localStorage.getItem("projectID");
 
@@ -57,12 +57,12 @@ export const checkAndAddCategories = async (categoryList: string[], categoryName
     }
     
     // Add missing fields for the given categories
-    await createCategoryFields(categoryList, missingCategories);
+    await createCategoryFields(missingCategories);
     console.log("Missing categories added successfully");
 };
 
 // Creates the fields for a list of categories in the database
-export const createCategoryFields = async (categoryList: string[], categoryNames: string[]): Promise<void | null> => {
+export const createCategoryFields = async (categoryNames: string[]): Promise<void | null> => {
     const projectID = localStorage.getItem("projectID");
 
 
