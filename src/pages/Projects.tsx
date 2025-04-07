@@ -1,8 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProjectsView from "../fetchProjects";
-import CategoryDisplay from "../categoryDisplay";
-import { getCategoryDataCatOnly } from "../queryFunctions";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card.tsx";
 import { FolderKanban, ArrowRight } from "lucide-react";
 import { Button } from "../components/ui/button.tsx";

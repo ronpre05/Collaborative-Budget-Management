@@ -176,7 +176,8 @@ export const getProjectName = async (): Promise<string | null> => {
 export const createProjectQuery = async (
     institutionID: number, 
     projectName: string, 
-    projectAcronym: string
+    projectAcronym: string,
+    templateData : any
 ): Promise<string | null> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem("userID");
@@ -191,7 +192,8 @@ export const createProjectQuery = async (
         .insert({
             principalInvestigatorID: userID,
             projectName: projectName, 
-            projectAcronym: projectAcronym
+            projectAcronym: projectAcronym,
+            activeTemplate : templateData
         })
         .select("projectID");
 
