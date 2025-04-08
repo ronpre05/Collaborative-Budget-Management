@@ -5,9 +5,9 @@ import ManageCollaborators from "./ManageCollaborators";
 import { getProjectName, getUserRoleInProject, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import template from "../../template1.json";
-import { getTemplate } from "../newTemplateParser";
+import { getTemplate, getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
+import { TemplateData } from "@/types";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -17,6 +17,7 @@ const ProjectView: React.FC = () => {
   const [projectName, setProjectName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<number | null>(null);
   const [roleName, setRoleName] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateData>();
 
   const roleMapping: Record<number, string> = {
     1: "Institution Collaborator",
@@ -41,10 +42,10 @@ const ProjectView: React.FC = () => {
       }
 
       setProjectID(projectID); // Store projectID in state
+      setTemplate(await getTemplateFromID(parseInt(projectID)));
 
       // Fetch project name
       const name = await getProjectName();
-      localStorage.setItem("template", JSON.stringify(template));
       setProjectName(name);
 
       // Fetch user role in the project
