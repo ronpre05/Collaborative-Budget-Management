@@ -464,6 +464,11 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
 export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
     const projectID = localStorage.getItem("projectID");
 
+    if(!projectID)
+    {
+        return null;
+    }
+
     const template = (await getTemplateFromID(parseInt(projectID)));
 
     if(!template)

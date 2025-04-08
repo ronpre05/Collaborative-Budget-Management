@@ -7,6 +7,7 @@ import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
 import { getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
+import { TemplateData } from "@/types";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -16,6 +17,7 @@ const ProjectView: React.FC = () => {
   const [projectName, setProjectName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<number | null>(null);
   const [roleName, setRoleName] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateData>();
 
   const roleMapping: Record<number, string> = {
     1: "Institution Collaborator",
@@ -42,7 +44,7 @@ const ProjectView: React.FC = () => {
 
       setProjectID(projectID); // Store projectID in state
 
-      const template = (await getTemplateFromID(parseInt(projectID)));
+      setTemplate(await getTemplateFromID(parseInt(projectID)));
 
       if(!template)
       {
@@ -78,7 +80,7 @@ const ProjectView: React.FC = () => {
       
       if(projectID)
       {
-         const template = await getTemplateFromID(parseInt(projectID));
+         setTemplate(await getTemplateFromID(parseInt(projectID)));
          if(template)
          {
           await categoryCalculation(currentCategory, Number(projectID), template);
@@ -102,6 +104,11 @@ const ProjectView: React.FC = () => {
     updateCategoryData();
   }, [currentCatID])
 
+  if(!template)
+  {
+    return;
+  }
+
   return (
     <div className="project-view">
       {/* Display the project name */}
@@ -110,7 +117,7 @@ const ProjectView: React.FC = () => {
       {roleName && <p>User Role: {roleName}</p>}
       {/* Render the new generic cost management page */}
       {/* Only read-only for Institution Collaborators */}
-      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1} />
+      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1} categories={template.categories} templateName={template.templateName} />
       <CategoryDisplay data={categoryData} />
       <Link
           to="/create-project/manage-collaborators"
