@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { CategoryType } from "./types";
-import { findCatObject, getTemplate, getFieldsNames, getSubEntryNames } from "./newTemplateParser";
-import template from "../template1.json"
+import { findCatObject, getFieldsNames, getSubEntryNames, getTemplateFromID } from "./newTemplateParser";
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -96,8 +95,17 @@ export const createCategoryFields = async (categoryNames: string[]): Promise<voi
         // Get categoryID
         const categoryID = data?.categoryID;
 
+        const template = (await getTemplateFromID(parseInt(projectID)));
+        
+        if(!template)
+        {
+            console.log(template);
+            console.error("Error handling template for project: ", projectID);
+            return;
+        }
+
         // Get field data for the category
-        let categoryObject = findCatObject(categoryName, getTemplate(template).categories);
+        let categoryObject = findCatObject(categoryName, template.categories);
         // Filter for field names
         let fieldNames = getFieldsNames(categoryObject);
 
@@ -456,7 +464,16 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
 export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
     const projectID = localStorage.getItem("projectID");
 
-    let cat : CategoryType = findCatObject(categoryName, getTemplate(template).categories);
+    const template = (await getTemplateFromID(parseInt(projectID)));
+
+    if(!template)
+    {
+          console.log(template);
+          console.error("Error handling template for project: ", projectID);
+          return null;
+    }
+
+    let cat : CategoryType = findCatObject(categoryName, template.categories);
     
     if (!projectID) {
         console.error("Project ID not found in local storage.");
@@ -1168,17 +1185,17 @@ export const getChosenTemplateData = async (templateName : string) : Promise<any
 export const getProjectTemplate = async (projectID : number) : Promise<any> =>
 {
     const { data, error } = await supabase
-        .from("Projects")
-        .select("templateData")
+        .from("Project")
+        .select("activeTemplate")
         .eq("projectID", projectID)
         .single()
     
-    if (error)
+    if(error)
     {
         console.error("Error fetching the template data for project ID: ", projectID, " ", error)
         return;
     }
 
-    return data.templateData;
+    return data.activeTemplate;
 }
     
