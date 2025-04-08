@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { createProjectQuery, getUsersInstitutions, getInstitutionID, getChosenTemplateData, getProjectTemplate, getAllTemplates } from "../database";
+import { createProjectQuery, getUsersInstitutions, getInstitutionID, getChosenTemplateData, getAllTemplates } from "../database";
 import { checkAndAddCategories } from "../database";
 import { getCatNames, getTemplate } from "@/newTemplateParser";
 

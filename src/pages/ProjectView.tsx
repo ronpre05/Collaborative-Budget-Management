@@ -5,9 +5,8 @@ import ManageCollaborators from "./ManageCollaborators";
 import { getProjectName, getUserRoleInProject, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import { getTemplate, getTemplateFromID } from "../newTemplateParser";
+import { getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
-import { TemplateData } from "@/types";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -17,7 +16,6 @@ const ProjectView: React.FC = () => {
   const [projectName, setProjectName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<number | null>(null);
   const [roleName, setRoleName] = useState<string | null>(null);
-  const [template, setTemplate] = useState<TemplateData>();
 
   const roleMapping: Record<number, string> = {
     1: "Institution Collaborator",
@@ -36,13 +34,22 @@ const ProjectView: React.FC = () => {
   useEffect(() => {
     const fetchProjectDetails = async () => {
       const projectID = localStorage.getItem("projectID");
+
       if (!projectID) {
         console.error("No project ID found in localStorage.");
         return;
       }
 
       setProjectID(projectID); // Store projectID in state
-      setTemplate(await getTemplateFromID(parseInt(projectID)));
+
+      const template = (await getTemplateFromID(parseInt(projectID)));
+
+      if(!template)
+      {
+        console.log(template);
+        console.error("Error handling template for project: ", projectID);
+        return;
+      }
 
       // Fetch project name
       const name = await getProjectName();
@@ -67,10 +74,21 @@ const ProjectView: React.FC = () => {
     const updateCatID = async () => {
       setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
       console.log("Current category ID:", currentCatID);
+    
       
-      
-      if(projectID !== undefined)
-         await categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
+      if(projectID)
+      {
+         const template = await getTemplateFromID(parseInt(projectID));
+         if(template)
+         {
+          await categoryCalculation(currentCategory, Number(projectID), template);
+         }
+         else
+         {
+          console.error("Error handling template for project: ", projectID);
+         }
+         
+      }
     }
     updateCatID();
   }, [currentCategory])
