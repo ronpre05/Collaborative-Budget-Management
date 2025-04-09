@@ -117,7 +117,7 @@ const ProjectView: React.FC = () => {
       {roleName && <p>User Role: {roleName}</p>}
       {/* Render the new generic cost management page */}
       {/* Only read-only for Institution Collaborators */}
-      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1} categories={template.categories} templateName={template.templateName} />
+      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1}  template={template} />
       <CategoryDisplay data={categoryData} />
       <Link
           to="/create-project/manage-collaborators"
