@@ -80,7 +80,6 @@ const ProjectView: React.FC = () => {
       
       if(projectID)
       {
-         setTemplate(await getTemplateFromID(parseInt(projectID)));
          if(template)
          {
           await categoryCalculation(currentCategory, Number(projectID), template);
