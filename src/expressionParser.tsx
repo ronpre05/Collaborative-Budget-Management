@@ -1,5 +1,5 @@
 import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
-import { readJsonFile, findCatObject } from "./newTemplateParser";
+import { findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
 
 enum Associativity

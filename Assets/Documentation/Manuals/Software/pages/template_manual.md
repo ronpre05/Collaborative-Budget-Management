@@ -5,6 +5,7 @@
 - [Templates](#templates)
   - [JSON Templates](#json-templates)
     - [Introduction to Templates](#introduction-to-templates)
+    - [Storage in database](#storage-in-database)
     - [General Layout](#general-layout)
     - [Categories](#categories)
     - [Fields](#fields)
@@ -13,6 +14,7 @@
   - [Template Parsing](#template-parsing)
     - [Template Data Types](#template-data-types)
     - [How to use the Template Parser](#how-to-use-the-template-parser)
+      - [Getting the template from the database](#getting-the-template-from-the-database)
       - [Provided Functions to Operate on the Types](#provided-functions-to-operate-on-the-types)
   - [Expressions](#expressions)
     - [How Expressions are Formed](#how-expressions-are-formed)
@@ -40,9 +42,14 @@
 
 The data is stored inside the database as defined by the template that is assigned to the project. Templates themselves are not meant to be user-facing, they should just be given a name which denotes which project funding type they represent. It is up to the PI of the project to know what the contents of the project would look like. Therefore it is up to the developers to provide the templates that a PI may want to create projects for.
 
+### Storage in database
+
+Templates are stored in the form of a JSON file within the database inside the "Templates" table. This should only be populated by developers who should create the JSON template and provide it with a **unique** name. When a PI intends to create a project they will choose this from a drop-down menu by name alone. When a template is selected and project has been created, the JSON is copied into the entry inside the Project table under the name "activeTemplate", rather than a foreign key relation. The result of this is that all projects have their own copy of their template, such that if the master copy changes, their database layout remains intact. 
+
+
 ### General Layout
 
-Templates are stored in the form of a JSON file within the database, and when a project is created by a PI, this template is copied into the project's template entry inside the database (pending). The result of this is that all projects have their own copy of their template, such that if the master copy changes, their database layout remains intact. The top level of the JSON object has one object and one attribute as shown below:
+The top level of the JSON object has one object and one attribute as shown below:
 
 ```json
 {
@@ -213,6 +220,26 @@ export function getTemplate(template: any): TemplateData {
 
 which generates the main TemplateData object in a top down fashion, storing all of the provided information in the JSON in a simpler format. It operates on the template's text either read in from a file, or more likely from the database itself.
 This starts a chain of function calls which find each category inside the JSON and generate the lists of its fields etc, and then creates the list of categories for the TemplateData type. Elsewhere in the code these should never be used as you should already have use the "getTemplate" function which handles the raw template for you.
+
+#### Getting the template from the database
+
+If you are attempting the get the template for a given project you may not need the above getTemplate function. This is instead captured inside a function called getTemplateFromID:
+
+```typescript
+/**
+ * Generates the TemplateData structure for a project given its projectID, typically found in local
+ * storage
+ * @param projectID the ID of the project to query
+ * @returns The whole TemplateData structure
+ */
+export async function getTemplateFromID(projectID : number) : Promise<TemplateData>
+{
+    let rawTemplate : any = await getProjectTemplate(projectID);
+    return getTemplate(rawTemplate);
+}
+```
+
+The job of this function is to gather the TemplateData structure from the raw template gathered from the database. It utilises the getTemplate function after getting the JSON from the database and simply returns the TemplateData immediately avoiding manually feeding the result of getProjectTemplate into getTemplate all of the time.
 
 #### Provided functions to operate on the types
 

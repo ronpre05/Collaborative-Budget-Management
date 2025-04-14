@@ -1,34 +1,18 @@
-// import { readFile } from "fs/promises";
+import { getProjectTemplate } from "./database";
 import { TemplateData, CategoryType, FieldType, CalculationType } from "./types";
 
-// main();
-
-// async function main()
-// {
-//     const template : TemplateData = await readJsonFile("./template1.json");
-//     console.log(template);
-//     console.log(getCatNames(template));
-//     console.log(getFieldsNames(template.categories[0]));
-//     console.log(findCatObject("Personnel", template.categories));
-//     console.log(findFieldObject("amount", template.categories[0]));
-//     console.log(findCalcObject("Total", template.categories[0]));
-// }
-
 /**
- * Function to read in a JSON file in the template format from the disk and store in inside a TemplateData structure
- * This uses the getTemplate function to accquire all of the internal types for categories etc so that you don't have
- * to handle it yourself
- * @param path string containing the path name of the relevant JSON file
- * @returns when awaited returns the chosen template in a type with all categories and fields already processed
+ * Generates the TemplateData structure for a project given its projectID, typically found in local
+ * storage
+ * @param projectID the ID of the project to query
+ * @returns The whole TemplateData structure
  */
-export async function readJsonFile(path: string): Promise<TemplateData> 
+export async function getTemplateFromID(projectID : number) : Promise<TemplateData>
 {
-    // const file = await readFile(path, "utf8");
-    // return getTemplate(await(JSON.parse(file)));
-
-    const response = await fetch(path);
-    return getTemplate(await response.json());
+    let rawTemplate : any = await getProjectTemplate(projectID);
+    return getTemplate(rawTemplate);
 }
+
 
 /**
  * Generates a TemplateData structure from a raw JSON template file, gathering the CategoryTypes and other internal structures
@@ -46,10 +30,11 @@ export function getTemplate(template : any) : TemplateData
     return temp;
 }
 
+
 /**
  * Gets the raw categories section from a template, loop through each category and creates a CategoryType out of it in order
  * to populate the TemplateData type requested by the user for a project.
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param template the raw template file to extract the categories from
  * @returns a list of category types which are correctly populated with FieldType and CalculationType lists
  */
@@ -77,7 +62,7 @@ function getCategoriesFromRaw(template : any) : CategoryType[]
 /**
  * Generates a type safe category with its fields and calculations ready to form a list for the category list in the
  * TemplateData structure. Also handles getting the sub entries from the template if that category has sub entries
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param category a raw category from the template
  * @returns a correctly populated CategoryType object which has fields and calculations read in
  */
@@ -102,7 +87,7 @@ function getCategoryData(category : any) : CategoryType
 
 /**
  * Generates a list of FieldType from a raw category in order to populate the CatgegoryType object of the passed in raw category
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param category a raw category from the JSON to extract the fields out of 
  * @returns a list of FieldType as extracted from the JSON
  */
@@ -123,7 +108,7 @@ function getFieldsFromRaw(category : any) : FieldType[]
 
 /**
  * A function to construct a list of FieldType from a raw category i order to populate the CategoryType object of the raw category
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param category the category to get sub entries from
  * @returns the list of fields that make up the sub entries of the category
  */
@@ -143,7 +128,7 @@ function getSubEntryFromRaw(category : any) : FieldType[]
 
 /**
  * Generates a list of CalculationType from a raw category in order to populate the CatgegoryType object of the passed in raw category
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param category a raw category from the JSON to extract the calculations out of 
  * @returns a list of CalculationType as extracted from the JSON
  */
@@ -164,7 +149,7 @@ function getCalculationsFromRaw(category : any) : CalculationType[]
 
 /**
  * Extracts the field data from the JSON and create a FieldType.
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param field the field object to extract from
  * @returns a FieldType object with the data taken from the JSON
  */
@@ -186,7 +171,7 @@ function getFieldData(field : any) : FieldType
 
 /**
  * Extracts the calculation data from the JSON and create a CalculationType.
- * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "readJsonFile"
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
  * @param calc the calculation object to extract from
  * @returns a CalculationType object with the data taken from the JSON
  */

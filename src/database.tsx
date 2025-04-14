@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { CategoryType } from "./types";
-import { findCatObject, getTemplate, getFieldsNames, getSubEntryNames } from "./newTemplateParser";
-import template from "../template1.json"
+import { findCatObject, getFieldsNames, getSubEntryNames, getTemplateFromID } from "./newTemplateParser";
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -96,8 +95,17 @@ export const createCategoryFields = async (categoryNames: string[]): Promise<voi
         // Get categoryID
         const categoryID = data?.categoryID;
 
+        const template = (await getTemplateFromID(parseInt(projectID)));
+        
+        if(!template)
+        {
+            console.log(template);
+            console.error("Error handling template for project: ", projectID);
+            return;
+        }
+
         // Get field data for the category
-        let categoryObject = findCatObject(categoryName, getTemplate(template).categories);
+        let categoryObject = findCatObject(categoryName, template.categories);
         // Filter for field names
         let fieldNames = getFieldsNames(categoryObject);
 
@@ -176,7 +184,8 @@ export const getProjectName = async (): Promise<string | null> => {
 export const createProjectQuery = async (
     institutionID: number, 
     projectName: string, 
-    projectAcronym: string
+    projectAcronym: string,
+    templateData : any
 ): Promise<string | null> => {
     // Retrieve the user ID from localStorage
     const userID = localStorage.getItem("userID");
@@ -191,7 +200,8 @@ export const createProjectQuery = async (
         .insert({
             principalInvestigatorID: userID,
             projectName: projectName, 
-            projectAcronym: projectAcronym
+            projectAcronym: projectAcronym,
+            activeTemplate : templateData
         })
         .select("projectID");
 
@@ -454,7 +464,21 @@ export const removeCollaborator = async (userID: number, projectID: number) => {
 export const createCategoryEntry = async (categoryName: string): Promise<{ categoryID: number, entryID: number } | null> => {
     const projectID = localStorage.getItem("projectID");
 
-    let cat : CategoryType = findCatObject(categoryName, getTemplate(template).categories);
+    if(!projectID)
+    {
+        return null;
+    }
+
+    const template = (await getTemplateFromID(parseInt(projectID)));
+
+    if(!template)
+    {
+          console.log(template);
+          console.error("Error handling template for project: ", projectID);
+          return null;
+    }
+
+    let cat : CategoryType = findCatObject(categoryName, template.categories);
     
     if (!projectID) {
         console.error("Project ID not found in local storage.");
@@ -1126,6 +1150,57 @@ export const getUserRoleInProject = async (projectID: number): Promise<number | 
 };
 
 
-  
-  
 
+
+// Fetches all of the templates that exist inside the database
+export const getAllTemplates = async () : Promise<string[]> => 
+{
+    const { data, error } = await supabase
+        .from("Templates")
+        .select("templateName")
+    
+    if(error)
+    {
+        console.error("Error fetching template names: ", error)
+        return [];
+    }
+
+    return data.map((entry : any) => entry.templateName);
+}
+
+// Fetches the template JSON data for the chosen template with the given name
+export const getChosenTemplateData = async (templateName : string) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("Templates")
+        .select("templateData")
+        .eq("templateName", templateName)
+        .single()
+
+    if (error)
+    {
+        console.error("Error fetching chosen template data: ", error)
+        return;
+    }
+
+    return data.templateData;
+}
+
+// Fetches the template JSON data for the chosen project
+export const getProjectTemplate = async (projectID : number) : Promise<any> =>
+{
+    const { data, error } = await supabase
+        .from("Project")
+        .select("activeTemplate")
+        .eq("projectID", projectID)
+        .single()
+    
+    if(error)
+    {
+        console.error("Error fetching the template data for project ID: ", projectID, " ", error)
+        return;
+    }
+
+    return data.activeTemplate;
+}
+    
