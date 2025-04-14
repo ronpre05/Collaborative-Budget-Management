@@ -553,17 +553,40 @@ const truthTemplate : TemplateData =
     ]
 }
 
-// NEED TESTS FOR
-/*
+/* NEED TESTS FOR
     - getTemplate
+        - Given true template
+        - Given null/undefined template
     - getTemplateFromID
+        - Given true id
+        - Given id not in database
     - getCatNames
+        - Works as intended
+        - Gets blank categories section
     - getFieldNames
+        - Works as intended
+        - Gets blank fields section
     - findCatObject
+        - Works as intended
+        - Has wrong name
+        - Has blank categories section
     - findFieldObject
+        - Works as intended
+        - Has wrong name
+        - Has blank fields section
     - findCalcObject
+        - Works as intended
+        - Has wrong name
+        - Has blank calcs section
     - getSubEntryNames
+        - Works as intended
+        - Gets blank subentry section
+        - Is not a sub entry
     - findSubEntryObject
+        - Works as intended
+        - Has wrong name
+        - Has blank sub entries section
+        - Is not a sub entry
 */
 
 test('getTemplate gets template', () =>
