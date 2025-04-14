@@ -5,9 +5,9 @@ import ManageCollaborators from "./ManageCollaborators";
 import { getProjectName, getUserRoleInProject, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import template from "../../template1.json";
-import { getTemplate } from "../newTemplateParser";
+import { getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
+import { TemplateData } from "@/types";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -17,6 +17,7 @@ const ProjectView: React.FC = () => {
   const [projectName, setProjectName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<number | null>(null);
   const [roleName, setRoleName] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateData>();
 
   const roleMapping: Record<number, string> = {
     1: "Institution Collaborator",
@@ -35,6 +36,7 @@ const ProjectView: React.FC = () => {
   useEffect(() => {
     const fetchProjectDetails = async () => {
       const projectID = localStorage.getItem("projectID");
+
       if (!projectID) {
         console.error("No project ID found in localStorage.");
         return;
@@ -42,14 +44,23 @@ const ProjectView: React.FC = () => {
 
       setProjectID(projectID); // Store projectID in state
 
+      setTemplate(await getTemplateFromID(parseInt(projectID)));
+
+      if(!template)
+      {
+        console.log(template);
+        console.error("Error handling template for project: ", projectID);
+      }
+
       // Fetch project name
       const name = await getProjectName();
-      localStorage.setItem("template", JSON.stringify(template));
       setProjectName(name);
+      console.log(projectName);
 
       // Fetch user role in the project
       const role = await getUserRoleInProject(parseInt(projectID, 10));
       setUserRole(role);
+      console.log(userRole);
       
       // Map the roleID to a role name
       if (role !== null) {
@@ -66,10 +77,20 @@ const ProjectView: React.FC = () => {
     const updateCatID = async () => {
       setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
       console.log("Current category ID:", currentCatID);
+    
       
-      
-      if(projectID !== undefined)
-         await categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
+      if(projectID)
+      {
+         if(template)
+         {
+          await categoryCalculation(currentCategory, Number(projectID), template);
+         }
+         else
+         {
+          console.error("Error handling template for project: ", projectID);
+         }
+         
+      }
     }
     updateCatID();
   }, [currentCategory])
@@ -83,6 +104,11 @@ const ProjectView: React.FC = () => {
     updateCategoryData();
   }, [currentCatID])
 
+  if(!template)
+  {
+    return;
+  }
+
   return (
     <div className="project-view">
       {/* Display the project name */}
@@ -91,7 +117,7 @@ const ProjectView: React.FC = () => {
       {roleName && <p>User Role: {roleName}</p>}
       {/* Render the new generic cost management page */}
       {/* Only read-only for Institution Collaborators */}
-      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1} />
+      <DynamicBudgetForm getCategoryName={setCategoryName} readOnly={userRole === 1}  template={template} />
       <CategoryDisplay data={categoryData} />
       <Link
           to="/create-project/manage-collaborators"

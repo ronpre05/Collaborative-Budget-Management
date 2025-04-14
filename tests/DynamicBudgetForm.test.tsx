@@ -17,7 +17,7 @@ describe("DynamicBudgetForm Component", () => {
     it("displays the correct category names from template", async () => {
         render(
             <MemoryRouter>
-                <DynamicBudgetForm getCategoryName={mockGetCategoryName} readOnly={false} />
+                <DynamicBudgetForm getCategoryName={mockGetCategoryName} readOnly={false} template={templateData} />
             </MemoryRouter>
         );
 
@@ -31,7 +31,7 @@ describe("DynamicBudgetForm Component", () => {
     it("displays the correct fields for the selected category", async () => {
         render(
           <MemoryRouter>
-            <DynamicBudgetForm getCategoryName={mockGetCategoryName} readOnly={false} />
+            <DynamicBudgetForm getCategoryName={mockGetCategoryName} readOnly={false} template={templateData} />
           </MemoryRouter>
         );
     
@@ -44,7 +44,7 @@ describe("DynamicBudgetForm Component", () => {
         // Wait for the category to load
         await waitFor(() => {
             // Loop through all fields in the current category
-            category.fields.forEach((field) => {
+            category.fields.forEach((field) => {                
                 if (field.entryvisible) {
                 // Check that fields with entryVisible true are in the document
                 expect(screen.getByLabelText(cleanString(field.name + ":"))).toBeInTheDocument();

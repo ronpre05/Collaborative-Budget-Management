@@ -2,25 +2,26 @@ import React, { useEffect, useState } from "react";
 import GenericForm from "./GenericForm";
 import { cleanString } from "../expressionParser";
 import { TemplateData } from "../types";
-import { getTemplate } from "../newTemplateParser";
-import template from "../../template1.json"
 
 //manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
-type DBProps = {
+type DBProps = 
+{
   getCategoryName: (categoryName: string) => void;
   readOnly: boolean;
+  template : TemplateData;
 };
 
-const DynamicBudgetForm: React.FC<DBProps> = ({ getCategoryName, readOnly}) => {
-  const templateData : TemplateData = getTemplate(template);
-  const categories = templateData.categories;
+const DynamicBudgetForm : React.FC<DBProps> = ({ getCategoryName, readOnly, template}) => 
+  {
   const [activeTab, setActiveTab] = useState<number>(0);
-  useEffect(()=> {
+  const categories = template.categories;
+  useEffect(()=> 
+  {
     getCategoryName(categories[0].name);
   }, [])
   return (
     <div>
-      <h2>{templateData.templateName} - Budget Management</h2>
+      <h2>{template.templateName} - Budget Management</h2>
       <div className="tab-container">
         {categories.map((category, index) => (
           <div

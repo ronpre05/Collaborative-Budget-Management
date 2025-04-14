@@ -62,6 +62,7 @@ Below is a list of all tables in the database, with a short description of what 
 | **CategoryFields**         | Stores all fields that belong to each category.                                                             |
 | **CategoryEntry**          | Stores an entry made by a user for a given category.                                                        |
 | **Categories**             | Stores all the categories that exist within a template.                                                     |
+| **Templates**              | Stores all of the templates that exist. |
 
 ## Project Data Entry
 
@@ -100,7 +101,7 @@ The table below lists key database queries that can be found in [database.tsx](.
 | checkAndAddCategories             | Checks if the given categories exist in the database. If not, adds them and creates their associated fields                        |
 | createCategoryFields              | Creates fields for a list of categories by inserting fields into the CategoryFields table                                          |
 | getProjectName                    | Fetches the project name from the Project table using the stored projectID in localStorage                                         |
-| createProjectQuery                | Creates a new project in the Project table and links it to the user and institution                                                |
+| createProjectQuery                | Creates a new project in the Project table and links it to the user and institution, providing a copy of the chosen raw JSON template                                       |
 | createUserInstitutionProjectQuery | Links a user to a project under a specific institution by inserting an entry into the UserInstitutionProject table                 |
 | getInstitutionID                  | Retrieves the ID of an institution based on its name from the Institutions table                                                   |
 | getUsersInstitutions              | Fetches a list of institutions associated with the logged-in user                                                                  |
@@ -140,6 +141,10 @@ The table below lists key database queries that can be found in [database.tsx](.
 | getInstitutions                   | Retrieves a list of institutions matching an input value                                                                           |
 | addUserInstitution                | Links a user to an institution in UserInstitutions                                                                                 |
 | getUserRoleInProject              | Fetches the role ID of a user for a given project                                                                                  |
+| getAllTemplates                   | Fetches a list of the names of all of the templates in 
+the database. |
+| getChosenTemplateData             | Fetches the raw JSON template for the template with the given name.|
+| getProjectTemplate                | Fetches the raw JSON template for the project with the given ID. |
 
 ## Clone Database
 
