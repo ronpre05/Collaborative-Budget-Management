@@ -1,7 +1,7 @@
 import template from "../template1.json"
-import { TemplateData } from "../src/types"
-import { expect, test } from 'vitest'
-import { getTemplate } from "../src/newTemplateParser"
+import { CalculationType, CategoryType, FieldType, TemplateData } from "../src/types"
+import { expect, test, vi } from 'vitest'
+import { findCalcObject, findCatObject, findFieldObject, findSubEntryObject, getCatNames, getFieldsNames, getSubEntryNames, getTemplate, getTemplateFromID } from "../src/newTemplateParser"
 
 /*
 Tests will be ran against the base "Horizon RIA" template inside
@@ -19,6 +19,9 @@ If getTemplate operates correctly, then so do sub functions
 The expected TemplateData structure to be returned from
 getTemplate() is below, to be used to test getTemplate()
 and other operations on the given types
+
+Also below are empty versions of the types that are typically
+used as default return values
 */
 
 
@@ -553,13 +556,48 @@ const truthTemplate : TemplateData =
     ]
 }
 
-/* NEED TESTS FOR
+const emptyTemplate : TemplateData =
+{
+    templateName : "",
+    categories : []
+}
+
+const emptyCategory : CategoryType = 
+{
+    name : "",
+    hassubentry : false,
+    fields : [],
+    calculations : [],
+    subentries : []
+}
+
+const emptyField : FieldType = 
+{
+    name : "",
+    prefix : "",
+    value : "",
+    postfix : "",
+    type : "",
+    displayvisible : false,
+    entryvisible : false
+}
+
+const emptyCalculation : CalculationType = 
+{
+    name : "",
+    expression : "",
+    type : "",
+    output : ""
+}
+
+/* TEST PLAN
     - getTemplate
         - Given true template
         - Given null/undefined template
     - getTemplateFromID
         - Given true id
-        - Given id not in database
+            - If id not is database, query gives null so
+                getTemplate tests apply from there
     - getCatNames
         - Works as intended
         - Gets blank categories section
@@ -587,9 +625,132 @@ const truthTemplate : TemplateData =
         - Has wrong name
         - Has blank sub entries section
         - Is not a sub entry
+        - look for field name instead
 */
 
-test('getTemplate gets template', () =>
+vi.mock("../src/database", () => (
+{
+    getProjectTemplate : vi.fn(() => Promise.resolve(template))
+}
+));
+
+test('getTemplate: functional', () =>
 {
     expect(getTemplate(template)).toStrictEqual(truthTemplate)
 })
+
+test('getTemplate: false template', () => 
+{
+    expect(getTemplate(null)).toStrictEqual({templateName : "", categories : []})
+})
+
+test('getTemplateFromID: functional', async () =>
+{
+    expect(await getTemplateFromID(10)).toStrictEqual(truthTemplate)
+})
+
+test('getCatNames: functional', () =>
+{
+    expect(getCatNames(truthTemplate)).toStrictEqual(["Personnel", "Equipment", "Other_Goods_and_Services", "Travel_Costs", "Subcontracting", "Internally_Invoiced_Services", "Totals"])
+})
+
+test('getCatNames: blank categories', () => 
+{
+    expect(getCatNames(emptyTemplate)).toStrictEqual([])
+})
+
+test('getFieldNames: functional', () =>
+{
+    expect(getFieldsNames(truthTemplate.categories[3])).toStrictEqual(["Days", "Accomodation", "Sustinance", "Base_Total", "Entry_Total", "Trip_Total"])
+})
+
+test('getFieldNames: blank fields section', () =>
+{
+    expect(getFieldsNames(emptyCategory)).toStrictEqual([])
+})
+
+test('findCatObject: functional', () =>
+{
+    expect(findCatObject("Travel_Costs", truthTemplate.categories)).toStrictEqual(truthTemplate.categories[3])
+})
+
+test('findCatObject: name not found', () =>
+{
+    expect(findCatObject("Staff_Costs", truthTemplate.categories)).toStrictEqual(emptyCategory)
+})
+
+test('findCatObject: blank categories section', () =>
+{
+    expect(findCatObject("Travel_Costs", emptyTemplate.categories)).toStrictEqual(emptyCategory)
+})
+
+test('findFieldObject: functional', () =>
+{
+    expect(findFieldObject("Days", truthTemplate.categories[3])).toStrictEqual(truthTemplate.categories[3].fields[0])
+})
+    
+test('findFieldObject: name not found', () =>
+{
+    expect(findFieldObject("Months", truthTemplate.categories[3])).toStrictEqual(emptyField)
+})
+    
+test('findFieldObject: blank field section', () =>
+{
+    expect(findFieldObject("Days", emptyCategory)).toStrictEqual(emptyField)
+})
+
+test('findCalcObject: functional', () =>
+{
+    expect(findCalcObject("Person_Months", truthTemplate.categories[0])).toStrictEqual(truthTemplate.categories[0].calculations[0])
+})
+        
+test('findCalcObject: name not found', () =>
+{
+    expect(findCalcObject("Person_Years", truthTemplate.categories[0])).toStrictEqual(emptyCalculation)
+})
+        
+test('findCalcObject: blank calc section', () =>
+{
+    expect(findCalcObject("Person_Months", emptyCategory)).toStrictEqual(emptyCalculation)
+})
+
+test('getSubEntryNames: functional', () =>
+{
+    expect(getSubEntryNames(truthTemplate.categories[3])).toStrictEqual(["What", "Amount"])
+})
+
+test('getSubEntryNames: blank sub entry section', () =>
+{
+    expect(getSubEntryNames(emptyCategory)).toStrictEqual([])
+})
+
+test('getSubEntryNames: is not a sub entry', () => 
+{
+    expect(getSubEntryNames(truthTemplate.categories[0])).toStrictEqual([])
+})
+
+test('findSubEntryObject: functional', () =>
+{
+    expect(findSubEntryObject("Amount", truthTemplate.categories[3])).toStrictEqual(truthTemplate.categories[3].subentries[1])
+})
+
+test('findSubEntryObject: name not found', () =>
+{
+    expect(findSubEntryObject("Why", truthTemplate.categories[3])).toStrictEqual(emptyField)
+})
+
+test('findSubEntryObject: blank sub entry section', () =>
+{
+    expect(findSubEntryObject("Amount", emptyCategory)).toStrictEqual(emptyField)
+})
+
+test('findSubEntryObject: is not a sub entry', () =>
+{
+    expect(findSubEntryObject("Amount", truthTemplate.categories[0])).toStrictEqual(emptyField)
+})
+
+test('findSubEntryObject: search field name', () =>
+{
+    expect(findSubEntryObject("Days", truthTemplate.categories[3])).toStrictEqual(emptyField)
+})
+
