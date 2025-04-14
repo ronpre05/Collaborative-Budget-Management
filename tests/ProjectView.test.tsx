@@ -24,6 +24,39 @@ vi.mock("../src/database", () => ({
   },
 }));
 
+// Template mocks
+// This template data will need to be modified if it needs to be read properly
+vi.mock("../src/newTemplateParser", () => ({
+  getTemplateFromID: vi.fn(() =>
+    Promise.resolve({
+      templateName: "Horizon RIA",
+      categories: [
+        {
+          name: "Personnel",
+          fields: [
+            {
+              fieldName: "Amount",
+            },
+          ],
+          calculations: [],
+          hassubentry: false,
+          subentries: [],
+        },
+      ],
+    })
+  ),
+  findCatObject: vi.fn((catName, categories) => {
+    return categories.find(cat => cat.name === catName) || {
+      name: "",
+      fields: [],
+      calculations: [],
+      hassubentry: false,
+      subentries: [],
+    };
+  }),
+}));
+
+
 describe("ProjectView Component", () => {
   beforeEach(() => {
     // Mock the project ID
