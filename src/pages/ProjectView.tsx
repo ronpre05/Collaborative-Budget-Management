@@ -50,16 +50,17 @@ const ProjectView: React.FC = () => {
       {
         console.log(template);
         console.error("Error handling template for project: ", projectID);
-        return;
       }
 
       // Fetch project name
       const name = await getProjectName();
       setProjectName(name);
+      console.log(projectName);
 
       // Fetch user role in the project
       const role = await getUserRoleInProject(parseInt(projectID, 10));
       setUserRole(role);
+      console.log(userRole);
       
       // Map the roleID to a role name
       if (role !== null) {
