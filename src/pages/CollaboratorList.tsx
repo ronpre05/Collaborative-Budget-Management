@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../database"; // Adjust according to your supabase import
+import { supabase } from "../database";
 
 interface CollaboratorListProps {
   projectID: number;
@@ -26,19 +26,29 @@ const CollaboratorList: React.FC<CollaboratorListProps> = ({ projectID }) => {
   }, [projectID]);
 
   return (
-    <div>
-      <h3>Project Collaborators</h3>
-      <ul>
+    <div className="max-w-4xl mx-auto px-6 py-8">
+      <h3 className="text-2xl font-semibold mb-6">Project Collaborators</h3>
+
+      <div className="bg-white shadow-md rounded-lg p-6">
         {collaborators.length > 0 ? (
-          collaborators.map((user) => (
-            <li key={user.userID}>
-              {user.Users.firstName} {user.Users.lastName} ({user.Users.email}) - {user.Roles?.roleName || "Unknown Role"}
-            </li>
-          ))
+          <ul className="space-y-4">
+            {collaborators.map((user) => (
+              <li
+                key={user.userID}
+                className="flex justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition duration-200"
+              >
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium">{`${user.Users.firstName} ${user.Users.lastName}`}</span>
+                  <span className="text-sm text-gray-600">{user.Users.email}</span>
+                </div>
+                <span className="text-sm text-gray-500">{user.Roles?.roleName || "Unknown Role"}</span>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <p>No collaborators found.</p>
+          <p className="text-center text-gray-500">No collaborators found.</p>
         )}
-      </ul>
+      </div>
     </div>
   );
 };

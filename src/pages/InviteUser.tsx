@@ -4,7 +4,9 @@ import { inviteUserToProject, getRoles } from "./../database";
 const InviteUser: React.FC<{ projectID: number }> = ({ projectID }) => {
   const [email, setEmail] = useState("");
   const [roleID, setRoleID] = useState(2); // Default role (Institution Lead)
-  const [roles, setRoles] = useState<any[]>([]);  // To store roles fetched from the database
+  const [roles, setRoles] = useState<any[]>([]); // To store roles fetched from the database
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // To store error message
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // To store success message
 
   // Fetch roles when the component mounts
   useEffect(() => {
@@ -17,21 +19,33 @@ const InviteUser: React.FC<{ projectID: number }> = ({ projectID }) => {
         console.error("Error in fetchRoles:", error);
       }
     };
-  
+
     fetchRoles();
   }, []);
 
   const handleInvite = async () => {
-    if (!email) {
-      alert("Please enter an email.");
+    // Reset messages before validation
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    // Check if email and role are filled
+    if (!email || !roleID) {
+      setErrorMessage("Please fill out all fields.");
       return;
     }
 
     const result = await inviteUserToProject(email, projectID, roleID);
     if (result) {
-      alert("User invited successfully!");
+      setSuccessMessage("User invited successfully!");
+
+      // Reset the input fields after success
+      setEmail("");
+      setRoleID(2); // Reset to default role
+      setTimeout(() => {
+        setSuccessMessage(null); // Clear success message after 3 seconds
+      }, 3000);
     } else {
-      alert("Error inviting user.");
+      setErrorMessage("Error inviting user.");
     }
   };
 
@@ -41,7 +55,9 @@ const InviteUser: React.FC<{ projectID: number }> = ({ projectID }) => {
 
       {/* Email input */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">User Email</label>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          User Email
+        </label>
         <input
           type="email"
           id="email"
@@ -54,7 +70,9 @@ const InviteUser: React.FC<{ projectID: number }> = ({ projectID }) => {
 
       {/* Role select */}
       <div>
-        <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+        <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+          Role
+        </label>
         <select
           id="role"
           value={roleID}
@@ -72,6 +90,10 @@ const InviteUser: React.FC<{ projectID: number }> = ({ projectID }) => {
           )}
         </select>
       </div>
+
+      {/* Display error or success messages */}
+      {errorMessage && <p className="mt-4 text-red-600 font-semibold">{errorMessage}</p>}
+      {successMessage && <p className="mt-4 text-green-600 font-semibold">{successMessage}</p>}
 
       {/* Submit button */}
       <div>
