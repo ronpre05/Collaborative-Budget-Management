@@ -34,21 +34,33 @@ const SettingsPage = () => {
   }
 
   return (
-    <div>
-      <label>Institution Name: </label>
-      <Creatable
-        cacheOptions
-        loadOptions={getInstitutions} // Fetch options from DB
-        defaultOptions
-        onChange={handleChange}
-        onInputChange={handleInputChange}
-        value={selectedInstitution}
-        inputValue={newInstitution}
-        placeholder="Start typing an institution name..."
-        isClearable
-      />
+    <div className="px-4 py-10">
+      <h1 className="text-3xl font-bold mb-6">Account Settings</h1>
 
-      <Button variant="outline" onClick={handleAddInstitution} >Add Institution</Button>
+      {/* Add Institution Box */}
+      <div className="max-w-2xl mx-auto p-6 border rounded-2xl shadow-md bg-white">
+        <h2 className="text-2xl font-semibold mb-4">Add Institution</h2>
+
+        <label className="block text-sm font-medium mb-1">Institution Name:</label>
+        <div className="mb-4">
+          <Creatable
+            cacheOptions
+            loadOptions={getInstitutions} // Fetch options from DB
+            defaultOptions
+            onChange={handleChange}
+            onInputChange={handleInputChange}
+            value={selectedInstitution}
+            inputValue={newInstitution}
+            placeholder="Start typing an institution name..."
+            isClearable
+            classNamePrefix="react-select"
+          />
+        </div>
+
+        <Button variant="outline" onClick={handleAddInstitution}>
+          Add Institution
+        </Button>
+      </div>
     </div>
   );
 };
