@@ -4,7 +4,6 @@ import { createProjectQuery, getUsersInstitutions, getInstitutionID, getChosenTe
 import { checkAndAddCategories } from "../database";
 import { getCatNames, getTemplate } from "@/newTemplateParser";
 
-//test rahy branch
 // Inserts new categories for a project into the database
 async function categoryCheck(templateData : any)
 {
