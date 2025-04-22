@@ -13,13 +13,6 @@ They have been roughly split up into sections so that they are kept with like st
 | [Non Functional](#non-functional)         |
 | [Security](#security)                     |
 
-| Priority | Meaning     |
-| -------- | ----------- |
-| 1        | Must Have   |
-| 2        | Should Have |
-| 3        | Could Have  |
-| 4        | Wont Have   |
-
 | Story Points | Time        | Effort   |
 | ------------ | ----------- | -------- |
 | 1            | Few minutes | Minimum  |
