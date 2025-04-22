@@ -1,112 +1,101 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { createProjectQuery, getUsersInstitutions, getInstitutionID, getChosenTemplateData, getAllTemplates } from "../database";
-import { checkAndAddCategories } from "../database";
+import {
+  createProjectQuery,
+  getUsersInstitutions,
+  getInstitutionID,
+  getChosenTemplateData,
+  getAllTemplates,
+  checkAndAddCategories
+} from "../database";
 import { getCatNames, getTemplate } from "@/newTemplateParser";
 
-// Inserts new categories for a project into the database
-async function categoryCheck(templateData : any)
-{
-    // Get names of categories from the template
-    let categoryNames = getCatNames(getTemplate(templateData));
-
-    // Check for missing categories and add any missing ones
-    await checkAndAddCategories(categoryNames);
+async function categoryCheck(templateData: any) {
+  let categoryNames = getCatNames(getTemplate(templateData));
+  await checkAndAddCategories(categoryNames);
 }
 
-// Configuration page for creating a new project
 const CreateProject: React.FC = () => {
+  const navigate = useNavigate();
+
   const [institutions, setInstitutions] = useState<string[]>([]);
-  const [selectedInstitution, setSelectedInstitution] = useState<string>("");
   const [templates, setTemplates] = useState<string[]>([]);
+  const [selectedInstitution, setSelectedInstitution] = useState<string>("");
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [projectName, setProjectName] = useState<string>("");
   const [projectAcronym, setProjectAcronym] = useState<string>("");
-  
-  // Create project button call
-  const handleCreateProject = async () => 
-  {
-      try 
-      {
-        let institutionID = await getInstitutionID(selectedInstitution);
 
-        let templateData = await getChosenTemplateData(selectedTemplate);
+  const [errors, setErrors] = useState({
+    institution: false,
+    template: false,
+    name: false,
+    acronym: false,
+  });
 
-        if(institutionID !== null && templateData !== null)
-        {
-          let projectID =  await createProjectQuery(institutionID, projectName, projectAcronym, templateData);
-          
-          // Set projectID in localstorage
-          if(projectID !== null)
-          {
-            localStorage.setItem('projectID', projectID);
-          }
-
-          // Create categories for template used
-          await categoryCheck(templateData);
-          console.log("Project created successfully!");
-        }
-        else
-        {
-          console.log("Invalid institution ID OR Invalid template data")
-          console.log("InstitutionID: ", institutionID);
-          console.log("Template Data: ", templateData);
-        }
-      } 
-      catch (error)
-      {
-        console.error("Error creating project:", error);
-      }
-  };
-  
-  // Fetch the institutions stored in the users account
-  useEffect(() => 
-  {
-      const fetchInstitutions = async () => 
-      {
-        try 
-        {
-          // Get and set instiutions in users account
-          const data = await getUsersInstitutions();
-          setInstitutions(data);
-        } 
-        catch (error) 
-        {
-          console.error("Error fetching institutions:", error);
-        }
-      };
-  
-      fetchInstitutions();
-  }, []);
-
-  useEffect(() =>
-  {
-    const fetchTemplates = async () =>
-    {
-      try
-      {
-        const data = await getAllTemplates();
-        setTemplates(data);
-      }
-      catch (error)
-      {
-        console.error("Error fetching templates: ", error);
-      }
+  const handleCreateProject = async () => {
+    // Check for missing fields
+    const newErrors = {
+      institution: selectedInstitution === "",
+      template: selectedTemplate === "",
+      name: projectName.trim() === "",
+      acronym: projectAcronym.trim() === "",
     };
 
-    fetchTemplates();
-  }, []);
-  
+    setErrors(newErrors);
 
-  const handleIChange = (event: React.ChangeEvent<HTMLSelectElement>) => 
-  {
-    setSelectedInstitution(event.target.value);
+    const hasError = Object.values(newErrors).some(Boolean);
+    if (hasError) return;
+
+    try {
+      const institutionID = await getInstitutionID(selectedInstitution);
+      const templateData = await getChosenTemplateData(selectedTemplate);
+
+      if (institutionID && templateData) {
+        const projectID = await createProjectQuery(
+          institutionID,
+          projectName,
+          projectAcronym,
+          templateData
+        );
+
+        if (projectID) {
+          localStorage.setItem("projectID", projectID);
+        }
+
+        await categoryCheck(templateData);
+        console.log("Project created successfully!");
+        navigate("/project-view");
+      } else {
+        console.log("Invalid institution ID OR template data");
+      }
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
   };
 
-  const handleTChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
-  {
-    setSelectedTemplate(event.target.value);
-  }
+  useEffect(() => {
+    const fetchInstitutions = async () => {
+      try {
+        const data = await getUsersInstitutions();
+        setInstitutions(data);
+      } catch (error) {
+        console.error("Error fetching institutions:", error);
+      }
+    };
+    fetchInstitutions();
+  }, []);
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        const data = await getAllTemplates();
+        setTemplates(data);
+      } catch (error) {
+        console.error("Error fetching templates:", error);
+      }
+    };
+    fetchTemplates();
+  }, []);
 
   return (
     <div className="px-6 py-10 max-w-3xl mx-auto">
@@ -121,26 +110,26 @@ const CreateProject: React.FC = () => {
           <select
             id="institution"
             value={selectedInstitution}
-            onChange={handleIChange}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setSelectedInstitution(e.target.value)}
+            className={`w-full border rounded-md px-3 py-2 focus:outline-none ${
+              errors.institution
+                ? "border-red-500 focus:ring-red-500"
+                : "focus:ring-blue-500"
+            }`}
           >
             <option value="" disabled>
               Select an institution
             </option>
-            {institutions.map((institution, index) => (
-              <option key={index} value={institution}>
-                {institution}
+            {institutions.map((inst, idx) => (
+              <option key={idx} value={inst}>
+                {inst}
               </option>
             ))}
           </select>
+          {errors.institution && (
+            <p className="text-red-500 text-sm mt-1">Please select an institution.</p>
+          )}
         </div>
-
-        {/* Display selected institution */}
-        {selectedInstitution && (
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Institution selected:</span> {selectedInstitution}
-          </p>
-        )}
 
         {/* Template dropdown */}
         <div>
@@ -150,26 +139,26 @@ const CreateProject: React.FC = () => {
           <select
             id="template"
             value={selectedTemplate}
-            onChange={handleTChange}
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setSelectedTemplate(e.target.value)}
+            className={`w-full border rounded-md px-3 py-2 focus:outline-none ${
+              errors.template
+                ? "border-red-500 focus:ring-red-500"
+                : "focus:ring-blue-500"
+            }`}
           >
             <option value="" disabled>
               Select a Template
             </option>
-            {templates.map((template, index) => (
-              <option key={index} value={template}>
+            {templates.map((template, idx) => (
+              <option key={idx} value={template}>
                 {template}
               </option>
             ))}
           </select>
+          {errors.template && (
+            <p className="text-red-500 text-sm mt-1">Please select a template.</p>
+          )}
         </div>
-
-        {/* Display selected template */}
-        {selectedTemplate && (
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Template selected:</span> {selectedTemplate}
-          </p>
-        )}
 
         {/* Project name */}
         <div>
@@ -178,10 +167,16 @@ const CreateProject: React.FC = () => {
             type="text"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
+            className={`w-full border rounded-md px-3 py-2 focus:outline-none ${
+              errors.name 
+              ? "border-red-500 focus:ring-red-500" 
+              : "focus:ring-blue-500"
+            }`}
             placeholder="Enter project name"
-            required
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">Project name is required.</p>
+          )}
         </div>
 
         {/* Project acronym */}
@@ -191,27 +186,31 @@ const CreateProject: React.FC = () => {
             type="text"
             value={projectAcronym}
             onChange={(e) => setProjectAcronym(e.target.value)}
-            placeholder="Enter acronym"
             maxLength={10}
-            required
-            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full border rounded-md px-3 py-2 focus:outline-none ${
+              errors.acronym
+                ? "border-red-500 focus:ring-red-500"
+                : "focus:ring-blue-500"
+            }`}
+            placeholder="Enter project acronym"
           />
+          {errors.acronym && (
+            <p className="text-red-500 text-sm mt-1">Project acronym is required.</p>
+          )}
         </div>
 
-        {/* Create project button */}
+        {/* Submit button */}
         <div className="pt-2">
-          <Link to="/project-view">
-            <button
-              onClick={handleCreateProject}
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-            >
-              Create Project
-            </button>
-          </Link>
+          <button
+            onClick={handleCreateProject}
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            Create Project
+          </button>
         </div>
       </div>
     </div>
   );
 };
-  
+
 export default CreateProject;
