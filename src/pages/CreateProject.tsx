@@ -114,7 +114,7 @@ const CreateProject: React.FC = () => {
       <h1 className="text-3xl font-bold mb-8">Project Configuration</h1>
 
       <div className="space-y-6 bg-white p-6 rounded-2xl shadow-md border">
-        {/* Institution Dropdown */}
+        {/* Institution dropdown */}
         <div>
           <label htmlFor="institution" className="block text-sm font-medium mb-1">
             Choose an institution:
@@ -136,7 +136,14 @@ const CreateProject: React.FC = () => {
           </select>
         </div>
 
-        {/* Template Dropdown */}
+        {/* Display selected institution */}
+        {selectedInstitution && (
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Institution selected:</span> {selectedInstitution}
+          </p>
+        )}
+
+        {/* Template dropdown */}
         <div>
           <label htmlFor="template" className="block text-sm font-medium mb-1">
             Choose a template:
@@ -158,19 +165,14 @@ const CreateProject: React.FC = () => {
           </select>
         </div>
 
-        {/* Display selected values */}
-        {selectedInstitution && (
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Institution selected:</span> {selectedInstitution}
-          </p>
-        )}
+        {/* Display selected template */}
         {selectedTemplate && (
           <p className="text-sm text-gray-600">
             <span className="font-medium">Template selected:</span> {selectedTemplate}
           </p>
         )}
 
-        {/* Project Name */}
+        {/* Project name */}
         <div>
           <label className="block text-sm font-medium mb-1">Project Name:</label>
           <input
@@ -183,7 +185,7 @@ const CreateProject: React.FC = () => {
           />
         </div>
 
-        {/* Project Acronym */}
+        {/* Project acronym */}
         <div>
           <label className="block text-sm font-medium mb-1">Project Acronym:</label>
           <input
@@ -197,7 +199,7 @@ const CreateProject: React.FC = () => {
           />
         </div>
 
-        {/* Create Button */}
+        {/* Create project button */}
         <div className="pt-2">
           <Link to="/project-view">
             <button
