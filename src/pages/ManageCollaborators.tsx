@@ -26,21 +26,25 @@ const ManageCollaborators: React.FC<ManageCollaboratorsProps> = ({ projectID, us
       )}
   
       {/* Only Project Investigators can invite or remove users */}
-      {userRole === 3 && (
-        <>
-          <h3 className="text-2xl font-semibold mb-4 max-w-md mx-auto">Invite Collaborators</h3>
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6 border border-gray-300 max-w-md mx-auto">
-            {projectID && <InviteUser projectID={projectID} />}
+    {userRole === 3 && (
+        <div className="flex space-x-8">
+          {/* Invite Collaborators */}
+          <div className="flex-1">
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6 border border-gray-300">
+              {projectID && <InviteUser projectID={projectID} />}
+            </div>
           </div>
-  
-          <h3 className="text-2xl font-semibold mb-4 max-w-md mx-auto">Remove Collaborators</h3>
-          <div className="bg-white p-6 rounded-lg mb-6 max-w-md mx-auto">
-            {projectID && <RemoveCollaborator projectID={projectID} />}
+
+          {/* Remove Collaborators */}
+          <div className="flex-1">
+            <div className="bg-white p-6 rounded-lg mb-6">
+              {projectID && <RemoveCollaborator projectID={projectID} />}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
-  );  
+  );
 };
 
 export default ManageCollaborators;

@@ -51,7 +51,7 @@ const InviteUser: React.FC<{ projectID: number }> = ({ projectID }) => {
 
   return (
     <div className="space-y-6 max-w-lg">
-      <h3 className="text-2xl font-semibold text-left">Invite User</h3>
+      <h3 className="text-2xl font-semibold text-left">Invite Collaborator</h3>
 
       {/* Email input */}
       <div>
