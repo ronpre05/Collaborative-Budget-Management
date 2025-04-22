@@ -41,9 +41,11 @@ const SettingsPage = () => {
       // Add user institution pairing in database
       if (institutionID !== null) {
         await addUserInstitution(institutionID);
-        setSuccessMessage("Institution added successfully!"); // Set success message
+        setSuccessMessage("Institution added successfully!");
+
+        // Clear success message after 3 sceonds
         setTimeout(() => {
-          setSuccessMessage(null); // Clear message after 3 seconds
+          setSuccessMessage(null);
         }, 3000);
       }
     } catch (error) {
