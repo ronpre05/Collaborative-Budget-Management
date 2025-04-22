@@ -25,7 +25,7 @@ used as default return values
 */
 
 
-const truthTemplate : TemplateData = 
+export const truthTemplate : TemplateData = 
 {
     templateName : "Horizon RIA",
     categories : 
@@ -556,13 +556,13 @@ const truthTemplate : TemplateData =
     ]
 }
 
-const emptyTemplate : TemplateData =
+export const emptyTemplate : TemplateData =
 {
     templateName : "",
     categories : []
 }
 
-const emptyCategory : CategoryType = 
+export const emptyCategory : CategoryType = 
 {
     name : "",
     hassubentry : false,
@@ -571,7 +571,7 @@ const emptyCategory : CategoryType =
     subentries : []
 }
 
-const emptyField : FieldType = 
+export const emptyField : FieldType = 
 {
     name : "",
     prefix : "",
@@ -582,7 +582,7 @@ const emptyField : FieldType =
     entryvisible : false
 }
 
-const emptyCalculation : CalculationType = 
+export const emptyCalculation : CalculationType = 
 {
     name : "",
     expression : "",
