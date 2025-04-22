@@ -1,3 +1,4 @@
+import { ContrastIcon } from "lucide-react";
 import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
 import { findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
@@ -219,31 +220,54 @@ export function expressionToRPN(expression : string) : string[]
 {
     // Splits the given expression into a list of string tokens, filtering out any extra spaces
     const tokens : string [] = prepString(expression);
-    let opStack : string[] = []
-    let outQueue : string[] = []
+    let failed : boolean = false;
+    let opStack : string[] = [];
+    let outQueue : string[] = [];
 
-    Object.values(tokens).forEach(token =>
-        // For each token in the string
+    for(let token of tokens)
+    // For each token in the string
     {
+        if(failed == true)
+        {
+            continue;
+        }
+
         if(token == "(") // token is a (
         {
             opStack.push(token);
-            return;
+            continue;
         }
 
         if(token == ")") // token is a )
         {
-            while(opStack[opStack.length - 1] != "(")
+            failed = true;
+
+            for(let checkToken of opStack)
             {
-                let val = opStack.pop();
-                if(val != undefined)
+                if(checkToken != "(")
                 {
-                    outQueue.push(val);
+                    continue;
+                }
+                else
+                {
+                    while(opStack[opStack.length - 1] != "(")
+                    {
+                        let val = opStack.pop();
+                        if(val != undefined)
+                        {
+                            outQueue.push(val);
+                        }
+                    }
+
+                    opStack.pop();
+                    failed = false;
+
+                    break;
                 }
             }
 
             opStack.pop();
-            return;
+            continue;
         }
 
         if(isOperator(token)) // an operator
@@ -258,7 +282,7 @@ export function expressionToRPN(expression : string) : string[]
             }
 
             opStack.push(token);
-            return;
+            continue;
         }
 
         // Else is a number or a variable
@@ -266,7 +290,11 @@ export function expressionToRPN(expression : string) : string[]
         
 
     }
-    );
+
+    if(failed == true)
+    {
+        return [];
+    }
 
     // pop rest of stack to output
     while(opStack.length)
@@ -274,6 +302,11 @@ export function expressionToRPN(expression : string) : string[]
         let val = opStack.pop();
         if(val != undefined)
         {
+            if(val == "(")
+            {
+                return [];
+            }
+
             outQueue.push(val);
         }
         
@@ -345,7 +378,7 @@ export async function basicEvaluator(postfixExpr : string[], projectID : number,
     
                     case "/":
                     {
-                        if(op2 == 0)
+                        if(op1 === 0)
                         {
                             val = 0;
                         }

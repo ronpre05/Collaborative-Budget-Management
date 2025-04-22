@@ -2,7 +2,8 @@ import template from "../template1.json"
 import { CalculationType, CategoryType, FieldType, TemplateData } from "../src/types"
 import { expect, test, vi } from 'vitest'
 import { truthTemplate, emptyTemplate, emptyCategory, emptyField, emptyCalculation } from "./newTemplateParser.test"
-import { AssocFromStr, isAlphabet, isNumeric, isOperator, isSpace, ofEqualPrec, ofGreaterPrec, precCheck, precFromStr, toOperator } from "../src/expressionParser";
+import { AssocFromStr, basicEvaluator, expressionToRPN, isAlphabet, isNumeric, isOperator, isSpace, ofEqualPrec, ofGreaterPrec, precCheck, precFromStr, prepString, toOperator } from "../src/expressionParser";
+import { getCategoryID, getFieldID, getSubValue } from "../src/database";
 
 /*
 Tests will be ran against the base "Horizon RIA" template inside
@@ -81,20 +82,21 @@ const emptyOp : Operator =
         - test _
         - test :
         - test number
-
-
+        - test space
     - prepString
         - give empty expression
         - give expression with spaces
         - give spaceless expression
-        - give with long constant numbers to test handling of them
-        - give with long variables to test handling of them
+        - give with variable to test handling of them
+        - give with multiple variables to test handling of them
     - expressionToRPN
         - give empty expression
         - give expression with spaces
         - give spaceless expression
         - give with no closing bracket
         - give with no opening bracket
+        - give with variable
+        - give with multiple variables
     - basicEvaluator (mock getVariable-getValue-getSubValue)
         - test with no variables
         - test divides by 0
@@ -102,7 +104,17 @@ const emptyOp : Operator =
         - test with getVariable with a sub entry
         - test with two variables (no sub entry)
         - test with two variables (sub entry)
+        - test empty expression
 */
+
+vi.mock("../src/database", () => (
+{
+    getCategoryID : vi.fn(() => Promise.resolve(1)),
+    getFieldID : vi.fn(() => Promise.resolve(1)),
+    getValue : vi.fn(() => Promise.resolve(1)),
+    getSubValue : vi.fn(() => Promise.resolve(1))
+}
+));
 
 test('isSpace: functional with space', () =>
 {        
@@ -230,3 +242,104 @@ test('isAlphabet: with a number', () =>
 {
     expect(isAlphabet("1")).toStrictEqual(false)
 })
+
+test('isAlphabet: a space', () =>
+{
+    expect(isAlphabet(" ")).toStrictEqual(false)
+})
+
+test('prepString: blank expression', () =>
+{
+    expect(prepString("")).toStrictEqual([])
+})
+
+test('prepString: expression with spaces', () =>
+{
+    expect(prepString("0 + 1 + 2")).toStrictEqual(["0", "+", "1", "+", "2"])
+})
+
+test('prepString: spaceless expression', () =>
+{
+    expect(prepString("0+1+2")).toStrictEqual(["0", "+", "1", "+", "2"])
+})
+
+test('prepString: expression with variable', () =>
+{
+    expect(prepString("Personnel:Amount + 1 + 2")).toStrictEqual(["Personnel:Amount", "+", "1", "+", "2"])
+})
+
+test('prepString: expression with multiple variables', () =>
+{
+    expect(prepString("Personnel:Amount + 1 + Personnel:Amount")).toStrictEqual(["Personnel:Amount", "+", "1", "+", "Personnel:Amount"])
+})
+
+test('expressionToRPN: blank expression' , () =>
+{
+    expect(expressionToRPN("")).toStrictEqual([])
+})
+
+test('expressionToRPN: expression with spaces' , () =>
+{
+    expect(expressionToRPN("0 + 1 + 2")).toStrictEqual(["0", "1", "+", "2", "+"])
+})
+
+test('expressionToRPN: spaceless expression' , () =>
+{
+    expect(expressionToRPN("0+1+2")).toStrictEqual(["0", "1", "+", "2", "+"])
+})
+
+test('expressionToRPN: no closing brackets' , () =>
+{
+    expect(expressionToRPN("(0+1")).toStrictEqual([])
+})
+
+test('expressionToRPN: no opening brackets' , () =>
+{
+    expect(expressionToRPN("0+1)")).toStrictEqual([])
+})
+
+test('expressionToRPN: with a variable' , () =>
+{
+    expect(expressionToRPN("Personnel:Amount + 1 + 2")).toStrictEqual(["Personnel:Amount", "1", "+", "2", "+"])
+})
+
+test('expressionToRPN: with multiple variables' , () =>
+{
+    expect(expressionToRPN("Personnel:Amount + 1 + Personnel:Amount")).toStrictEqual(["Personnel:Amount", "1", "+", "Personnel:Amount", "+"])
+})
+
+test('basicEvaluator: with no variables', async () => 
+{
+    expect(await basicEvaluator(["0", "1", "+", "2", "+"], 10, 10, false)).toStrictEqual(3)
+})
+
+test('basicEvaluator: divides by 0', async () => 
+{
+    expect(await basicEvaluator(["2", "0", "/"], 10, 10, false)).toStrictEqual(0)
+})
+
+test('basicEvaluator: with no sub entry (1 variable)', async () => 
+{
+    expect(await basicEvaluator(["Personnel:Amount", "1", "+", "2", "+"], 10, 10, false)).toStrictEqual(4)
+})
+
+test('basicEvaluator: with sub entry (1 variable)', async () => 
+{
+    expect(await basicEvaluator(["Personnel:Amount", "1", "+", "2", "+"], 10, 10, true)).toStrictEqual(4)
+})
+
+test('basicEvaluator: with no sub entry (2 variables)', async () => 
+{
+    expect(await basicEvaluator(["Personnel:Amount", "1", "+", "Personnel:Amount", "+"], 10, 10, false)).toStrictEqual(3)
+})
+
+test('basicEvaluator: with sub entry (2 variables)', async () => 
+{
+    expect(await basicEvaluator(["Personnel:Amount", "1", "+", "Personnel:Amount", "+"], 10, 10, true)).toStrictEqual(3)
+})
+
+test('basicEvaluator: empty expression', async () =>
+{
+    expect(await basicEvaluator([], 10, 10, false)).toStrictEqual(0)
+})
+    
