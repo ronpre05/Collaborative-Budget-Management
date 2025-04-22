@@ -14,26 +14,30 @@ const ManageCollaborators: React.FC<ManageCollaboratorsProps> = ({ projectID, us
   }, []);
 
   return (
-    <div>
-      <h2>Manage Collaborators</h2>
-      <p>Below are the users in this project.</p>
+    <div className="p-6">
+      <h2 className="text-3xl font-bold mb-4 text-left">Manage Collaborators</h2>
+      <p className="text-lg mb-6 text-left">Below are the users collaborating on this project.</p>
 
       {/* Show the list of collaborators (to all roles) */}
-
-      {userRole != 3 && (
-        <>
-        {projectID && <CollaboratorList projectID={projectID} />}
-        </>
+      {userRole !== 3 && (
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          {projectID && <CollaboratorList projectID={projectID} />}
+        </div>
       )}
-      
+
       {/* Only Project Investigators (role ID 3) can invite or remove users */}
+      <h3 className="text-2xl font-semibold mb-4 max-w-md mx-auto">Invite Collaborators</h3>
       {userRole === 3 && (
-        <>
-          <h3>Invite Collaborators</h3>
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6 border border-gray-300 max-w-md mx-auto">
           {projectID && <InviteUser projectID={projectID} />}
-          <h3>Remove Collaborators</h3>
+        </div>
+      )}
+
+      <h3 className="text-2xl font-semibold mb- max-w-md mx-auto">Remove Collaborators</h3>
+      {userRole === 3 && (
+         <div className="bg-white p-6 rounded-lg mb-6 max-w-md mx-auto">
           {projectID && <RemoveCollaborator projectID={projectID} />}
-        </>
+        </div>
       )}
     </div>
   );
