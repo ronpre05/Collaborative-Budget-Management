@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 const SettingsPage = () => {
   const [selectedInstitution, setSelectedInstitution] = useState<any | null>(null);
   const [newInstitution, setNewInstitution] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChange = (option: any) => {
     if (option) {
@@ -24,12 +26,29 @@ const SettingsPage = () => {
   };
 
   const handleAddInstitution = async () => {
-    console.log(selectedInstitution.value);
-    const institutionID = await addInstitution(selectedInstitution.value);
+    // Clear error message
+    setErrorMessage("");
 
-    // Add user institution pairing in database
-    if(institutionID !== null){
-      await addUserInstitution(institutionID);
+    // Display error if no institution selected
+    if(!selectedInstitution){
+      setErrorMessage("Please select or create an institution first.");
+      return;
+    }
+
+    try {
+      const institutionID = await addInstitution(selectedInstitution.value);
+
+      // Add user institution pairing in database
+      if (institutionID !== null) {
+        await addUserInstitution(institutionID);
+        setSuccessMessage("Institution added successfully!"); // Set success message
+        setTimeout(() => {
+          setSuccessMessage(null); // Clear message after 3 seconds
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error adding institution:", error);
+      setErrorMessage("Error adding institution. Please try again.");
     }
   }
 
@@ -55,11 +74,19 @@ const SettingsPage = () => {
             isClearable
             classNamePrefix="react-select"
           />
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+          )}
         </div>
+
+        {successMessage && (
+          <div className="mt-4 text-green-600 font-semibold">{successMessage}</div>
+        )}
 
         <Button variant="outline" onClick={handleAddInstitution}>
           Add Institution
         </Button>
+        
       </div>
     </div>
   );
