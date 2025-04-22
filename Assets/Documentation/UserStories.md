@@ -22,6 +22,8 @@ They have been roughly split up into sections so that they are kept with like st
 | 8-11         | A week      | Severe   |
 | 12-13        | A month     | Maximum  |
 
+User Story priorities are assigned using the MoSCoW prioritisation framework. With each priority assigned with a number.
+
 | Priority | Meaning     |
 | -------- | ----------- |
 | 1        | Must Have   |
