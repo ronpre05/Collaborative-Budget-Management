@@ -110,57 +110,105 @@ const CreateProject: React.FC = () => {
   }
 
   return (
-    <div className="ConfigPage">
-      <h1>Project Configuration</h1>
-      
-      {/* Dropdown menu for selecting an institution*/}
-      <label htmlFor="dropdown">Choose an institution:</label>
-      <select id="dropdown" value={selectedInstitution} onChange={handleIChange}>
-          <option value="" disabled>Select an institution</option>
-          {institutions.map((institution, index) => (
-            <option key={index} value={institution}>
-              {institution}
+    <div className="px-6 py-10 max-w-3xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8">Project Configuration</h1>
+
+      <div className="space-y-6 bg-white p-6 rounded-2xl shadow-md border">
+        {/* Institution Dropdown */}
+        <div>
+          <label htmlFor="institution" className="block text-sm font-medium mb-1">
+            Choose an institution:
+          </label>
+          <select
+            id="institution"
+            value={selectedInstitution}
+            onChange={handleIChange}
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>
+              Select an institution
             </option>
+            {institutions.map((institution, index) => (
+              <option key={index} value={institution}>
+                {institution}
+              </option>
             ))}
-      </select>
+          </select>
+        </div>
 
-      {/* Dropdown menu for selecting a template*/}
-      <label htmlFor="dropdown">Choose a template:</label>
-      <select id="dropdown" value={selectedTemplate} onChange={handleTChange}>
-          <option value="" disabled> Select a Template</option>
-          {templates.map((template, index) =>(
-            <option key={index} value={template}>
-              {template}
+        {/* Template Dropdown */}
+        <div>
+          <label htmlFor="template" className="block text-sm font-medium mb-1">
+            Choose a template:
+          </label>
+          <select
+            id="template"
+            value={selectedTemplate}
+            onChange={handleTChange}
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>
+              Select a Template
             </option>
-          ))}
-      </select>
+            {templates.map((template, index) => (
+              <option key={index} value={template}>
+                {template}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {selectedInstitution && <p>Institution selected: {selectedInstitution}</p>}
-      {selectedTemplate && <p>Template selected: {selectedTemplate}</p>}
-      {/* Project Name Input */}
-      <label>Project Name:</label>
-      <input
-          type="text"
-          value={projectName}
-          onChange={(e) => setProjectName(e.target.value)}
-          placeholder="Enter project name"
-          required
-      />
+        {/* Display selected values */}
+        {selectedInstitution && (
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Institution selected:</span> {selectedInstitution}
+          </p>
+        )}
+        {selectedTemplate && (
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Template selected:</span> {selectedTemplate}
+          </p>
+        )}
 
-      {/* Project Acronym Input */}
-      <label>Project Acronym:</label>
-      <input
-          type="text"
-          value={projectAcronym}
-          onChange={(e) => setProjectAcronym(e.target.value)}
-          placeholder="Enter acronym (e.g., AI-2024)"
-          maxLength={10}
-          required
-      />
+        {/* Project Name */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Project Name:</label>
+          <input
+            type="text"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="Enter project name"
+            required
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <Link to="/project-view">
-      <button onClick={handleCreateProject} className="create-project-btn">Create Project</button>
-      </Link>
+        {/* Project Acronym */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Project Acronym:</label>
+          <input
+            type="text"
+            value={projectAcronym}
+            onChange={(e) => setProjectAcronym(e.target.value)}
+            placeholder="Enter acronym (e.g., AI-2024)"
+            maxLength={10}
+            required
+            className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Create Button */}
+        <div className="pt-2">
+          <Link to="/project-view">
+            <button
+              onClick={handleCreateProject}
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              Create Project
+            </button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
