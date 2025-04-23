@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getPendingInvites, getSentInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID, getRoles } from "../database";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button"; 
 
 interface Invite {
   invitedID: number;
