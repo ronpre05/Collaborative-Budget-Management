@@ -25,7 +25,7 @@
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "String",
+					"Type" : "Date",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
@@ -35,7 +35,7 @@
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "String",
+					"Type" : "Date",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
@@ -65,7 +65,7 @@
 				"PersonMonths" : 
 				{
 					"Name" : "Person_Months",
-					"Expression" : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
+					"Expression" : "(Personnel:End_Date:M - Personnel:Start_Date:M) * (Personnel:Percentage / 100)",
 					"Type" : "Local",
 					"Output" : "Person_Month"
 				}
