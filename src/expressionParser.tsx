@@ -1,3 +1,4 @@
+import { ContrastIcon } from "lucide-react";
 import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
 import { findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
@@ -25,7 +26,7 @@ const operators : Operator[] =
 ]
 
 
-function isSpace(element : string) : boolean
+export function isSpace(element : string) : boolean
 // Checks if an elements is a space or a blank string
 {
     if(element == " " || element == "")
@@ -36,7 +37,7 @@ function isSpace(element : string) : boolean
     return false;
 }
 
-function isOperator(value : string) : boolean
+export function isOperator(value : string) : boolean
 {
     let ret : boolean = false;
 
@@ -54,7 +55,7 @@ function isOperator(value : string) : boolean
     return ret;
 }
 
-function toOperator(value : string) : Operator
+export function toOperator(value : string) : Operator
 {
     let ret : Operator = 
     {
@@ -76,17 +77,17 @@ function toOperator(value : string) : Operator
     return ret;
 }
 
-function precFromStr(op : string) : number
+export function precFromStr(op : string) : number
 {
     return (toOperator(op)).precedence;
 }
 
-function AssocFromStr(op : string) : Associativity
+export function AssocFromStr(op : string) : Associativity
 {
     return (toOperator(op)).associativity;
 }
 
-function ofGreaterPrec(op1 : string, op2 : string) : boolean
+export function ofGreaterPrec(op1 : string, op2 : string) : boolean
 {
     if(precFromStr(op1) < precFromStr(op2))
     {
@@ -96,7 +97,7 @@ function ofGreaterPrec(op1 : string, op2 : string) : boolean
     return false;
 }
 
-function ofEqualPrec(op1 : string, op2 : string) : boolean
+export function ofEqualPrec(op1 : string, op2 : string) : boolean
 {
     if(precFromStr(op1) === precFromStr(op2) && AssocFromStr(op1) === Associativity.Left)
     {
@@ -106,7 +107,7 @@ function ofEqualPrec(op1 : string, op2 : string) : boolean
     return false;
 }
 
-function precCheck(op1 : string, op2 : string) : boolean
+export function precCheck(op1 : string, op2 : string) : boolean
 {
     if(ofGreaterPrec(op1, op2) || ofEqualPrec(op1,op2))
     {
@@ -117,7 +118,7 @@ function precCheck(op1 : string, op2 : string) : boolean
     
 }
 
-function isNumeric(c : string) : boolean
+export function isNumeric(c : string) : boolean
 {
     if((Number.isFinite(+c) || c === ".") && !isSpace(c))
     {
@@ -127,7 +128,7 @@ function isNumeric(c : string) : boolean
     return false;
 }
 
-function isAlphabet(c : string) : boolean
+export function isAlphabet(c : string) : boolean
 {
     if(((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c === ":" || c === "_") && !isSpace(c))
     {
@@ -137,7 +138,7 @@ function isAlphabet(c : string) : boolean
     return false;
 }
 
-function prepString(expression : string) : string[]
+export function prepString(expression : string) : string[]
 {
     let tokens : string[] = [];
     let i = 0;
@@ -215,35 +216,58 @@ function prepString(expression : string) : string[]
     return tokens;
 }
 
-function expressionToRPN(expression : string) : string[]
+export function expressionToRPN(expression : string) : string[]
 {
     // Splits the given expression into a list of string tokens, filtering out any extra spaces
     const tokens : string [] = prepString(expression);
-    let opStack : string[] = []
-    let outQueue : string[] = []
+    let failed : boolean = false;
+    let opStack : string[] = [];
+    let outQueue : string[] = [];
 
-    Object.values(tokens).forEach(token =>
-        // For each token in the string
+    for(let token of tokens)
+    // For each token in the string
     {
+        if(failed == true)
+        {
+            continue;
+        }
+
         if(token == "(") // token is a (
         {
             opStack.push(token);
-            return;
+            continue;
         }
 
         if(token == ")") // token is a )
         {
-            while(opStack[opStack.length - 1] != "(")
+            failed = true;
+
+            for(let checkToken of opStack)
             {
-                let val = opStack.pop();
-                if(val != undefined)
+                if(checkToken != "(")
                 {
-                    outQueue.push(val);
+                    continue;
+                }
+                else
+                {
+                    while(opStack[opStack.length - 1] != "(")
+                    {
+                        let val = opStack.pop();
+                        if(val != undefined)
+                        {
+                            outQueue.push(val);
+                        }
+                    }
+
+                    opStack.pop();
+                    failed = false;
+
+                    break;
                 }
             }
 
             opStack.pop();
-            return;
+            continue;
         }
 
         if(isOperator(token)) // an operator
@@ -258,7 +282,7 @@ function expressionToRPN(expression : string) : string[]
             }
 
             opStack.push(token);
-            return;
+            continue;
         }
 
         // Else is a number or a variable
@@ -266,7 +290,11 @@ function expressionToRPN(expression : string) : string[]
         
 
     }
-    );
+
+    if(failed == true)
+    {
+        return [];
+    }
 
     // pop rest of stack to output
     while(opStack.length)
@@ -274,6 +302,11 @@ function expressionToRPN(expression : string) : string[]
         let val = opStack.pop();
         if(val != undefined)
         {
+            if(val == "(")
+            {
+                return [];
+            }
+
             outQueue.push(val);
         }
         
@@ -282,7 +315,7 @@ function expressionToRPN(expression : string) : string[]
     return outQueue;
 }
 
-async function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
+export async function basicEvaluator(postfixExpr : string[], projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
 {
     let stack : string[] = []
 
@@ -345,7 +378,7 @@ async function basicEvaluator(postfixExpr : string[], projectID : number, entryI
     
                     case "/":
                     {
-                        if(op2 == 0)
+                        if(op1 === 0)
                         {
                             val = 0;
                         }
