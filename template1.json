@@ -58,16 +58,6 @@
 					"Type" : "Float",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : false
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -78,13 +68,6 @@
 					"Expression" : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
 					"Type" : "Local",
 					"Output" : "Person_Month"
-				},
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Personnel:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
 				}
 			}
 		},
@@ -124,27 +107,10 @@
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Equipment:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
@@ -183,27 +149,10 @@
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Other_Goods_and_Services:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
@@ -358,27 +307,10 @@
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Subcontracting:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
@@ -417,27 +349,10 @@
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Internally_Invoiced_Services:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
@@ -540,35 +455,35 @@
 				"Personnel Total" : 
 				{
 					"Name" : "Personnel_Total",
-					"Expression" : "Personnel:Local_Total",
+					"Expression" : "Personnel:Amount",
 					"Type" : "Global",
 					"Output" : "Personnel_Total"
 				},
 				"Equipment Total" : 
 				{
 					"Name" : "Equipment_Total",
-					"Expression" : "Equipment:Local_Total",
+					"Expression" : "Equipment:Amount",
 					"Type" : "Global",
 					"Output" : "Equipment_Total"
 				},
 				"OGC Total" : 
 				{
 					"Name" : "Other_Goods_and_Services_Total",
-					"Expression" : "Other_Goods_and_Services:Local_Total",
+					"Expression" : "Other_Goods_and_Services:Amount",
 					"Type" : "Global",
 					"Output" : "Other_Goods_and_Services_Total"
 				},
 				"Subcontracting Total" : 
 				{
 					"Name" : "Subcontracting_Total",
-					"Expression" : "Subcontracting:Local_Total",
+					"Expression" : "Subcontracting:Amount",
 					"Type" : "Global",
 					"Output" : "Subcontracting_Total"
 				},
 				"Internal Invoice Total" : 
 				{
 					"Name" : "Internally_Invoiced_Services_Total",
-					"Expression" : "Internally_Invoiced_Services:Local_Total",
+					"Expression" : "Internally_Invoiced_Services:Amount",
 					"Type" : "Global",
 					"Output" : "Internally_Invoiced_Services_Total"
 				},

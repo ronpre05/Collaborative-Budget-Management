@@ -79,15 +79,6 @@ export const truthTemplate : TemplateData =
                     type : "Float",
                     displayvisible : true,
                     entryvisible : false
-                },
-                {
-                    name : "Local_Total",
-                    prefix : "",
-                    value : "",
-                    postfix : "",
-                    type : "Float",
-                    displayvisible : true,
-                    entryvisible : false
                 }
             ],
             calculations : 
@@ -97,12 +88,6 @@ export const truthTemplate : TemplateData =
                     expression : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
                     type : "Local",
                     output : "Person_Month"
-                },
-                {
-                    name : "Entry_Total",
-                    expression : "Personnel:Amount",
-                    type : "Local",
-                    output : "Local_Total"
                 }
             ],
             subentries : []
@@ -138,25 +123,10 @@ export const truthTemplate : TemplateData =
                     type : "Int",
                     displayvisible : true,
                     entryvisible : true
-                },
-                {
-                    name : "Local_Total",
-                    prefix : "",
-                    value : "",
-                    postfix : "",
-                    type : "Float",
-                    displayvisible : true,
-                    entryvisible : false
                 }
             ],
             calculations : 
             [
-                {
-                    name : "Entry_Total",
-                    expression : "Equipment:Amount",
-                    type : "Local",
-                    output : "Local_Total"
-                }
             ],
             subentries : []
         }, 
@@ -191,25 +161,10 @@ export const truthTemplate : TemplateData =
                     type : "Int",
                     displayvisible : true,
                     entryvisible : true
-                },
-                {
-                    name : "Local_Total",
-                    prefix : "",
-                    value : "",
-                    postfix : "",
-                    type : "Float",
-                    displayvisible : true,
-                    entryvisible : false
                 }
             ],
             calculations : 
             [
-                {
-                    name : "Entry_Total",
-                    expression : "Other_Goods_and_Services:Amount",
-                    type : "Local",
-                    output : "Local_Total"
-                }
             ],
             subentries : []
         }, 
@@ -347,25 +302,10 @@ export const truthTemplate : TemplateData =
                     type : "Int",
                     displayvisible : true,
                     entryvisible : true
-                },
-                {
-                    name : "Local_Total",
-                    prefix : "",
-                    value : "",
-                    postfix : "",
-                    type : "Float",
-                    displayvisible : true,
-                    entryvisible : false
                 }
             ],
             calculations : 
             [
-                {
-                    name : "Entry_Total",
-                    expression : "Subcontracting:Amount",
-                    type : "Local",
-                    output : "Local_Total"
-                }
             ],
             subentries : []
         }, 
@@ -400,25 +340,10 @@ export const truthTemplate : TemplateData =
                     type : "Int",
                     displayvisible : true,
                     entryvisible : true
-                },
-                {
-                    name : "Local_Total",
-                    prefix : "",
-                    value : "",
-                    postfix : "",
-                    type : "Float",
-                    displayvisible : true,
-                    entryvisible : false
                 }
             ],
             calculations : 
             [
-                {
-                    name : "Entry_Total",
-                    expression : "Internally_Invoiced_Services:Amount",
-                    type : "Local",
-                    output : "Local_Total"
-                }
             ],
             subentries : []
         }, 
@@ -510,31 +435,31 @@ export const truthTemplate : TemplateData =
                 },
                 {
                     name : "Personnel_Total",
-                    expression : "Personnel:Local_Total",
+                    expression : "Personnel:Amount",
                     type : "Global",
                     output : "Personnel_Total"
                 },
                 {
                     name : "Equipment_Total",
-                    expression : "Equipment:Local_Total",
+                    expression : "Equipment:Amount",
                     type : "Global",
                     output : "Equipment_Total"
                 },
                 {
                     name : "Other_Goods_and_Services_Total",
-                    expression : "Other_Goods_and_Services:Local_Total",
+                    expression : "Other_Goods_and_Services:Amount",
                     type : "Global",
                     output : "Other_Goods_and_Services_Total"
                 },
                 {
                     name : "Subcontracting_Total",
-                    expression : "Subcontracting:Local_Total",
+                    expression : "Subcontracting:Amount",
                     type : "Global",
                     output : "Subcontracting_Total"
                 },
                 {
                     name : "Internally_Invoiced_Services_Total",
-                    expression : "Internally_Invoiced_Services:Local_Total",
+                    expression : "Internally_Invoiced_Services:Amount",
                     type : "Global",
                     output : "Internally_Invoiced_Services_Total"
                 },
