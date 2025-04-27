@@ -21,6 +21,11 @@ export async function getTemplateFromID(projectID : number) : Promise<TemplateDa
  */
 export function getTemplate(template : any) : TemplateData
 {
+    if(template == null)
+    {
+        return {templateName : "", categories : []};
+    }
+
     let temp = 
     {
         templateName : template.templateName,
