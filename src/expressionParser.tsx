@@ -242,32 +242,37 @@ export function expressionToRPN(expression : string) : string[]
         {
             failed = true;
             let bracketFound : boolean = false;
+
             // Loop through the remainder of opStack
             for(let checkToken of opStack)
             {
                 if(checkToken == "(")
+                // Check if a ( is present
                 {
+                    // If no ( then failed = true
                     bracketFound = true;
                     break;
                 }
             }
-            // If no ( then failed = true
+            
+            // If a bracket was found
             if(bracketFound)
-            // Else run the while loop
             {
+                // Move operators off of the stack to the output
                 while(opStack[opStack.length - 1] != "(")
+                {
+                    let val = opStack.pop();
+                    if(val != undefined)
                     {
-                        let val = opStack.pop();
-                        if(val != undefined)
-                        {
-                            outQueue.push(val);
-                        }
+                        outQueue.push(val);
                     }
+                }
 
                 opStack.pop();
                 failed = false;
             }
-            
+
+            // If the loop was skipped then failed remains true and the conversion fails
             continue;
         }
 
