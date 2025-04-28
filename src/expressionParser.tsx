@@ -430,12 +430,12 @@ async function parseVariable(vari : string, projectID : number, entryID : number
     {
         let dateType : string = splitString[2];
 
-        // Get from get variable
+        // Get from get variable and convert to a date
         let stringDate = await getVariable(catName, valName, projectID, entryID, isSubEntry);
         const date = new Date(stringDate)
-        const unixTime = Math.floor(date.getTime() / 1000)
 
-        console.error(stringDate, date);
+        // Convert from milliseconds to seconds
+        const unixTime = Math.floor(date.getTime() / 1000)
 
         switch(dateType)
         // Return that value
@@ -494,11 +494,8 @@ async function getVariable(catName : string, fieldName : string, projectID : num
         value = await getValue(entryID, fieldID);
     }
 
-    
-
     // Return that value
     return value;
-
 }
 
 
