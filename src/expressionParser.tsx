@@ -1,3 +1,4 @@
+import { BlockList } from "net";
 import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
 import { findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
@@ -240,16 +241,21 @@ export function expressionToRPN(expression : string) : string[]
         if(token == ")") // token is a )
         {
             failed = true;
-
+            let bracketFound : boolean = false;
+            // Loop through the remainder of opStack
             for(let checkToken of opStack)
             {
-                if(checkToken != "(")
+                if(checkToken == "(")
                 {
-                    continue;
+                    bracketFound = true;
+                    break;
                 }
-                else
-                {
-                    while(opStack[opStack.length - 1] != "(")
+            }
+            // If no ( then failed = true
+            if(bracketFound)
+            // Else run the while loop
+            {
+                while(opStack[opStack.length - 1] != "(")
                     {
                         let val = opStack.pop();
                         if(val != undefined)
@@ -258,14 +264,10 @@ export function expressionToRPN(expression : string) : string[]
                         }
                     }
 
-                    opStack.pop();
-                    failed = false;
-
-                    break;
-                }
+                opStack.pop();
+                failed = false;
             }
-
-            opStack.pop();
+            
             continue;
         }
 
