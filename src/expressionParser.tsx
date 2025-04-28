@@ -432,10 +432,10 @@ async function parseVariable(vari : string, projectID : number, entryID : number
 
         // Get from get variable
         let stringDate = await getVariable(catName, valName, projectID, entryID, isSubEntry);
-
-        const dates : string[] = stringDate.split("/");
-        const date = new Date(Number(dates[2]), Number(dates[1]), Number(dates[0]))
+        const date = new Date(stringDate)
         const unixTime = Math.floor(date.getTime() / 1000)
+
+        console.error(stringDate, date);
 
         switch(dateType)
         // Return that value

@@ -38,6 +38,8 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
       case "Float":
       case "Currency":
         return "number";
+      case "Date":
+        return "Date";
       case "String":
       default:
         return "text";
