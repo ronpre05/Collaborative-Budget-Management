@@ -11,6 +11,7 @@
     - [Fields](#fields)
     - [Calculations](#calculations)
     - [Sub Entries](#sub-entries)
+    - [Storing Dates](#storing-dates-in-a-field)
   - [Template Parsing](#template-parsing)
     - [Template Data Types](#template-data-types)
     - [How to use the Template Parser](#how-to-use-the-template-parser)
@@ -20,8 +21,10 @@
     - [How Expressions are Formed](#how-expressions-are-formed)
       - [Elements You Can Include](#elements-you-can-include)
     - [How Variables are Formed](#how-variables-are-formed)
+    - [Expressions with dates](#expressions-with-dates)
   - [Expression Parsing](#expression-parsing)
     - [How Variables are Evaluated](#how-variables-are-evaluated)
+      - [Evaluation with Dates](#evaluation-with-dates)
     - [Expression Evaluation Steps](#expression-evaluation-steps)
       - [Prepping the Expression](#prepping-the-expression)
       - [Conversion to RPN](#conversion-to-rpn)
@@ -141,6 +144,10 @@ The "Calculation Abbreviation" can be anything, it doesn't impact the internal w
 ### Sub Entries
 
 A sub entry is a small collection of fields inside a category for which a single database entry may require them to have more than one value, and the groups of values entered together should be maintained. For example, in a "Travel_Costs" entry, you may require more than one entry for "What" and "Amount" for a single main entry of "Days" etc. Sub entries provide a way to allow for multiple "What" and "Amount" pairs to be added along with a single entry for the category. Not every category will have a "SubEntries" section. Any category that needs a "SubEntries" section must also have the "HasSubEntry" flag set to true, else the sub entries will be ignored. The "SubEntries" section is made up of a list of objects in exactly the same way that "Fields" is, and also contains a list of fields which follow the same format as in the "Fields" section. For data entry, retrieval and expressions to function as intended, sub entries and fields should not be given the same name within the same category
+
+### Storing Dates in a Field
+
+If you wish to make the the field a date, you can simply state the type as "Date". This will make the field entry a date picker so that all dates are entered in the same format. Being in a consistent format allows them to be used in calculations as defined in the "Expressions with Dates" and "Evaluation with Dates" sections. 
 
 ## Template Parsing
 
@@ -290,6 +297,11 @@ where the variables are "Travel_Costs:Days", "Travel_Costs:Accomodation" and "Tr
 
 The category in the variable does not have to refer to the current category you are writing an expression for, but as variables are found on an entry-level, it is best to use a "Global" calcuation if you refer to outside the current category. This will be further explained in the "Expression Parsing" section.
 
+### Expressions with Dates
+
+When using a date within an expression, you must format it in a slightly different way. Firstly, write out the variable as before, separated by :, then add another : followed by one of "D", "M", "Y". This tells the evaluator that you wish to use this variable as either Days, Months or Years (respectively). It is therefore recommended that you only use dates if you are working out the difference between two dates. 
+You also should not add this extra flag to any other variables as this will cause them to be interpreted as dates when the variables are retrieved.
+
 ## Expression Parsing
 
 The code which evaluates the expressions is given inside "expressionParser.tsx". It operates by calling the "categoryCalculation" function whenever a categories calculations need to be updated. It will run thorugh each of the calculations and carry out the calulations within each, choosing which type of evaluator to use and what entries need to be included in the calculation.
@@ -298,6 +310,20 @@ The code which evaluates the expressions is given inside "expressionParser.tsx".
 
 A single variable is evaluated by first breaking down the variable, and then finding the variable within the database.
 This is done with the "parseVariable" and "getVariable" functions. First you call parseVariable giving the variable name, the ID of the project, the ID of the entry and whether its a sub entry or not. If it is a sub entry, then the entryID should be used as a sub entry ID instead. (This is explained further in the SubGlobal evaluator type later on). Then the string is split to extract the category and field name from around the :. This then calls getVariable with the two extracted names along with the rest of the parameters. getVariable will then find the category and field ID inside the database and will call on of two functions, either getValue or getSubValue (depending on the status of the isSubEntry parameter), giving both the entry and field IDs. This will return the value of the variable in the provided context for use in the calculation.
+
+#### Evaluation with Dates
+
+A date is recognised if the variable string returns three entries if split on ":" which means only those with the extra flag will be treated as dates.
+As explained in "Expressions with Dates", you can handle a date as either Days (D), Months (M) or Years (Y). Dates will be converted to unix time, and then depending on the flag given it will be converted from seconds to days, months or years.
+
+These are calculated as follows:
+| Time | Calculation | Breakdown | Assumptions |
+| ---- | ----------- | --------- | ----------- |
+| Days | divide by 86400 | divide by (60 * 60 * 24) | |
+| Months | divide by 2629800 | divide by (60 * 60 * 24 * 30.4375) | A month has on average 30.4375 days (for a 365.25 day year) |
+| Years | divide by 31557600 | divide by (60 * 60 * 24 * 365.25) | A year has on average 365.25 days |
+
+This means it is recommended that all date calculations involve finding the difference between two different dates as the results will otherwise seem arbitary.
 
 ### Expression evaluation steps
 

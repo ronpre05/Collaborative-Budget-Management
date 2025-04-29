@@ -49,7 +49,7 @@ export const truthTemplate : TemplateData =
                     prefix : "",
                     value : "",
                     postfix : "",
-                    type : "String",
+                    type : "Date",
                     displayvisible : true,
                     entryvisible : true
                 },
@@ -58,7 +58,7 @@ export const truthTemplate : TemplateData =
                     prefix : "",
                     value : "",
                     postfix : "",
-                    type : "String",
+                    type : "Date",
                     displayvisible : true,
                     entryvisible : true
                 },
@@ -85,7 +85,7 @@ export const truthTemplate : TemplateData =
             [
                 {
                     name : "Person_Months",
-                    expression : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
+                    expression : "(Personnel:End_Date:M - Personnel:Start_Date:M) * (Personnel:Percentage / 100)",
                     type : "Local",
                     output : "Person_Month"
                 }
