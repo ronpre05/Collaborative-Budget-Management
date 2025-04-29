@@ -1,4 +1,4 @@
-import { ContrastIcon } from "lucide-react";
+import { BlockList } from "net";
 import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
 import { findCatObject } from "./newTemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
@@ -241,32 +241,38 @@ export function expressionToRPN(expression : string) : string[]
         if(token == ")") // token is a )
         {
             failed = true;
+            let bracketFound : boolean = false;
 
+            // Loop through the remainder of opStack
             for(let checkToken of opStack)
             {
-                if(checkToken != "(")
+                if(checkToken == "(")
+                // Check if a ( is present
                 {
-                    continue;
-                }
-                else
-                {
-                    while(opStack[opStack.length - 1] != "(")
-                    {
-                        let val = opStack.pop();
-                        if(val != undefined)
-                        {
-                            outQueue.push(val);
-                        }
-                    }
-
-                    opStack.pop();
-                    failed = false;
-
+                    // If no ( then failed = true
+                    bracketFound = true;
                     break;
                 }
             }
+            
+            // If a bracket was found
+            if(bracketFound)
+            {
+                // Move operators off of the stack to the output
+                while(opStack[opStack.length - 1] != "(")
+                {
+                    let val = opStack.pop();
+                    if(val != undefined)
+                    {
+                        outQueue.push(val);
+                    }
+                }
 
-            opStack.pop();
+                opStack.pop();
+                failed = false;
+            }
+
+            // If the loop was skipped then failed remains true and the conversion fails
             continue;
         }
 
@@ -416,7 +422,6 @@ export async function basicEvaluator(postfixExpr : string[], projectID : number,
     return 0;
 }
 
-
 async function parseVariable(vari : string, projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
 {
     // Split the variable up into its constituent types
@@ -425,10 +430,51 @@ async function parseVariable(vari : string, projectID : number, entryID : number
     let catName : string = splitString[0];
     let valName : string = splitString[1];
 
+    // Find if date
+    if(splitString.length === 3)
+    // Is if splitString has 3 entries
+    {
+        let dateType : string = splitString[2];
+
+        // Get from get variable and convert to a date
+        let stringDate = await getVariable(catName, valName, projectID, entryID, isSubEntry);
+        const date = new Date(stringDate)
+
+        // Convert from milliseconds to seconds
+        const unixTime = Math.floor(date.getTime() / 1000)
+
+        switch(dateType)
+        // Return that value
+        {
+            case "D":
+            {
+                // Convert from seconds to days
+                // (/ 60 / 60 / 24)
+                return (unixTime / 86400);
+            }
+            case "M":
+            {
+                // Convert from seconds to months
+                // (Month as 30.4375 days to include all months + leap years)
+                // (/ 60 / 60 / 24 / 30.4375)
+                return (unixTime / 2629800);
+            }
+            case "Y":
+            {
+                // Convert from seconds to years
+                // (Year as 365.25 days to include leap years)
+                // (/ 60 / 60 / 24 / 365.25)
+                return (unixTime / 31557600);
+            }    
+        }
+
+    }
+        
+    // If not a date return the value
     return getVariable(catName, valName, projectID, entryID, isSubEntry);
 }
 
-async function getVariable(catName : string, fieldName : string, projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
+async function getVariable(catName : string, fieldName : string, projectID : number, entryID : number, isSubEntry : boolean) : Promise<any>
 {
     // Query the database to get the value, either in the field or calculation section
     // Can use the project and entry ids to do this
@@ -454,11 +500,8 @@ async function getVariable(catName : string, fieldName : string, projectID : num
         value = await getValue(entryID, fieldID);
     }
 
-    
-
     // Return that value
     return value;
-
 }
 
 
