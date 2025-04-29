@@ -181,6 +181,27 @@ export const getProjectName = async (): Promise<string | null> => {
     return data?.projectName || null;
 }
 
+export const getProjectNameFromID = async (projectID : number): Promise<string | null> => {
+    
+    if (!projectID) {
+        console.error("Project ID not found in local storage.");
+        return null;
+    }
+
+    const {data, error} = await supabase
+        .from("Project")
+        .select("projectName")
+        .eq("projectID", projectID)
+        .single();
+
+    if(error){
+        console.error("Error finding project name: ", error.message);
+        return null;
+    }
+
+    return data?.projectName || null;
+}
+
 export const createProjectQuery = async (
     institutionID: number, 
     projectName: string, 
