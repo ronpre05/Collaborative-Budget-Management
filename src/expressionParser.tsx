@@ -422,7 +422,6 @@ export async function basicEvaluator(postfixExpr : string[], projectID : number,
     return 0;
 }
 
-
 async function parseVariable(vari : string, projectID : number, entryID : number, isSubEntry : boolean) : Promise<number>
 {
     // Split the variable up into its constituent types
@@ -451,7 +450,7 @@ async function parseVariable(vari : string, projectID : number, entryID : number
             {
                 // Convert from seconds to days
                 // (/ 60 / 60 / 24)
-                return (unixTime / 86400)
+                return (unixTime / 86400);
             }
             case "M":
             {
