@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { describe, it, vi, beforeEach, expect } from "vitest";
 import "@testing-library/jest-dom";
-import RemoveCollaborator from "../src/pages/RemoveCollaborator"; // update path if different
+import RemoveCollaborator from "../src/pages/RemoveCollaborator"; 
 import { MemoryRouter } from "react-router-dom";
 
 // Mock Supabase
