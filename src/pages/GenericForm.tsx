@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { CategoryType } from "../types";
 import { cleanString } from "../expressionParser";
-import { createEntry } from "../database";
+import { createEntry, createEntryWithSubEntry } from "../database";
 
 interface GenericFormProps {
-  category: CategoryType; // TEMP changed to any
+  category: CategoryType;
   readOnly: boolean; 
 }
 
 const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
-  // Flatten the fields for easier handling.
+  // Hold if the category has a sub entry or not
+  const hasSubEntry : boolean = category.hassubentry;
+  let createdSubEntries : Array<Record<string, string>> = [];
+
   const flatFields = Object.fromEntries(category.fields.map((field) => [field.name, field]));
+  const subEntries = Object.fromEntries(category.subentries.map((subentry) => [subentry.name, subentry]))
 
   // State for the current item’s field values.
   const [newItemValues, setNewItemValues] = useState<Record<string, string>>({});
@@ -18,6 +22,9 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
   const [items, setItems] = useState<Array<Record<string, string>>>([]);
   // Message display for adding an entry
   const [addMessage, setAddMessage] = useState<string | null>(null);
+  // State for current sub entry item's field values
+  const [subEntryItemValues, setSubEntryItemValues] = useState<Record<string, string>>({});
+  const [subItems, setSubItems] = useState<Array<Record<string,string>>>([]);
 
   // Update a field value.
   const handleFieldChange = (fieldKey: string, value: string) => {
@@ -25,6 +32,14 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
       setNewItemValues(prev => ({ ...prev, [fieldKey]: value }));
     }
   };
+
+  const handleSubFieldChange = (field : string, value: string) =>
+  {
+    if(!readOnly)
+    {
+      setSubEntryItemValues(prev => ({ ...prev, [field]: value}))
+    }
+  }
 
   // Reset add success message when category changes
   useEffect(() => {
@@ -79,11 +94,22 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
     try {
       // Call createEntry to store the data in the database
 
-      await createEntry(category.name, newItemValues);
-  
+      if(hasSubEntry)
+      {
+        createdSubEntries = subItems;
+        await createEntryWithSubEntry(category.name, newItemValues, createdSubEntries);
+        createdSubEntries = [];
+      }
+      else
+      {
+        await createEntry(category.name, newItemValues);
+      }
+
       const newItem = { ...newItemValues };
       setItems(prev => [...prev, newItem]);
       setNewItemValues({});
+      setSubEntryItemValues({});
+      setSubItems([]);
 
       setAddMessage("Entry successfully added!");
       console.log("Entry successfully added to the database.");
@@ -94,15 +120,71 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
     }
   };
 
+  const handleSubEntry = async (e: React.FormEvent) =>
+  {
+    e.preventDefault();
+    if(readOnly)
+    {
+      return;
+    }
+
+    for (const key in subEntries)
+    {
+      if(subEntries[key].entryvisible && !subEntryItemValues[key])
+      {
+        alert(`Please fill out this field: ${cleanString(key)}`);
+        return;
+      }
+    }
+
+    const newSubItem = { ...subEntryItemValues };
+    setSubItems(prev => [...prev, newSubItem]); 
+
+    // Add to created sub entries not the database
+    createdSubEntries.push(subEntryItemValues);
+    setSubEntryItemValues({});
+  };
+
+  const renderSubEntry = () =>
+  {
+    return Object.entries(subEntries).map(([key, field]) =>
+    {
+      if(readOnly || !field.entryvisible)
+      {
+        return null;
+      }
+
+      return (
+        <div key={key} className="form-group">
+          <label htmlFor={key}>{cleanString(key)}:</label>
+          <input
+            id={key}
+            type={mapFieldType(field.type)}
+            value={subEntryItemValues[key] || ""}
+            onChange={(e) => handleSubFieldChange(key, e.target.value)}
+          />
+        </div>
+      );
+    });
+  };
+
   return (
     <div>
       <strong><h1>{cleanString(category.name)} Costs</h1></strong>
       <form onSubmit={handleSubmit} className="generic-form-container">
         {renderFields()}
         {!readOnly && ( // Hide the button if readOnly is true
-          <button type="submit" style={{ marginTop: "10px" }}>Add Item</button>
+          <button type="submit" style={{ marginTop: "10px", marginBottom: "10px" }}>Add Item</button>
         )}
       </form>
+      {hasSubEntry && (
+        <form onSubmit={handleSubEntry} className="generic-form-container">
+          {renderSubEntry()}
+          {!readOnly && (
+            <button type="submit" style={{ marginTop : "10px" }}>Add Sub Entry</button>
+          )}
+        </form>
+      )}
     </div>
   );
 };
