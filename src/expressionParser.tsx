@@ -619,7 +619,7 @@ export async function categoryCalculation(catName : string, projectID : number, 
                 {
                     // do the calculation
                     result = await localEvaluator(calc, projectID, entry);
-                    addResultToDataBase(entry, calc.output, catId, result);
+                    await addResultToDataBase(entry, calc.output, catId, result);
                 }
                     
             }
@@ -632,7 +632,7 @@ export async function categoryCalculation(catName : string, projectID : number, 
                     // If no entry make one and return its id
                     // If one return its id
                 // Replace the -1 below with that
-                addResultToDataBase(await getGlobalEntryID(catId, projectID), calc.output, catId, result);
+                await addResultToDataBase(await getGlobalEntryID(catId, projectID), calc.output, catId, result);
 
             }
             else if (calc.type == "SubGlobal")
@@ -642,7 +642,7 @@ export async function categoryCalculation(catName : string, projectID : number, 
                 for(const entry of entries)
                 {
                     result = await subGlobalEvaluator(calc, projectID, entry);
-                    addResultToDataBase(entry, calc.output, catId, result);
+                    await addResultToDataBase(entry, calc.output, catId, result);
                 }
                 
             }
