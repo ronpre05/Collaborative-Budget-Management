@@ -606,14 +606,14 @@ export async function categoryCalculation(catName : string, projectID : number, 
         {
             let result : number = 0;
 
+            const entries = await getAllCategoryEntries(catId);
+
             if(calc.type == "Local")
             // If local
             {
                 // Get a list of entries for the current category
                     // Find the category id in category entries (get a list of entry ids)
                     // Remove duplicates from that list
-                const entries = await getAllCategoryEntries(catId);
-
                 for(const entry of entries)
                 // For each entry (in the current category cat)
                 {
@@ -637,8 +637,6 @@ export async function categoryCalculation(catName : string, projectID : number, 
             }
             else if (calc.type == "SubGlobal")
             {
-                const entries = await getAllCategoryEntries(catId);
-
                 for(const entry of entries)
                 {
                     result = await subGlobalEvaluator(calc, projectID, entry);

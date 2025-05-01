@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { CategoryType } from "../types";
+import { CategoryType, FieldType } from "../types";
 import { cleanString } from "../expressionParser";
 import { createEntry, createEntryWithSubEntry } from "../database";
+import { findFieldObject, findSubEntryObject } from "@/newTemplateParser";
 
 interface GenericFormProps {
   category: CategoryType;
@@ -41,6 +42,20 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
     }
   }
 
+  const applyPrefix = (fieldName : string) =>
+  {
+    let field : FieldType = findFieldObject(fieldName, category);
+    let out : string = "";
+    if(field.name !== fieldName)
+    { 
+      field = findSubEntryObject(fieldName, category);
+    }
+
+    out = (field.prefix + " " + cleanString(fieldName) + " " + field.postfix);
+    
+    return out;
+  }
+
   // Reset add success message when category changes
   useEffect(() => {
     setAddMessage(null);
@@ -67,7 +82,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
       if (readOnly || !field.entryvisible) return null;
       return (
         <div key={key} className="form-group">
-          <label htmlFor={key}>{cleanString(key)}:</label>
+          <label htmlFor={key}>{applyPrefix(key)}:</label>
           <input
             id={key}
             type={mapFieldType(field.type)}
@@ -156,7 +171,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
 
       return (
         <div key={key} className="form-group">
-          <label htmlFor={key}>{cleanString(key)}:</label>
+          <label htmlFor={key}>{applyPrefix(key)}:</label>
           <input
             id={key}
             type={mapFieldType(field.type)}
