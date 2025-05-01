@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
-import { CategoryType } from "./types";
+import { CategoryType, FieldType } from "./types";
 import { findCatObject, getFieldsNames, getSubEntryNames, getTemplateFromID } from "./newTemplateParser";
+import { getCategoryObject } from "./templateParser";
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -619,22 +620,40 @@ Main function to insert forms into database.
 Example usage:
 createEntry("Personnel Costs", { Name: "John Pork", Role: admin, StartDate: 01/01,2025, EndDate: 01/01/2030})
 */
-export const createEntry = async (categoryName: string, fieldData: Record<string, string>) => {
+export const createEntry = async (categoryName: string, fieldData: Record<string, string>, category : CategoryType) => {
     const categoryEntry = await createCategoryEntry(categoryName);
     if (!categoryEntry) return;
 
     const { categoryID, entryID } = categoryEntry;
+
+    fieldData = checkMissingFields(category, fieldData);
+
     await insertFieldValues(entryID, categoryID, fieldData);
 };
 
+const checkMissingFields = (category : CategoryType, fieldData : Record<string, string>) =>
+{
+    let fields : FieldType[] = category.fields;
+    let keys : string[] = [];
 
+    for(const key in fieldData)
+    {
+        keys.push(key);
+    }
 
+    for(let field of fields)
+    {
+        if(!keys.includes(field.name))
+        {
+            fieldData[field.name] = "";
+        }
+    }
 
-
-
+    return fieldData;
+}
 
 // Main function to add where the entry contains a sub entry
-export const createEntryWithSubEntry = async (categoryName : string, fieldData : Record<string, string>, subEntryData : Record<string, string>[]) => 
+export const createEntryWithSubEntry = async (categoryName : string, fieldData : Record<string, string>, subEntryData : Record<string, string>[], category : CategoryType) => 
 {
     const categoryEntry = await createCategoryEntry(categoryName);
 
@@ -644,6 +663,9 @@ export const createEntryWithSubEntry = async (categoryName : string, fieldData :
     }
 
     const { categoryID, entryID } = categoryEntry;
+
+    fieldData = checkMissingFields(category, fieldData);
+
     await addWithSubEntry(entryID, categoryID, fieldData, subEntryData);
     
 }
@@ -983,7 +1005,8 @@ export const getValueID = async (entryID : number, fieldID : number) : Promise<a
     
     if(error)
     {
-        return createBlankValue(entryID, fieldID);
+        console.error("Error fetching value ID", error);
+        return;
     }
 
     return data.valueID;
@@ -1014,6 +1037,7 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
         .from("FieldValues")
         .update({value: result})
         .eq("valueID", valueID)
+        .single()
 
     if(error)
     {

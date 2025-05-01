@@ -87,6 +87,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
             id={key}
             type={mapFieldType(field.type)}
             value={newItemValues[key] || ""}
+            placeholder={field.value}
             onChange={(e) => handleFieldChange(key, e.target.value)}
           />
         </div>
@@ -112,12 +113,12 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
       if(hasSubEntry)
       {
         createdSubEntries = subItems;
-        await createEntryWithSubEntry(category.name, newItemValues, createdSubEntries);
+        await createEntryWithSubEntry(category.name, newItemValues, createdSubEntries, category);
         createdSubEntries = [];
       }
       else
       {
-        await createEntry(category.name, newItemValues);
+        await createEntry(category.name, newItemValues, category);
       }
 
       const newItem = { ...newItemValues };
@@ -176,6 +177,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ category, readOnly }) => {
             id={key}
             type={mapFieldType(field.type)}
             value={subEntryItemValues[key] || ""}
+            placeholder={field.value}
             onChange={(e) => handleSubFieldChange(key, e.target.value)}
           />
         </div>
