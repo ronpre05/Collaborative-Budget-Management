@@ -9,11 +9,21 @@
 			"HasSubEntry" : false,
 			"Fields" : 
 			{
+				"Name" : 
+				{
+					"Name" : "Name",
+					"Prefix" : "",
+					"Value" : "Full Name",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
 				"Amount" : 
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
@@ -43,7 +53,7 @@
 				{
 					"Name" : "Percentage",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Percentage worked",
 					"Postfix" : "%",
 					"Type" : "Float",
 					"DisplayVisiblity" : true,
@@ -82,7 +92,7 @@
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -92,7 +102,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -102,7 +112,7 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
@@ -124,7 +134,7 @@
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -134,7 +144,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -144,7 +154,7 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
@@ -166,8 +176,8 @@
 				{
 					"Name" : "Days",
 					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
+					"Value" : "Days",
+					"Postfix" : "(no. of)",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
@@ -175,9 +185,9 @@
 				"Accomodation" : 
 				{
 					"Name" : "Accomodation",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
+					"Prefix" : "€",
+					"Value" : "Accomodation",
+					"Postfix" : "per day",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
@@ -186,8 +196,8 @@
 				{
 					"Name" : "Sustinance",
 					"Prefix" : "€",
-					"Value" : "",
-					"Postfix" : "",
+					"Value" : "Sustinance",
+					"Postfix" : "per day",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
@@ -229,7 +239,7 @@
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -239,7 +249,7 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
@@ -282,7 +292,7 @@
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -292,7 +302,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -302,7 +312,7 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
@@ -324,7 +334,7 @@
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -334,7 +344,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -344,7 +354,7 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
