@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { CategoryType, FieldType } from "./types";
 import { findCatObject, getFieldsNames, getSubEntryNames, getTemplateFromID } from "./newTemplateParser";
-import { getCategoryObject } from "./templateParser";
 const supabaseUrl = "https://xybccoipttcvmdniwysj.supabase.co"
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5YmNjb2lwdHRjdm1kbml3eXNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE5NDI3NjQsImV4cCI6MjA0NzUxODc2NH0.qft8IvKBxpEzW7Uh1D4uDdGafhHzbh7fWlfil7B5nKA"
 export const supabase = createClient(supabaseUrl, supabaseKey)
@@ -1037,7 +1036,7 @@ export const updateIndividualField = async (valueID : number, result : any) : Pr
         .from("FieldValues")
         .update({value: result})
         .eq("valueID", valueID)
-        .single()
+        //.single()
 
     if(error)
     {
@@ -1081,7 +1080,31 @@ const createBlankEntry = async (catID : number, projectID : number) : Promise<an
         return -1;
     }
 
+    // must also now create blank valueID for every field ID in that category
+    const fieldIDs : number[] = await getFieldIDs(catID);
+
+    for(let fieldID of fieldIDs)
+    {
+        await createBlankValue(data.entryID, fieldID);
+    }
+
     return data.entryID;
+}
+
+const getFieldIDs = async (catID : number) : Promise<number[]> =>
+{
+    const { data, error } = await supabase
+        .from("CategoryFields")
+        .select("fieldID")
+        .eq("categoryID", catID)
+
+    if(error)
+    {
+        console.error(error)
+        return [];
+    }
+    
+    return data.map((fieldID) => fieldID.fieldID);
 }
 
 // Add an institution tot he database and reutn its ID
