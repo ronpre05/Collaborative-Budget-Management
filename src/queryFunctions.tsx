@@ -1,5 +1,8 @@
-import { supabase } from "./database";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { getAllCategoryEntries, getAllSubEntries, getFieldName, getSubEntriesForEntry, supabase } from "./database";
 import { cleanString } from "./expressionParser";
+import { findCatObject, getSubEntryNames, getTemplateFromID } from "./newTemplateParser";
+import { TemplateData } from "./types";
 /*
 async function getprojectID(categoryID: number): Promise<number> {
   const { data, error } = await supabase
@@ -117,15 +120,30 @@ async function getFieldData(fieldIDs: number[]): Promise<string[][]> {
   const fieldData = [];
   for (const fieldID of fieldIDs) {
     console.log("fetching data for fieldID:", fieldID);
-
     const { data, error } = await supabase
       .from("FieldValues")
-      .select("value")
+      .select("value, entryID")
       .eq("fieldID", fieldID);
     if (error) {
       console.error("Unable to fetch fieldData for fieldID:", fieldID);
       return [[]];
     }
+    data.sort((one, two) => 
+    {
+      // Sort the values by their entry id to ensure that the entries are
+      // displayed in the correct order
+      if(one.entryID > two.entryID)
+      {
+          return 1;
+      }
+      
+      if(one.entryID < two.entryID)
+      {
+          return -1;
+      }
+
+      return 0;
+    });
     const bufferArray = data.map((item) => item.value);
     console.log("Result for fieldID:", fieldID, "is:", bufferArray);
     fieldData.push(bufferArray);
@@ -188,16 +206,136 @@ export async function getCategoryDataEntryOnly(
 export async function getCategoryDataCatOnly(categoryID: number): Promise<string[][]> {
   // const projectID = await getprojectID(categoryID);
   // const entryID = await getEntryID(projectID, categoryID);
-  const fieldIDs = await getFieldIDs(categoryID);
-  const catHeaders = await getCategoryHeaders(categoryID);
-  const fieldData = await getFieldData(fieldIDs);
+  const fieldIDs : number[] = await getFieldIDs(categoryID);
 
+  const projectID = await getProjectFromCatID(categoryID);
+  const template : TemplateData = await getTemplateFromID(projectID);
+  const catName = await getCategoryName(categoryID);
+  const catObject = findCatObject(catName, template.categories);
+  const subEntryNames = getSubEntryNames(catObject);
+
+  let useFieldIDs : number[] = [];
+  for(let id of fieldIDs)
+  // Filter out field ids which are a sub entry, their data will be accessed separately
+  {
+    if(!subEntryNames.includes(await getFieldName(id)))
+    {
+      useFieldIDs.push(id);
+    }
+  }
+
+  const catHeaders = await getCategoryHeaders(categoryID);
+  let useCatHeaders = [];
+
+  for (let name of catHeaders)
+  {
+    // Filter out headers which are a sub entry, they should all be displayed under a single header
+    if(!subEntryNames.includes(name))
+    {
+      useCatHeaders.push(name);
+    }
+  }
+
+  // Get the field data for the non sub entries
+  const fieldData = await getFieldData(useFieldIDs);
+
+  if(catObject.hassubentry)
+    // To process if it has a sub entry
+  {
+      // Add sub entries to the headers
+      useCatHeaders.push("SubEntries");
+
+      // Get all of the entry ids for the category
+      const entryIDs = await getAllCategoryEntries(categoryID);
+
+      // Sort them to match the order of the original data
+      entryIDs.sort();
+
+      // Stores the list of strings, each one is all of the sub entries for that entry
+      let subEntriesData : string[] = [];
+
+      for(let entry of entryIDs)
+      // For each entry
+      {
+        // Get all sub entries for that entry
+        const subEntriesRecords = await getSubEntriesForEntry(entry);
+
+        // Stores the string for the entries sub entry data
+        let entryData : string = "";
+
+        for(let subEntry of subEntriesRecords)
+        // For each record (a single sub entry)
+        {
+          // Start the string
+          entryData = (entryData + "{ ");
+
+          for(let [key, value] of Object.entries(subEntry))
+          // For each key in the record
+          {
+            // Build up the display of the sub entry field
+            entryData = (entryData + "(" + key + " : " + value + ")  ");
+          }
+
+          // Close of the string
+          entryData = (entryData + " } ");             
+        }
+        
+        if(entryData == "{ ")
+        {
+          // If just blank, reset to an empty string
+          subEntriesData.push("");
+        }
+        else
+        { 
+          // Add this string to the final output list
+          subEntriesData.push(entryData);
+        }
+      
+      }
+
+      // Add all of the output list string
+      fieldData.push(subEntriesData);  
+  }
+     
   // Check if fieldData is empty or its first element is undefined.
   if (!fieldData || fieldData.length === 0 || !fieldData[0]) {
     return [catHeaders]; // Return only the headers if there's no data.
   }
 
-  const result = formatData(catHeaders, fieldData);
+  const result = formatData(useCatHeaders, fieldData);
 
   return result;
+}
+
+async function getProjectFromCatID(categoryID : number) : Promise<number>
+{
+    const { data, error } = await supabase
+      .from("Categories")
+      .select("projectID")
+      .eq("categoryID", categoryID)
+      .single()
+
+    if(error)
+    {
+      return 0;
+    }
+      
+    return data.projectID;
+}
+
+async function getCategoryName(categoryID : number) : Promise<string>
+{
+    const { data, error } = await supabase
+      .from("Categories")
+      .select("categoryName")
+      .eq("categoryID", categoryID)
+      .single()
+
+    if(error)
+    {
+      return "";
+    }
+
+    return data.categoryName;
+
 }
