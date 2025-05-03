@@ -41,7 +41,24 @@ const CategoryDisplay: React.FC<{ data: string[][] | null | undefined }> = ({ da
     return tableItems.map((row) => {
       const rowData: Record<string, string> = {}
       headers.forEach((header, index) => {
-        rowData[header.toString() || `column${index}`] = row[index] || ""
+
+        let value = row[index];
+
+        // Ensure value is a string
+        const strValue = String(value);
+  
+        // Check if its a number and has decimals
+        const num = parseFloat(strValue);
+        const isNumeric = !isNaN(num);
+  
+        // Round for decimals to 2dp
+        if (isNumeric && !Number.isInteger(num)) {
+          rowData[header.toString() || `column${index}`] = num.toFixed(2);
+        } 
+        // Display normal value if not a number
+        else {
+          rowData[header.toString() || `column${index}`] = strValue;
+        }
       })
       return rowData
     })
