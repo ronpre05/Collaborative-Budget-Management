@@ -120,7 +120,6 @@ const ProjectView: React.FC = () => {
   return (
     <div className="project-view">
       {projectName && <h1><strong>{projectName}</strong></h1>}
-      {roleName && <p>User Role: {roleName}</p>}
 
       {/* Lock Button (Only for PI) */}
       {userRole === 3 && (
@@ -161,6 +160,8 @@ const ProjectView: React.FC = () => {
         </button>
       )}
 
+      {roleName && <p>User Role: {roleName}</p>}
+
       {/* Budget Form - Readonly if locked or user is Institution Collaborator */}
       <DynamicBudgetForm
         getCategoryName={setCategoryName}
@@ -171,9 +172,9 @@ const ProjectView: React.FC = () => {
       <CategoryDisplay data={categoryData} />
 
       <Link
-        to="/create-project/manage-collaborators"
+        to="/project-view/manage-collaborators"
         className={`tab ${
-          location.pathname === "/create-project/manage-collaborators"
+          location.pathname === "/project-view/manage-collaborators"
             ? "active-tab"
             : ""
         }`}
@@ -182,7 +183,7 @@ const ProjectView: React.FC = () => {
       </Link>
 
       <div className="tab-content">
-        {location.pathname === "/create-project/manage-collaborators" &&
+        {location.pathname === "/project-view/manage-collaborators" &&
           projectID &&
           userRole !== null && (
             <ManageCollaborators
