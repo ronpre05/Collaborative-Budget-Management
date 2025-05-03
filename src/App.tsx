@@ -70,7 +70,7 @@ function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/create-project" element={<CreateProject />} />
               <Route path="/project-view" element={<ProjectView />} />
-              <Route path="/create-project/manage-collaborators" element={<ProjectView />} />
+              <Route path="/project-view/manage-collaborators" element={<ProjectView />} />
               <Route
                 path="/invitations"
                 element={userID ? <Invitations userEmail={userEmail} userID={userID} invitations={invitations} /> : <p>Loading...</p>}

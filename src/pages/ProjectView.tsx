@@ -7,8 +7,12 @@ import { getCategoryDataCatOnly } from "../queryFunctions";
 import { getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
 import { TemplateData } from "@/types";
+<<<<<<< HEAD
 import { getProjectName, getUserRoleInProject, fetchProjectLockStatus, updateProjectLockStatus, getCategoryID,
 } from "../database"; // Refactored database functions
+=======
+import { Button } from "../components/ui/button.tsx";
+>>>>>>> 47e3905e4105b140000c30d44b1138ec9fc7ae57
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -101,10 +105,9 @@ const ProjectView: React.FC = () => {
   return (
     <div className="project-view">
       {projectName && <h1><strong>{projectName}</strong></h1>}
-      {roleName && <p>User Role: {roleName}</p>}
 
       {userRole === 3 && (
-        <button
+        <Button
           onClick={async () => {
             if (!projectID) {
               console.error("No projectID found for locking.");
@@ -122,9 +125,15 @@ const ProjectView: React.FC = () => {
           className={`lock-button ${isLocked ? "locked" : "unlocked"}`}
         >
           {isLocked ? "Unlock Project" : "Lock Project"}
-        </button>
+        </Button>
       )}
 
+<<<<<<< HEAD
+=======
+      {roleName && <p>User Role: {roleName}</p>}
+
+      {/* Budget Form - Readonly if locked or user is Institution Collaborator */}
+>>>>>>> 47e3905e4105b140000c30d44b1138ec9fc7ae57
       <DynamicBudgetForm
         getCategoryName={setCategoryName}
         readOnly={userRole === 1 || isLocked}
@@ -134,9 +143,9 @@ const ProjectView: React.FC = () => {
       <CategoryDisplay data={categoryData} />
 
       <Link
-        to="/create-project/manage-collaborators"
+        to="/project-view/manage-collaborators"
         className={`tab ${
-          location.pathname === "/create-project/manage-collaborators"
+          location.pathname === "/project-view/manage-collaborators"
             ? "active-tab"
             : ""
         }`}
@@ -145,7 +154,7 @@ const ProjectView: React.FC = () => {
       </Link>
 
       <div className="tab-content">
-        {location.pathname === "/create-project/manage-collaborators" &&
+        {location.pathname === "/project-view/manage-collaborators" &&
           projectID &&
           userRole !== null && (
             <ManageCollaborators
