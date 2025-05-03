@@ -14,6 +14,7 @@ import { getCategoryDataCatOnly } from "../queryFunctions";
 import { getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
 import { TemplateData } from "@/types";
+import { Button } from "../components/ui/button.tsx";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -123,7 +124,7 @@ const ProjectView: React.FC = () => {
 
       {/* Lock Button (Only for PI) */}
       {userRole === 3 && (
-        <button
+        <Button
           onClick={async () => {
             if (!projectID) {
               console.error("No projectID found for locking.");
@@ -157,7 +158,7 @@ const ProjectView: React.FC = () => {
           className={`lock-button ${isLocked ? "locked" : "unlocked"}`}
         >
           {isLocked ? "Unlock Project" : "Lock Project"}
-        </button>
+        </Button>
       )}
 
       {roleName && <p>User Role: {roleName}</p>}
