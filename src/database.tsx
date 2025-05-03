@@ -1271,4 +1271,30 @@ export const getProjectTemplate = async (projectID : number) : Promise<any> =>
 
     return data.activeTemplate;
 }
+
+export const setProjectLockStatus = async (
+  projectID: number,
+  isLocked: boolean
+): Promise<boolean> => {
+  console.log("Attempting to update lock:", { projectID, isLocked });
+
+  const { data, error } = await supabase
+    .from("Project")
+    .update({ isLocked })
+    .eq("projectID", projectID);
+    
+
+  if (error) {
+    console.error("Error from Supabase update:", error.message, error.details);
+    return false;
+  }
+
+  
+
+  console.log("Lock updated. Supabase returned:", data);
+  return true;
+};
+
+  
+
     
