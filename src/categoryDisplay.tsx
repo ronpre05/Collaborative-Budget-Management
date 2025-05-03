@@ -44,7 +44,7 @@ const CategoryDisplay: React.FC<{ data: string[][] | null | undefined }> = ({ da
 
         let value = row[index];
 
-        // Ensure value is a string
+        // Check value is a string
         const strValue = String(value);
   
         // Check if its a number and has decimals
