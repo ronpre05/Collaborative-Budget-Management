@@ -1295,6 +1295,41 @@ export const setProjectLockStatus = async (
   return true;
 };
 
+export const fetchProjectLockStatus = async (projectID: number): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from("Project")
+      .select("isLocked")
+      .eq("projectID", projectID)
+      .single();
+  
+    if (error) {
+      console.error("Error fetching lock status:", error);
+      return false;
+    }
+  
+    return data?.isLocked ?? false;
+  };
+  
+  export const updateProjectLockStatus = async (projectID: number, newStatus: boolean): Promise<boolean> => {
+    const success = await setProjectLockStatus(projectID, newStatus); // Assuming this exists
+  
+    if (!success) return false;
+  
+    // Confirm update
+    const { data, error } = await supabase
+      .from("Project")
+      .select("isLocked")
+      .eq("projectID", projectID)
+      .single();
+  
+    if (error) {
+      console.error("Error confirming updated lock status:", error);
+      return false;
+    }
+  
+    return data?.isLocked ?? false;
+  };
+
   
 
     
