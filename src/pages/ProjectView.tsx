@@ -7,12 +7,9 @@ import { getCategoryDataCatOnly } from "../queryFunctions";
 import { getTemplateFromID } from "../newTemplateParser";
 import { categoryCalculation } from "../expressionParser";
 import { TemplateData } from "@/types";
-<<<<<<< HEAD
 import { getProjectName, getUserRoleInProject, fetchProjectLockStatus, updateProjectLockStatus, getCategoryID,
 } from "../database"; // Refactored database functions
-=======
 import { Button } from "../components/ui/button.tsx";
->>>>>>> 47e3905e4105b140000c30d44b1138ec9fc7ae57
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
@@ -128,12 +125,6 @@ const ProjectView: React.FC = () => {
         </Button>
       )}
 
-<<<<<<< HEAD
-=======
-      {roleName && <p>User Role: {roleName}</p>}
-
-      {/* Budget Form - Readonly if locked or user is Institution Collaborator */}
->>>>>>> 47e3905e4105b140000c30d44b1138ec9fc7ae57
       <DynamicBudgetForm
         getCategoryName={setCategoryName}
         readOnly={userRole === 1 || isLocked}
