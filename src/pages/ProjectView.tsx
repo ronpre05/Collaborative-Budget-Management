@@ -125,6 +125,8 @@ const ProjectView: React.FC = () => {
         </Button>
       )}
 
+      {roleName && <p>User Role: {roleName}</p>}
+
       <DynamicBudgetForm
         getCategoryName={setCategoryName}
         readOnly={userRole === 1 || isLocked}
