@@ -205,7 +205,7 @@ export interface TemplateData {
 
 ### How to use the Template Parser
 
-In order to parse the JSON templates into a consistent format for the code to oeprate on, there is a template parser in newTemplateParser.tsx. The main function of this is to turn the JSON template into a data structure formed of bespoke types. The types themselves are descibed in more detail in the previous section. The parser also provides some functions for operations on these structures for some common tasks such as listing the names of the categories in said template.
+In order to parse the JSON templates into a consistent format for the code to operate on, there is a template parser TemplateParser.tsx. The main function of this is to turn the JSON template into a data structure formed of bespoke types. The types themselves are descibed in more detail in the previous section. The parser also provides some functions for operations on these structures for some common tasks such as listing the names of the categories in said template.
 
 The most important function of the template parser is:
 
