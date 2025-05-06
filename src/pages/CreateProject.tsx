@@ -8,7 +8,7 @@ import {
   getAllTemplates,
   checkAndAddCategories
 } from "../database";
-import { getCatNames, getTemplate } from "@/newTemplateParser";
+import { getCatNames, getTemplate } from "../TemplateParser";
 
 async function categoryCheck(templateData: any) {
   let categoryNames = getCatNames(getTemplate(templateData));

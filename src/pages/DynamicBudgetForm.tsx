@@ -3,7 +3,8 @@ import GenericForm from "./GenericForm";
 import { cleanString } from "../expressionParser";
 import { TemplateData } from "../types";
 
-//manages the tab layout and dynamically displaying the appropriate budget category form based on the selected tab
+// Manages the tab layout and dynamically displaying the appropriate budget category
+// form based on the selected tab
 type DBProps = 
 {
   getCategoryName: (categoryName: string) => void;

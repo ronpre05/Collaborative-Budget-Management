@@ -1,7 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { getAllCategoryEntries, getAllSubEntries, getFieldName, getSubEntriesForEntry, supabase } from "./database";
 import { cleanString } from "./expressionParser";
-import { findCatObject, getSubEntryNames, getTemplateFromID } from "./newTemplateParser";
+import { findCatObject, getSubEntryNames, getTemplateFromID } from "./TemplateParser";
 import { TemplateData } from "./types";
 /*
 async function getprojectID(categoryID: number): Promise<number> {

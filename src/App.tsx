@@ -13,7 +13,6 @@ import SettingsPage from "./pages/SettingsPage"
 import { AppSidebar } from "./components/app-sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import Invitations from "./pages/Invitations";
-//comment for tag
 
 type Invitation = {
   invitedID: number;

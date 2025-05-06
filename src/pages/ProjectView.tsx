@@ -4,7 +4,7 @@ import DynamicBudgetForm from "./DynamicBudgetForm";
 import ManageCollaborators from "./ManageCollaborators";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import { getTemplateFromID } from "../newTemplateParser";
+import { getTemplateFromID } from "../TemplateParser.tsx";
 import { categoryCalculation } from "../expressionParser";
 import { TemplateData } from "@/types";
 import { getProjectName, getUserRoleInProject, fetchProjectLockStatus, updateProjectLockStatus, getCategoryID,

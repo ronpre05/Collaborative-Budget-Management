@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CategoryType, FieldType } from "../types";
 import { cleanString } from "../expressionParser";
 import { createEntry, createEntryWithSubEntry } from "../database";
-import { findFieldObject, findSubEntryObject } from "@/newTemplateParser";
+import { findFieldObject, findSubEntryObject } from "../TemplateParser";
 
 interface GenericFormProps {
   category: CategoryType;

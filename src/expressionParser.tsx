@@ -1,6 +1,6 @@
 import { BlockList } from "net";
 import { getAllCategoryEntries, getAllSubEntries, getCategoryID, getFieldID, getGlobalEntryID, getSubValue, getValue, getValueID, updateIndividualField } from "./database";
-import { findCatObject } from "./newTemplateParser";
+import { findCatObject } from "./TemplateParser";
 import { CalculationType, TemplateData, CategoryType } from "./types";
 
 enum Associativity
