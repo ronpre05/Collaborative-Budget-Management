@@ -13,13 +13,6 @@ They have been roughly split up into sections so that they are kept with like st
 | [Non Functional](#non-functional)         |
 | [Security](#security)                     |
 
-| Priority | Meaning     |
-| -------- | ----------- |
-| 1        | Must Have   |
-| 2        | Should Have |
-| 3        | Could Have  |
-| 4        | Wont Have   |
-
 | Story Points | Time        | Effort   |
 | ------------ | ----------- | -------- |
 | 1            | Few minutes | Minimum  |
@@ -28,6 +21,8 @@ They have been roughly split up into sections so that they are kept with like st
 | 4-7          | Few Days    | Moderate |
 | 8-11         | A week      | Severe   |
 | 12-13        | A month     | Maximum  |
+
+User Story priorities are assigned using the MoSCoW prioritisation framework. With each priority assigned with a number.
 
 | Priority | Meaning     |
 | -------- | ----------- |

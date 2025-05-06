@@ -13,9 +13,7 @@ const RemoveCollaborator: React.FC<RemoveCollaboratorProps> = ({ projectID }) =>
       const { data, error } = await supabase
         .from("UserInstitutionProject")
         .select("userID, roleID, Users(firstName, lastName, email), Roles(roleName)")
-        .eq("projectID", projectID)
-        .select("userID, roleID, Users(firstName, lastName, email), Roles(roleName)")
-
+        .eq("projectID", projectID);
 
       if (error) {
         console.error("Error fetching collaborators:", error.message);
@@ -29,11 +27,11 @@ const RemoveCollaborator: React.FC<RemoveCollaboratorProps> = ({ projectID }) =>
 
   const removeCollaborator = async (userID: number) => {
     const { error } = await supabase
-      .from("UserInstitutionProject")  
+      .from("UserInstitutionProject")
       .delete()
       .eq("userID", userID)
       .eq("projectID", projectID);
-  
+
     if (error) {
       console.error("Error removing collaborator:", error.message);
     } else {
@@ -42,13 +40,24 @@ const RemoveCollaborator: React.FC<RemoveCollaboratorProps> = ({ projectID }) =>
   };
 
   return (
-    <div>
-      <h3>Project Collaborators</h3>
-      <ul>
+    <div className="space-y-6 max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md border border-gray-300">
+      <h3 className="text-2xl font-semibold mb-4 text-left">Project Collaborators</h3>
+
+      <ul className="space-y-4">
         {collaborators.map((user) => (
-          <li key={user.userID}>
-            {user.Users.firstName} {user.Users.lastName} ({user.Users.email}) - {user.Roles?.roleName || "Unknown Role"}
-            <button onClick={() => removeCollaborator(user.userID)}>Remove</button>
+          <li key={user.userID} className="flex justify-between items-center p-4 border-b border-gray-200 rounded-md hover:bg-gray-50">
+            <div className="text-left">
+              <p className="font-medium">{user.Users.firstName} {user.Users.lastName}</p>
+              <p className="text-sm text-gray-500">{user.Users.email}</p>
+              <p className="text-sm text-gray-500">{user.Roles?.roleName || "Unknown Role"}</p>
+            </div>
+
+            <button
+              onClick={() => removeCollaborator(user.userID)}
+              className="ml-4 text-sm text-red-600 hover:text-red-800 focus:outline-none"
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>

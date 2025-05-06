@@ -2,81 +2,162 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import DynamicBudgetForm from "./DynamicBudgetForm";
 import ManageCollaborators from "./ManageCollaborators";
-import { getProjectName, getCategoryID } from "../database";
 import CategoryDisplay from "../categoryDisplay";
 import { getCategoryDataCatOnly } from "../queryFunctions";
-import template from "../../template1.json";
-import { getTemplate } from "../newTemplateParser";
+import { getTemplateFromID } from "../TemplateParser.tsx";
 import { categoryCalculation } from "../expressionParser";
+import { TemplateData } from "@/types";
+import { getProjectName, getUserRoleInProject, fetchProjectLockStatus, updateProjectLockStatus, getCategoryID,
+} from "../database"; // Refactored database functions
+import { Button } from "../components/ui/button.tsx";
 
 const ProjectView: React.FC = () => {
   const location = useLocation();
-  const projectID = localStorage.getItem("projectID")
+
   const [currentCategory, setCurrentCategory] = useState<string>("");
+  const [projectID, setProjectID] = useState<string | null>(null);
   const [projectName, setProjectName] = useState<string | null>(null);
-  const [categoryData, setCategoryData] = useState<string[][]>([[]])
+  const [userRole, setUserRole] = useState<number | null>(null);
+  const [roleName, setRoleName] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateData>();
+  const [categoryData, setCategoryData] = useState<string[][]>([[]]);
   const [currentCatID, setCurrentCatID] = useState<number>();
-  
-  
+  const [isLocked, setIsLocked] = useState<boolean>(false);
+
+  const roleMapping: Record<number, string> = {
+    1: "Institution Collaborator",
+    2: "Institution Lead",
+    3: "Project Investigator",
+  };
+
   const setCategoryName = (categoryName: string) => {
     console.log("selected category:", categoryName);
     setCurrentCategory(categoryName);
   };
 
   useEffect(() => {
-    const fetchProjectName = async () => {
+    const fetchProjectDetails = async () => {
+      const storedID = localStorage.getItem("projectID");
+
+      if (!storedID) {
+        console.error("No project ID found in localStorage.");
+        return;
+      }
+
+      setProjectID(storedID);
+
+      const templateData = await getTemplateFromID(parseInt(storedID));
+      setTemplate(templateData);
+      if (!templateData) {
+        console.error("Error loading template for project:", storedID);
+      }
+
       const name = await getProjectName();
-      localStorage.setItem("template", JSON.stringify(template));
       setProjectName(name);
+
+      const role = await getUserRoleInProject(parseInt(storedID, 10));
+      setUserRole(role);
+      if (role !== null) {
+        const roleMapped = roleMapping[role];
+        setRoleName(roleMapped || "Unknown Role");
+      }
+
+      const isProjectLocked = await fetchProjectLockStatus(parseInt(storedID));
+      setIsLocked(isProjectLocked);
     };
 
-    fetchProjectName();
+    fetchProjectDetails();
   }, []);
-
 
   useEffect(() => {
     const updateCatID = async () => {
-      setCurrentCatID(await getCategoryID(currentCategory, Number(projectID)));
-      console.log("Current category ID:", currentCatID);
-      
-      
-      if(projectID !== undefined)
-         await categoryCalculation(currentCategory, Number(projectID), getTemplate(template));
-    }
-    updateCatID();
-  }, [currentCategory])
+      if (!projectID) return;
 
+      const catID = await getCategoryID(currentCategory, Number(projectID));
+      setCurrentCatID(catID);
+      console.log("Current category ID:", catID);
+
+      if (template) {
+        await categoryCalculation(currentCategory, Number(projectID), template);
+      } else {
+        console.error("Template not loaded yet for project:", projectID);
+      }
+    };
+
+    updateCatID();
+  }, [currentCategory]);
 
   useEffect(() => {
-    const updateCategoryData = async() => {
-      if(currentCatID!== undefined)
+    const updateCategoryData = async () => {
+      if (currentCatID !== undefined) {
         setCategoryData(await getCategoryDataCatOnly(currentCatID));
-    }
+      }
+    };
+
     updateCategoryData();
-  }, [currentCatID])
+  }, [currentCatID]);
+
+  if (!template) return null;
 
   return (
     <div className="project-view">
-      {/* Display the project name */}
-      {projectName && <h1>{projectName}</h1>}
-      {/* Render the new generic cost management page */}
-      <DynamicBudgetForm getCategoryName={setCategoryName} />
-      <CategoryDisplay data={categoryData} />
-      <Link
-          to="/create-project/manage-collaborators"
-          className={`tab ${location.pathname === "/create-project/manage-collaborators" ? "active-tab" : ""}`}
-        >
-          Manage Collaborators
-        </Link>
+      {projectName && <h1><strong>{projectName}</strong></h1>}
 
-        <div className="tab-content">
-          {location.pathname === "/create-project/manage-collaborators" && <ManageCollaborators />}
+      {userRole === 3 && (
+        <Button
+          onClick={async () => {
+            if (!projectID) {
+              console.error("No projectID found for locking.");
+              return;
+            }
+
+            const newLockStatus = !isLocked;
+            const confirmedStatus = await updateProjectLockStatus(
+              Number(projectID),
+              newLockStatus
+            );
+
+            setIsLocked(confirmedStatus);
+          }}
+          className={`lock-button ${isLocked ? "locked" : "unlocked"}`}
+        >
+          {isLocked ? "Unlock Project" : "Lock Project"}
+        </Button>
+      )}
+
+      {roleName && <p>User Role: {roleName}</p>}
+
+      <DynamicBudgetForm
+        getCategoryName={setCategoryName}
+        readOnly={userRole === 1 || isLocked}
+        template={template}
+      />
+
+      <CategoryDisplay data={categoryData} />
+
+      <Link
+        to="/project-view/manage-collaborators"
+        className={`tab ${
+          location.pathname === "/project-view/manage-collaborators"
+            ? "active-tab"
+            : ""
+        }`}
+      >
+        Manage Collaborators
+      </Link>
+
+      <div className="tab-content">
+        {location.pathname === "/project-view/manage-collaborators" &&
+          projectID &&
+          userRole !== null && (
+            <ManageCollaborators
+              projectID={parseInt(projectID, 10)}
+              userRole={userRole}
+            />
+          )}
       </div>
     </div>
-
-    
   );
 };
 
 export default ProjectView;
-

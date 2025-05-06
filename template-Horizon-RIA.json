@@ -6,13 +6,24 @@
 		"PC": 
 		{
 			"Name" : "Personnel",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
+				"Name" : 
+				{
+					"Name" : "Name",
+					"Prefix" : "",
+					"Value" : "Full Name",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
 				"Amount" : 
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
@@ -24,7 +35,7 @@
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "String",
+					"Type" : "Date",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
@@ -34,7 +45,7 @@
 					"Prefix" : "",
 					"Value" : "",
 					"Postfix" : "",
-					"Type" : "String",
+					"Type" : "Date",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
@@ -42,7 +53,7 @@
 				{
 					"Name" : "Percentage",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Percentage worked",
 					"Postfix" : "%",
 					"Type" : "Float",
 					"DisplayVisiblity" : true,
@@ -57,16 +68,6 @@
 					"Type" : "Float",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : false
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
@@ -74,16 +75,9 @@
 				"PersonMonths" : 
 				{
 					"Name" : "Person_Months",
-					"Expression" : "(Personnel:End_Date - Personnel:Start_Date) * Personnel:Percentage",
+					"Expression" : "(Personnel:End_Date:M - Personnel:Start_Date:M) * (Personnel:Percentage / 100)",
 					"Type" : "Local",
 					"Output" : "Person_Month"
-				},
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Personnel:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
 				}
 			}
 		},
@@ -91,13 +85,14 @@
 		"EC" : 
 		{
 			"Name" : "Equipment",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -107,7 +102,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -117,45 +112,29 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Equipment:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
 		"OGC" : 
 		{
 			"Name" : "Other_Goods_and_Services",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -165,7 +144,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -175,46 +154,30 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Other_Goods_and_Services:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
 		"TC" : 
 		{
 			"Name" : "Travel_Costs",
+			"HasSubEntry" : true,
 			"Fields" : 
 			{
 				"Days"  : 
 				{
 					"Name" : "Days",
 					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
+					"Value" : "Days",
+					"Postfix" : "(no. of)",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
@@ -222,10 +185,10 @@
 				"Accomodation" : 
 				{
 					"Name" : "Accomodation",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Currency",
+					"Prefix" : "€",
+					"Value" : "Accomodation",
+					"Postfix" : "per day",
+					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
@@ -233,34 +196,64 @@
 				{
 					"Name" : "Sustinance",
 					"Prefix" : "€",
-					"Value" : "",
-					"Postfix" : "",
+					"Value" : "Sustinance",
+					"Postfix" : "per day",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
 				},
-				"Entry" : 
+				"Base Total" : 
 				{
-					"What" : 
-					{
-						"Name" : "What",
-						"Prefix" : "",
-						"Value" : "",
-						"Postfix" : "",
-						"Type" : "String",
-						"DisplayVisiblity" : true,
-						"EntryVisibility" : true
-					},
-					"Amount" : 
-					{
-						"Name" : "Amount",
-						"Prefix" : "€",
-						"Value" : "",
-						"Postfix" : "",
-						"Type" : "Int",
-						"DisplayVisiblity" : true,
-						"EntryVisibility" : true
-					}
+					"Name" : "Base_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Entry Total" : 
+				{
+					"Name" : "Entry_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				},
+				"Trip Total" : 
+				{
+					"Name" : "Trip_Total",
+					"Prefix" : "€",
+					"Value" : "",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : false
+				}
+			},
+			"SubEntries" : 
+			{
+				"What" : 
+				{
+					"Name" : "What",
+					"Prefix" : "",
+					"Value" : "What",
+					"Postfix" : "",
+					"Type" : "String",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
+				},
+				"Amount" : 
+				{
+					"Name" : "Amount",
+					"Prefix" : "€",
+					"Value" : "Amount",
+					"Postfix" : "",
+					"Type" : "Int",
+					"DisplayVisiblity" : true,
+					"EntryVisibility" : true
 				}
 			},
 			"Calculations" :
@@ -270,36 +263,36 @@
 					"Name" : "Base_Total",
 					"Expression" : "Travel_Costs:Days*Travel_Costs:Accomodation + Travel_Costs:Days*Travel_Costs:Sustinance",
 					"Type" : "Local",
-					"Output" : ""
+					"Output" : "Base_Total"
 				},
 				"entryTotals" :
 				{
 					"Name" : "Entry_Total",
 					"Expression" : "Travel_Costs:Amount",
-					"Type" : "Local",
-					"Output" : ""
+					"Type" : "SubGlobal",
+					"Output" : "Entry_Total"
 				},
 				"Total:Local" : 
 				{
 					"Name" : "Trip_Total",
 					"Expression" : "Travel_Costs:Base_Total + Travel_Costs:Entry_Total",
 					"Type" : "Local",
-					"Output" : ""
+					"Output" : "Trip_Total"
 				}
 			}
-			
 		},
 
 		"SC" : 
 		{
 			"Name" : "Subcontracting",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -309,7 +302,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -319,45 +312,29 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Subcontracting:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
 		"IIC" : 
 		{
 			"Name" : "Internally_Invoiced_Services",
+			"HasSubEntry" : false,
 			"Fields" : 
 			{
 				"What" : 
 				{
 					"Name" : "What",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "What",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -367,7 +344,7 @@
 				{
 					"Name" : "Why",
 					"Prefix" : "",
-					"Value" : "",
+					"Value" : "Why",
 					"Postfix" : "",
 					"Type" : "String",
 					"DisplayVisiblity" : true,
@@ -377,38 +354,22 @@
 				{
 					"Name" : "Amount",
 					"Prefix" : "€",
-					"Value" : "",
+					"Value" : "Amount",
 					"Postfix" : "",
 					"Type" : "Int",
 					"DisplayVisiblity" : true,
 					"EntryVisibility" : true
-				},
-				"Local Total" :
-				{
-					"Name" : "Local_Total",
-					"Prefix" : "",
-					"Value" : "",
-					"Postfix" : "",
-					"Type" : "Float",
-					"DisplayVisiblity" : true,
-					"EntryVisibility" : false
 				}
 			},
 			"Calculations" :
 			{
-				"Total:Local" : 
-				{
-					"Name" : "Entry_Total",
-					"Expression" : "Internally_Invoiced_Services:Amount",
-					"Type" : "Local",
-					"Output" : "Local_Total"
-				}
 			}
 		},
 
 		"Totals" : 
 		{
 			"Name" : "Totals",
+			"HasSubEntry" : false,
 			"Fields" :
 			{
 				"Indirect Costs" : 
@@ -504,35 +465,35 @@
 				"Personnel Total" : 
 				{
 					"Name" : "Personnel_Total",
-					"Expression" : "Personnel:Local_Total",
+					"Expression" : "Personnel:Amount",
 					"Type" : "Global",
 					"Output" : "Personnel_Total"
 				},
 				"Equipment Total" : 
 				{
 					"Name" : "Equipment_Total",
-					"Expression" : "Equipment:Local_Total",
+					"Expression" : "Equipment:Amount",
 					"Type" : "Global",
 					"Output" : "Equipment_Total"
 				},
 				"OGC Total" : 
 				{
 					"Name" : "Other_Goods_and_Services_Total",
-					"Expression" : "Other_Goods_and_Services:Local_Total",
+					"Expression" : "Other_Goods_and_Services:Amount",
 					"Type" : "Global",
 					"Output" : "Other_Goods_and_Services_Total"
 				},
 				"Subcontracting Total" : 
 				{
 					"Name" : "Subcontracting_Total",
-					"Expression" : "Subcontracting:Local_Total",
+					"Expression" : "Subcontracting:Amount",
 					"Type" : "Global",
 					"Output" : "Subcontracting_Total"
 				},
 				"Internal Invoice Total" : 
 				{
 					"Name" : "Internally_Invoiced_Services_Total",
-					"Expression" : "Internally_Invoiced_Services:Local_Total",
+					"Expression" : "Internally_Invoiced_Services:Amount",
 					"Type" : "Global",
 					"Output" : "Internally_Invoiced_Services_Total"
 				},

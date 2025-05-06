@@ -1,190 +1,163 @@
-// import { readFile } from "fs/promises";
+import { getProjectTemplate } from "./database";
+import { TemplateData, CategoryType, FieldType, CalculationType } from "./types";
 
-type FieldType =
+/**
+ * Generates the TemplateData structure for a project given its projectID, typically found in local
+ * storage
+ * @param projectID the ID of the project to query
+ * @returns The whole TemplateData structure
+ */
+export async function getTemplateFromID(projectID : number) : Promise<TemplateData>
 {
-    name : string;
-    prefix : string;
-    value : string;
-    postfix : string;
-    type : string;
-    displayvisible : boolean;
-    entryvisible : boolean;
-};
-
-type CalculationType =
-{
-    name : string;
-    expression : string;
-    type : string;
-    output : string;
-};
-
-export async function readJsonFile(path: string): Promise<any> 
-{
-    // const file = await readFile(path, "utf8");
-    // return await(JSON.parse(file));
-
-    const response = await fetch(path);
-    return await response.json();
+    let rawTemplate : any = await getProjectTemplate(projectID);
+    return getTemplate(rawTemplate);
 }
 
 
-// Gets the value in the "templateName" section of the JSON
-export function getTemplateName(template : any) : string
+/**
+ * Generates a TemplateData structure from a raw JSON template file, gathering the CategoryTypes and other internal structures
+ * @param template The raw template JSON that has been read in from readJsonFile
+ * @returns A complete TemplateData structure which contains the categories list filled out
+ */
+export function getTemplate(template : any) : TemplateData
 {
-    // Returns the name
-    return template.templateName;
-}
-
-// Gets the whole Categories object from the JSON
-export function getCategoriesSection(template : any) : any[]
-{
-    return template.Categories;
-}
-
-// Gets the names of the categories from the Categories object
-export function getCategoryNames(categories : any) : string[]
-{
-    let catNames : string[] = [];
-
-    Object.values(categories).forEach(value => 
-    // Loop through the categories
+    if(template == null)
     {
-        // Add each category name to the array
-        catNames.push((value as any).Name);
-    });
-
-    // Return the array
-    return catNames;
-}
-
-// Gets an array of categoru names from the template directly
-export function getCatNamesFromTemplate(template : any) : string[]
-{
-    // Return the categories names after gathering the categories section
-    return getCategoryNames(getCategoriesSection(template));
-}
-
-// Bet the object of each individual category by name
-export function getCategoryObject(categories : any, catName : string) : any
-{
-    // Create a value to hold the return
-    let ret : any = [];
-
-    Object.values(categories).forEach(value =>
-    // Loop through the categories object
-    {
-        // Take each entry
-        let cat : any = value;
-
-        // Check if the name matches the goal
-        if(cat.Name == catName)
-        {
-            // If so set the return value
-            ret = cat;
-        }
+        return {templateName : "", categories : []};
     }
-    )
 
-    // Return the value
-    return ret;
-}
-
-export function getCategoriesObjectsFromTemplate(template : any) : any[]
-{
-    // Gather the required names and categories object
-    let catNames : string[] = getCatNamesFromTemplate(template);
-    let categories : any = getCategoriesSection(template);
-
-    // Create a return array
-    let catObs : any[] = [];
-
-    Object.values(catNames).forEach(value =>
-    // Loop through each of the names
+    let temp = 
     {
-        // Get the object for that name
-        let cat : any = getCategoryObject(categories, value)
+        templateName : template.templateName,
+        categories : getCategoriesFromRaw(template)
+    };
 
-        // Add the object to an array
-        catObs.push(cat);
-    }
-    )
-
-    // Return the array
-    return catObs;
+    return temp;
 }
 
-export function getFieldsSection(category : any) : any
-{
-    return category.Fields;
-}
 
-export function getFieldNames(fields : any) : string[]
+/**
+ * Gets the raw categories section from a template, loop through each category and creates a CategoryType out of it in order
+ * to populate the TemplateData type requested by the user for a project.
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param template the raw template file to extract the categories from
+ * @returns a list of category types which are correctly populated with FieldType and CalculationType lists
+ */
+function getCategoriesFromRaw(template : any) : CategoryType[]
 {
-    let fieldNames : string[] = [];
+    const rawCategories : any = template.Categories;
+    let categories : CategoryType[] = [];
 
-    Object.values(fields).forEach(value =>
-    // Loop through the fields section
+    if(rawCategories == undefined)
     {
-        // Add to an array
-        fieldNames.push((value as any).Name);
+        return [];
     }
-    )
-    
-    // Return the array
-    return fieldNames;
 
-}
-
-function getFieldObject(fields : any, fieldName : string) : any
-{
-    // Create a value to hold the return
-    let ret : any = [];
-
-    Object.values(fields).forEach(value =>
-    // Loop through the fields
+    Object.values(rawCategories).forEach(category =>
+    // Loop getCategoryData over the template catgeory section
     {
-        // Save each field
-        let field : any = value;
-
-        if(field.Name == fieldName)
-        // Check if its Name entry matches the fieldName
-        {
-            // If so it to the return value
-            ret = field;
-        }
+        categories.push(getCategoryData(category));
     }
-    )
-
-    return ret;
-
+    );
+        
+    return categories;
 }
 
-function getFieldObjectsFromCategory(category : any) : FieldType[]
+
+/**
+ * Generates a type safe category with its fields and calculations ready to form a list for the category list in the
+ * TemplateData structure. Also handles getting the sub entries from the template if that category has sub entries
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param category a raw category from the template
+ * @returns a correctly populated CategoryType object which has fields and calculations read in
+ */
+function getCategoryData(category : any) : CategoryType
 {
-    // Gather the required names and fields object
-    let fieldNames : string[] = getFieldNames(getFieldsSection(category));
-    let fields : any = getFieldsSection(category);
-
-    // Create a return array
-    let fieldObs : FieldType[] = [];
-
-    Object.values(fieldNames).forEach(value =>
-    // Loop through each of the names
+    let cat : CategoryType = 
     {
-        // Get the object for that name
-        let field : any = getFieldObject(fields, value)
+        name : category.Name,
+        hassubentry : category.HasSubEntry,
+        fields : getFieldsFromRaw(category),
+        calculations : getCalculationsFromRaw(category),
+        subentries : [],
+    };
 
-        // Add the object to an array
-        fieldObs.push(getFieldData(field));
+    if(cat.hassubentry == true)
+    {
+        cat.subentries = getSubEntryFromRaw(category);
     }
-    )
 
-    // Return the array
-    return fieldObs;
-
+    return cat;
 }
 
+/**
+ * Generates a list of FieldType from a raw category in order to populate the CatgegoryType object of the passed in raw category
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param category a raw category from the JSON to extract the fields out of 
+ * @returns a list of FieldType as extracted from the JSON
+ */
+function getFieldsFromRaw(category : any) : FieldType[]
+{
+    const rawFields : any = category.Fields;
+    let fields : FieldType[] = [];
+
+    Object.values(rawFields).forEach(field =>
+    // Loop get field data over the field section in category
+    {
+        fields.push(getFieldData(field));
+    }
+    );
+
+    return fields;
+}
+
+/**
+ * A function to construct a list of FieldType from a raw category i order to populate the CategoryType object of the raw category
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param category the category to get sub entries from
+ * @returns the list of fields that make up the sub entries of the category
+ */
+function getSubEntryFromRaw(category : any) : FieldType[]
+{
+    const rawSubEntry : any = category.SubEntries;
+    let subEntries : FieldType[] = [];
+
+    Object.values(rawSubEntry).forEach(subEntry =>
+    {
+        subEntries.push(getFieldData(subEntry));
+    }
+    );
+
+    return subEntries;
+}
+
+/**
+ * Generates a list of CalculationType from a raw category in order to populate the CatgegoryType object of the passed in raw category
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param category a raw category from the JSON to extract the calculations out of 
+ * @returns a list of CalculationType as extracted from the JSON
+ */
+function getCalculationsFromRaw(category : any) : CalculationType[]
+{
+    const rawCalulations : any = category.Calculations;
+    let calculations : CalculationType[] = [];
+
+    Object.values(rawCalulations).forEach(calculation =>
+    // Loop get calc data over the calc section in category
+    {
+        calculations.push(getCalcData(calculation));
+    }
+    );
+        
+    return calculations;
+}
+
+/**
+ * Extracts the field data from the JSON and create a FieldType.
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param field the field object to extract from
+ * @returns a FieldType object with the data taken from the JSON
+ */
 function getFieldData(field : any) : FieldType
 {
     let ret : FieldType = 
@@ -201,76 +174,12 @@ function getFieldData(field : any) : FieldType
     return ret;
 }
 
-export function getCalculationsSection(category : any) : any
-{
-    return category.Calculations;
-}
-
-export function getCalculationNames(calculations : any) : string[]
-{
-    let calcNames : string[] = [];
-
-    Object.values(calculations).forEach(value => 
-    // Loop through the calculations section
-    {
-        // Add to an array
-        calcNames.push((value as any).Name);
-    }
-    );
-
-    // Return the array
-    return calcNames;
-
-}
-
-function getCalculationObject(calculations : any, calcName : string) : CalculationType
-{
-    // Create a value to hold the return
-    let ret : any = [];
-
-    Object.values(calculations).forEach(value =>
-    // Loop through the calculations
-    {
-        // Save each calculation
-        let calc : any = value;
-
-        if(calc.Name == calcName)
-        // Check if its Name entry matches the calcName
-        {
-            // If so it to the return value
-            ret = calc;
-        }
-    }
-    )
-    
-    return ret;
-}
-
-export function getCalcObjectsFromCategory(category : any) : CalculationType[]
-{
-    // Gather the required names and calc object
-    let calcs : any = getCalculationsSection(category);
-    let calcNames : string[] = getCalculationNames(calcs);
-    
-    // Create a return array
-    let calcObs : CalculationType[] = [];
-
-    Object.values(calcNames).forEach(value =>
-    // Loop through each of the names
-    {
-        // Get the object for that name
-        let calc : CalculationType = getCalculationObject(calcs, value)
-
-        // Add the object to an array
-        calcObs.push(getCalcData(calc));
-    }
-    )
-
-    // Return the array
-    return calcObs;
-
-}
-
+/**
+ * Extracts the calculation data from the JSON and create a CalculationType.
+ * NO NEED TO EXPORT THIS FUNCTION, IT IS NOT PROPERLY TYPED, GET TYPES FROM "getTemplate"
+ * @param calc the calculation object to extract from
+ * @returns a CalculationType object with the data taken from the JSON
+ */
 function getCalcData(calc : any) : CalculationType
 {
     let ret : CalculationType = 
@@ -284,37 +193,187 @@ function getCalcData(calc : any) : CalculationType
     return ret;
 }
 
-  /*
-    Recursively flattens a (possibly nested) fields object.
-    For nested fields, the keys are combined in dot notation.
-    For example:
+// All other operations require use on the types rather than on the raw data
+
+/**
+ * Uses a TemplateData structure and iterates through its CategoryType list, producing a list of category names which can be
+ * used elsewhere
+ * @param template a TemplateData structure to extract the category names from
+ * @returns A list of category names to be displayed where needed (or processed elsewhere)
+ */
+export function getCatNames(template : TemplateData) : string[]
+{
+    const cats : CategoryType[] = template.categories;
+    let catNames : string[] = [];
+
+    if(cats == undefined)
     {
-      "Days": { ... },
-      "Entry": {
-         "Amount": { ... },
-         "What": { ... }
-      }
+        return catNames;
     }
-    becomes:
+
+    for(let cat of cats)
     {
-      "Days": { ... },
-      "Entry.Amount": { ... },
-      "Entry.What": { ... }
+        catNames.push(cat.name);
     }
-  */
-    export function flattenFields(
-        fields: Record<string, any>,
-        parentKey: string = ""
-      ): Record<string, FieldType> {
-        let result: Record<string, FieldType> = {};
-        for (const key in fields) {
-          const value = fields[key];
-          const compoundKey = parentKey ? `${parentKey}.${key}` : key;
-          if (value && typeof value === "object" && "Type" in value) {
-            result[compoundKey] = getFieldData(value);
-          } else if (value && typeof value === "object") {
-            result = { ...result, ...flattenFields(value, compoundKey) };
-          }
+
+    return catNames;
+}
+
+// Get field names from a category
+/**
+ * Returns a list of the field names from a given CategoryType object
+ * @param category the chosen CategoryType object
+ * @returns a list of field names
+ */
+export function getFieldsNames(category : CategoryType) : string[]
+{
+    const fields : FieldType[] = category.fields;
+    let fieldNames : string[] = [];
+
+    if(fields == undefined)
+    {
+        return fieldNames;
+    }
+
+    for(let field of fields)
+    {
+        fieldNames.push(field.name);
+    }
+
+    return fieldNames;
+}
+
+// From a cat name, get the object
+/**
+ * From a given category name, find the category object
+ * @param catName the category name you are searching for
+ * @param categories the list of categories inside the template
+ * @returns the CategoryType object with that name
+ */
+export function findCatObject(catName : string, categories : CategoryType[]) : CategoryType
+{
+    let ret : CategoryType = {name : "", fields : [], calculations : [], hassubentry : false, subentries : []};
+
+    if(categories == undefined)
+    {
+        return ret;
+    }
+
+    for(let cat of categories)
+    {
+        if(cat.name == catName)
+        {
+            return cat;
         }
-        return result;
-      }
+    }
+
+    return ret;
+}
+
+// From a field name and category get the object
+/**
+ * From a given field name, find the field object
+ * @param fieldName the field name that you are searching for
+ * @param category the category you are searching the fields of
+ * @returns the FieldType object with that name
+ */
+export function findFieldObject(fieldName : string, category : CategoryType) : FieldType
+{
+    const fields : FieldType[] = category.fields;
+    let ret : FieldType = {name : "", prefix : "", value : "", postfix : "", type : "", displayvisible : false, entryvisible : false};
+
+    if(fields == undefined)
+    {
+        return ret;
+    }
+
+    for(let field of fields)
+    {
+        if(field.name == fieldName)
+        {
+            return field;
+        }
+    }
+
+    return ret;
+}
+
+// From a calc name and category get the object
+/**
+ * From a given calculation name, find the calculation object
+ * @param calcName the calculation name that you are searching for
+ * @param category the category you are searching the calculations of
+ * @returns the CalculationType object with that name
+ */
+export function findCalcObject(calcName : string, category : CategoryType) : CalculationType
+{
+    const calcs : CalculationType[] = category.calculations;
+    let ret : CalculationType = {name : "", expression : "", type : "", output : ""};
+
+    if(calcs == undefined)
+    {
+        return ret;
+    }
+
+    for(let calc of calcs)
+    {
+        if(calc.name == calcName)
+        {
+            return calc;
+        }
+    }
+
+    return ret;
+}
+
+// Get sub entry names
+/**
+ * Returns a list of the subentries from a given CategoryType object
+ * @param category the chosen CategoryType object
+ * @returns a list of sub entry names, [] if has no subentries
+ */
+export function getSubEntryNames(category : CategoryType) : string[]
+{
+    const subEntries : FieldType[] = category.subentries;
+    let subEntryNames : string[] = [];
+
+    if(subEntries == undefined || category.hassubentry == false)
+    {
+        return subEntryNames;
+    }
+
+    for(let subEntry of subEntries)
+    {
+        subEntryNames.push(subEntry.name);
+    }
+
+    return subEntryNames;
+}
+
+// From a sub entry name, get the sub entry
+/**
+ * From a given sub entry name, find the sub entryobject
+ * @param subEntryName the sub entry name that you are searching for
+ * @param category the category you are searching the sub entries of
+ * @returns the FieldType object with that name
+ */
+export function findSubEntryObject(subEntryName : string, category : CategoryType) : FieldType
+{
+    const subEntries : FieldType[] = category.subentries;
+    let ret : FieldType = {name : "", prefix : "", value : "", postfix : "", type : "", displayvisible : false, entryvisible : false};
+
+    if(subEntries == undefined || category.hassubentry == false)
+    {
+        return ret;
+    }
+
+    for(let subEntry of subEntries)
+    {
+        if(subEntry.name == subEntryName)
+        {
+            return subEntry;
+        }
+    }
+
+    return ret;
+}

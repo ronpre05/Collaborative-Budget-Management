@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getPendingInvites, getSentInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID, getRoles } from "../database";
+import { getPendingInvites, getSentInvites, acceptInvite, rejectInvite, getUsersInstitutions, getInstitutionID, getRoles, getProjectNameFromID } from "../database";
+import { Button } from "../components/ui/button"; 
 
 interface Invite {
   invitedID: number;
@@ -26,6 +27,7 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, userID, invitation
   const [institutions, setInstitutions] = useState<string[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string>("");
   const [roles, setRoles] = useState<Role[]>([]);
+  const [projectNames, setProjectNames] = useState<{ [projectID: number]: string | null }>({});
 
   useEffect(() => {
     const fetchInstitutions = async () => {
@@ -69,6 +71,26 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, userID, invitation
     loadSentInvites();
   }, [userID]);
 
+  useEffect(() => {
+    const fetchProjectNames = async () => {
+      const allInvites = [...invites, ...sentInvites];
+      const uniqueProjectIDs = Array.from(new Set(allInvites.map(invite => invite.projectID)));
+  
+      const names: { [key: number]: string | null } = {};
+      await Promise.all(uniqueProjectIDs.map(async (projectID) => {
+        const name = await getProjectNameFromID(projectID);
+        names[projectID] = name;
+      }));
+  
+      setProjectNames(names);
+    };
+  
+    if (invites.length > 0 || sentInvites.length > 0) {
+      fetchProjectNames();
+    }
+  }, [invites, sentInvites]);
+  
+
   const getRoleName = (roleID: number) => {
     const role = roles.find((r) => r.roleID === roleID);
     return role ? role.roleName : "Unknown Role";
@@ -110,12 +132,20 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, userID, invitation
         <p>No pending invites.</p>
       ) : (
         invites.map((invite) => (
-          <div key={`${invite.invitedID}-${invite.projectID}`}>
+          <div 
+            key={`${invite.invitedID}-${invite.projectID}`} 
+            className="border border-gray-300 rounded-lg p-4 mb-4 shadow-sm"
+          >
             <p>
-              Project ID: {invite.projectID} | Role: <strong>{getRoleName(invite.roleID)}</strong>
+              Project: <strong>{projectNames[invite.projectID] ?? "Loading..."}</strong> | 
+              Role: <strong>{getRoleName(invite.roleID)}</strong>
             </p>
             <label>Select Institution:</label>
-            <select value={selectedInstitution} onChange={(e) => setSelectedInstitution(e.target.value)}>
+            <select 
+              value={selectedInstitution} 
+              onChange={(e) => setSelectedInstitution(e.target.value)}
+              className="border border-gray-300 rounded p-2 w-full mt-2"
+            >
               <option value="" disabled>
                 Select an institution
               </option>
@@ -125,27 +155,34 @@ const Invitations: React.FC<InvitationsProps> = ({ userEmail, userID, invitation
                 </option>
               ))}
             </select>
-
-            <button onClick={() => handleAccept(invite.invitedID, invite.projectID, invite.roleID)}>Accept</button>
-            <button onClick={() => handleReject(invite.invitedID)}>Reject</button>
+            
+            <div className="mt-4 flex gap-2">
+              <Button onClick={() => handleAccept(invite.invitedID, invite.projectID, invite.roleID)}>
+                Accept
+              </Button>
+              <Button variant="destructive" onClick={() => handleReject(invite.invitedID)}>
+                Reject
+              </Button>
+            </div>
           </div>
         ))
-      )}
+      )}  
 
-      <h3>Sent Invitations</h3>
-      {sentInvites.length === 0 ? (
-        <p>No invites sent.</p>
-      ) : (
-        sentInvites.map((invite) => (
-          <div key={`${invite.invitedID}-${invite.projectID}`}>
-            <p>
-              Invited <strong>{invite.email}</strong> to Project ID: {invite.projectID} <br />
-              Role: <strong>{getRoleName(invite.roleID)}</strong> | Status:{" "}
-              <strong>{invite.status}</strong>
-            </p>
-          </div>
-        ))
-      )}
+      <div>
+        <h3>Sent Invitations</h3>
+        {sentInvites.length === 0 ? (
+          <p>No invites sent.</p>
+        ) : (
+          sentInvites.map((invite) => (
+            <div key={`${invite.invitedID}-${invite.projectID}`} className="border border-gray-300 rounded-lg p-4 mb-4 shadow-sm">
+              <p>
+                Invited <strong>{invite.email}</strong> to Project: <strong>{projectNames[invite.projectID] ?? "Loading..."}</strong><br />
+                Role: <strong>{getRoleName(invite.roleID)}</strong> | Status: <strong>{invite.status}</strong>
+              </p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
