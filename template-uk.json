@@ -1,0 +1,811 @@
+{
+  "templateName": "UK Template",
+  "Categories": {
+    "AStaff": {
+      "Name": "Staff_Al",
+      "HasSubEntry": false,
+      "Fields": {
+        "Name": {
+          "Name": "Name",
+          "Prefix": "",
+          "Value": "Full Name",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Start Date": {
+          "Name": "Start_Date",
+          "Prefix": "",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Date",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "End Date": {
+          "Name": "End_Date",
+          "Prefix": "",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Date",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Percentage": {
+          "Name": "Percentage",
+          "Prefix": "",
+          "Value": "Percentage worked",
+          "Postfix": "%",
+          "Type": "Float",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "AEstate": {
+      "Name": "Estate_Al",
+      "HasSubEntry": false,
+      "Fields": {
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "AOther": {
+      "Name": "Other_Al",
+      "HasSubEntry": false,
+      "Fields": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Why": {
+          "Name": "Why",
+          "Prefix": "",
+          "Value": "Why",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "IStaff": {
+      "Name": "Staff_In",
+      "HasSubEntry": false,
+      "Fields": {
+        "Name": {
+          "Name": "Name",
+          "Prefix": "",
+          "Value": "Full Name",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Start Date": {
+          "Name": "Start_Date",
+          "Prefix": "",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Date",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "End Date": {
+          "Name": "End_Date",
+          "Prefix": "",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Date",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Percentage": {
+          "Name": "Percentage",
+          "Prefix": "",
+          "Value": "Percentage worked",
+          "Postfix": "%",
+          "Type": "Float",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "IEquipment": {
+      "Name": "Equipment_In",
+      "HasSubEntry": false,
+      "Fields": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Why": {
+          "Name": "Why",
+          "Prefix": "",
+          "Value": "Why",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "ITravel": {
+      "Name": "Travel_In",
+      "HasSubEntry": true,
+      "Fields": {
+        "Days": {
+          "Name": "Days",
+          "Prefix": "",
+          "Value": "Days",
+          "Postfix": "(no. of)",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Accomodation": {
+          "Name": "Accomodation",
+          "Prefix": "£",
+          "Value": "Accomodation",
+          "Postfix": "per day",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Sustinance": {
+          "Name": "Sustinance",
+          "Prefix": "£",
+          "Value": "Sustinance",
+          "Postfix": "per day",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Base Total": {
+          "Name": "Base_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Entry Total": {
+          "Name": "Entry_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Trip Total": {
+          "Name": "Trip_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        }
+      },
+      "SubEntries": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {
+        "baseTotal": {
+          "Name": "Base_Total",
+          "Expression": "Travel_In:Days*Travel_In:Accomodation + Travel_In:Days*Travel_In:Sustinance",
+          "Type": "Local",
+          "Output": "Base_Total"
+        },
+        "entryTotals": {
+          "Name": "Entry_Total",
+          "Expression": "Travel_In:Amount",
+          "Type": "SubGlobal",
+          "Output": "Entry_Total"
+        },
+        "Total:Local": {
+          "Name": "Trip_Total",
+          "Expression": "Travel_In:Base_Total + Travel_In:Entry_Total",
+          "Type": "Local",
+          "Output": "Trip_Total"
+        }
+      }
+    },
+    "IOther": {
+      "Name": "Other_In",
+      "HasSubEntry": false,
+      "Fields": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Why": {
+          "Name": "Why",
+          "Prefix": "",
+          "Value": "Why",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "EIStaff": {
+      "Name": "Staff_Ex",
+      "HasSubEntry": false,
+      "Fields": {
+        "Name": {
+          "Name": "Name",
+          "Prefix": "",
+          "Value": "Full Name",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Start Date": {
+          "Name": "Start_Date",
+          "Prefix": "",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Date",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "End Date": {
+          "Name": "End_Date",
+          "Prefix": "",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Date",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Percentage": {
+          "Name": "Percentage",
+          "Prefix": "",
+          "Value": "Percentage worked",
+          "Postfix": "%",
+          "Type": "Float",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "EIEquipment": {
+      "Name": "Equipment_Ex",
+      "HasSubEntry": false,
+      "Fields": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Why": {
+          "Name": "Why",
+          "Prefix": "",
+          "Value": "Why",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "EITravel": {
+      "Name": "Travel_Ex",
+      "HasSubEntry": true,
+      "Fields": {
+        "Days": {
+          "Name": "Days",
+          "Prefix": "",
+          "Value": "Days",
+          "Postfix": "(no. of)",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Accomodation": {
+          "Name": "Accomodation",
+          "Prefix": "£",
+          "Value": "Accomodation",
+          "Postfix": "per day",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Sustinance": {
+          "Name": "Sustinance",
+          "Prefix": "£",
+          "Value": "Sustinance",
+          "Postfix": "per day",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Base Total": {
+          "Name": "Base_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Entry Total": {
+          "Name": "Entry_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Trip Total": {
+          "Name": "Trip_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        }
+      },
+      "SubEntries": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {
+        "baseTotal": {
+          "Name": "Base_Total",
+          "Expression": "Travel_Ex:Days*Travel_Ex:Accomodation + Travel_Ex:Days*Travel_Ex:Sustinance",
+          "Type": "Local",
+          "Output": "Base_Total"
+        },
+        "entryTotals": {
+          "Name": "Entry_Total",
+          "Expression": "Travel_Ex:Amount",
+          "Type": "SubGlobal",
+          "Output": "Entry_Total"
+        },
+        "Total:Local": {
+          "Name": "Trip_Total",
+          "Expression": "Travel_Ex:Base_Total + Travel_Ex:Entry_Total",
+          "Type": "Local",
+          "Output": "Trip_Total"
+        }
+      }
+    },
+    "EIOther": {
+      "Name": "Other_Ex",
+      "HasSubEntry": false,
+      "Fields": {
+        "What": {
+          "Name": "What",
+          "Prefix": "",
+          "Value": "What",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Why": {
+          "Name": "Why",
+          "Prefix": "",
+          "Value": "Why",
+          "Postfix": "",
+          "Type": "String",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        },
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "Indirect": {
+      "Name": "Indirect",
+      "HasSubEntry": false,
+      "Fields": {
+        "Amount": {
+          "Name": "Amount",
+          "Prefix": "£",
+          "Value": "Amount",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": true
+        }
+      },
+      "Calculations": {}
+    },
+    "Totals": {
+      "Name": "Totals",
+      "HasSubEntry": false,
+      "Fields": {
+        "StaffAl": {
+          "Name": "Staff_Al",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "EstateAl": {
+          "Name": "Estate_Al",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "OtherAl": {
+          "Name": "Other_Al",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "StaffIn": {
+          "Name": "Staff_In",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "EquipmentIn": {
+          "Name": "Equipment_In",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "TravelIn": {
+          "Name": "Travel_In",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "OtherIn": {
+          "Name": "Other_In",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "StaffEx": {
+          "Name": "Staff_Ex",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "EquipmentEx": {
+          "Name": "Equipment_Ex",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "TravelEx": {
+          "Name": "Travel_Ex",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "OtherEx": {
+          "Name": "Other_Ex",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Al": {
+          "Name": "Directly_Allocated",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "In": {
+          "Name": "Directly_Incurred",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Ex": {
+          "Name": "Exception",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Indirect": {
+          "Name": "Indirect",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        },
+        "Total": {
+          "Name": "Grand_Total",
+          "Prefix": "£",
+          "Value": "",
+          "Postfix": "",
+          "Type": "Int",
+          "DisplayVisiblity": true,
+          "EntryVisibility": false
+        }
+      },
+      "Calculations": {
+        "AStaffT": {
+          "Name": "Staff_Al_Total",
+          "Expression": "Staff_Al:Amount",
+          "Type": "Global",
+          "Output": "Staff_Al"
+        },
+        "AEstateT": {
+          "Name": "Estate_Al_Total",
+          "Expression": "Estate_Al:Amount",
+          "Type": "Global",
+          "Output": "Estate_Al"
+        },
+        "AOtherT": {
+          "Name": "Other_Al_Total",
+          "Expression": "Other_Al:Amount",
+          "Type": "Global",
+          "Output": "Other_Al"
+        },
+        "IStaffT": {
+          "Name": "Staff_In_Total",
+          "Expression": "Staff_In:Amount",
+          "Type": "Global",
+          "Output": "Staff_In"
+        },
+        "IEquipmentT": {
+          "Name": "Equipment_In_Total",
+          "Expression": "Equipment_In:Amount",
+          "Type": "Global",
+          "Output": "Equipment_In"
+        },
+        "ITravelT": {
+          "Name": "Travel_In_Total",
+          "Expression": "Travel_In:Trip_Total",
+          "Type": "Global",
+          "Output": "Travel_In"
+        },
+        "IOtherT": {
+          "Name": "Other_In_Total",
+          "Expression": "Other_In:Amount",
+          "Type": "Global",
+          "Output": "Other_In"
+        },
+        "IndirectT": {
+          "Name": "Indirect_Total",
+          "Expression": "Indirect:Amount",
+          "Type": "Global",
+          "Output": "Indirect"
+        },
+        "EStaffT": {
+          "Name": "Staff_Ex_Total",
+          "Expression": "Staff_Ex:Amount",
+          "Type": "Global",
+          "Output": "Staff_Ex"
+        },
+        "EEquipmentT": {
+          "Name": "Equipment_Ex_Total",
+          "Expression": "Equipment_Ex:Amount",
+          "Type": "Global",
+          "Output": "Equipment_Ex"
+        },
+        "ETravelT": {
+          "Name": "Travel_Ex_Total",
+          "Expression": "Travel_Ex:Trip_Total",
+          "Type": "Global",
+          "Output": "Travel_Ex"
+        },
+        "EOtherT": {
+          "Name": "Other_Ex_Total",
+          "Expression": "Other_Ex:Amount",
+          "Type": "Global",
+          "Output": "Other_Ex"
+        },
+        "AT": {
+          "Name": "Allocated_Total",
+          "Expression": "Totals:Staff_Al + Totals:Estate_Al + Totals:Other_Al",
+          "Type": "Local",
+          "Output": "Directly_Allocated"
+        },
+        "IT": {
+          "Name": "Incurred_Total",
+          "Expression": "Totals:Staff_In + Totals:Equipment_In + Totals:Travel_In + Totals:Other_In",
+          "Type": "Local",
+          "Output": "Directly_Incurred"
+        },
+        "ET": {
+          "Name": "Exception_Total",
+          "Expression": "Totals:Staff_Ex + Totals:Equipment_Ex + Totals:Travel_Ex + Totals:Other_Ex",
+          "Type": "Local",
+          "Output": "Exception"
+        },
+        "Total": {
+          "Name": "Grand_Total",
+          "Expression": "Totals:Directly_Allocated + Totals:Directly_Incurred + Totals:Exception + Totals:Indirect",
+          "Type": "Local",
+          "Output": "Grand_Total"
+        }
+      }
+    }
+  }
+}
